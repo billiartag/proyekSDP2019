@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "Test kosmos", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_main);
         btncontinue=findViewById(R.id.imageButton6);
         load=findViewById(R.id.progressBar4);
