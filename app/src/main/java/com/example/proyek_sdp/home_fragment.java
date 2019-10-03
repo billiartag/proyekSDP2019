@@ -1,10 +1,6 @@
 package com.example.proyek_sdp;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,16 +8,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 public class home_fragment extends Fragment {
@@ -29,11 +22,11 @@ public class home_fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View myview=inflater.inflate(R.layout.fragment_home,container,false);
+        setHasOptionsMenu(true);
         //cetak icon top seller
         for (int i=0;i<7;i++){
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             Button btn=new Button(myview.getContext());
-            setHasOptionsMenu(true);
             //untuk border dan radius
             /*
             GradientDrawable drawable = new GradientDrawable();
@@ -112,12 +105,14 @@ public class home_fragment extends Fragment {
             });
             tampung.addView(btn,params);
         }
+        // Set title bar
+        ((home) getActivity()).setActionBarTitle("TitipAku");
         return myview;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.optionmenu, menu);
+        inflater.inflate(R.menu.optionmenu_home, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
