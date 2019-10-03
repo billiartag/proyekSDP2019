@@ -41,8 +41,8 @@ public class home extends AppCompatActivity {
                 case R.id.navigation_personal:
                     selectedfragment=new personal_fragment();
                     break;
-                case R.id.navigation_notifications:
-                    selectedfragment=new notification_fragment();
+                case R.id.navigation_post:
+                    selectedfragment=new post_fragment();
                     break;
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedfragment).commit();
