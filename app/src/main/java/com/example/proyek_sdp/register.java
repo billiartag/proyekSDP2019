@@ -1,5 +1,6 @@
 package com.example.proyek_sdp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,7 +31,6 @@ public class register extends AppCompatActivity {
     EditText birthday;
     EditText password;
     EditText confirmpassword;
-    List<user>list_user=new ArrayList<user>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +121,8 @@ public class register extends AppCompatActivity {
 
             }
         });
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("TitipAku");
     }
     public boolean isEmailValid(CharSequence Email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches();

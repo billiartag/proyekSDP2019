@@ -1,8 +1,11 @@
 package com.example.proyek_sdp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -17,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "Test kosmos", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_main);
         btncontinue=findViewById(R.id.imageButton6);
         load=findViewById(R.id.progressBar4);
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 }.start();
             }
         });
-
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("TitipAku");
     }
 }

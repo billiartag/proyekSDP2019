@@ -1,5 +1,6 @@
 package com.example.proyek_sdp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -32,5 +33,7 @@ public class Login extends AppCompatActivity {
                 finish();
             }
         });
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("TitipAku");
     }
 }

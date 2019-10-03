@@ -22,6 +22,9 @@ public class home extends AppCompatActivity {
         navView.setOnNavigationItemSelectedListener(navlistener);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();
     }
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
     BottomNavigationView.OnNavigationItemSelectedListener navlistener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -32,14 +35,14 @@ public class home extends AppCompatActivity {
                 case R.id.navigation_home:
                     selectedfragment=new home_fragment();
                     break;
-                case R.id.app_bar_search:
+                case R.id.search:
                     selectedfragment=new search_fragment();
                     break;
                 case R.id.navigation_personal:
                     selectedfragment=new personal_fragment();
                     break;
-                case R.id.navigation_notifications:
-                    selectedfragment=new notification_fragment();
+                case R.id.navigation_post:
+                    selectedfragment=new post_fragment();
                     break;
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedfragment).commit();
