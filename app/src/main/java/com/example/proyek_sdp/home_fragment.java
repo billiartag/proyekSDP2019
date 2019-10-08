@@ -2,6 +2,7 @@ package com.example.proyek_sdp;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,20 +65,14 @@ public class home_fragment extends Fragment {
 
         //cetak barang flashsale
         for (int i=0;i<3;i++){
+            //buat linear layout vertikal untuk container gambar dan tulisan
+            LinearLayout objek=new LinearLayout(myview.getContext());
+            objek.setGravity(Gravity.CENTER);
+            objek.setOrientation(LinearLayout.VERTICAL);
             //ambil linear layout flash sale dari fragment home
             LinearLayout tampung=myview.findViewById(R.id.containerflashsale);
-            //tambah tulisan
-            TextView tulis=new TextView(myview.getContext());
-            if (i==0){
-                tulis.setText("Pemberi Jasa : Alfonsus\nDurasi : 05:59:00\nHarga:Rp 20.000");
-            }else if (i==1){
-                tulis.setText("Pemberi Jasa : Edwin\nDurasi : 07:59:00\nHarga:Rp 50.000");
-            }else if (i==2){
-                tulis.setText("Pemberi Jasa : Cosmas\nDurasi : 09:59:00\nHarga:Rp 100.000");
-            }
-            tulis.setTypeface(null,Typeface.BOLD);
-            tampung.addView(tulis);
 
+            //masukkan gambar
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             Button btn=new Button(myview.getContext());
             //untuk border dan radius
@@ -103,7 +98,23 @@ public class home_fragment extends Fragment {
                     Toast.makeText(getActivity(), "barang flash sale Ke "+ (Integer.parseInt(x.getId()+"")+1), Toast.LENGTH_SHORT).show();
                 }
             });
-            tampung.addView(btn,params);
+            objek.addView(btn,params);
+
+            //tambah tulisan
+            TextView tulis=new TextView(myview.getContext());
+            if (i==0){
+                tulis.setText("Pemberi Jasa : Alfonsus\nDurasi : 05:59:00\nHarga:Rp 20.000");
+            }else if (i==1){
+                tulis.setText("Pemberi Jasa : Edwin\nDurasi : 07:59:00\nHarga:Rp 50.000");
+            }else if (i==2){
+                tulis.setText("Pemberi Jasa : Cosmas\nDurasi : 09:59:00\nHarga:Rp 100.000");
+            }
+            tulis.setTypeface(null,Typeface.BOLD);
+            tulis.setGravity(Gravity.CENTER);
+            objek.addView(tulis);
+
+            //masukkan ke container yang di home
+            tampung.addView(objek,params);
         }
         // Set title bar
         ((home) getActivity()).setActionBarTitle("TitipAku");
