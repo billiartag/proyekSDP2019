@@ -1,5 +1,6 @@
 package com.example.proyek_sdp;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -131,7 +132,9 @@ public class home_fragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId()== R.id.chat){
-            Toast.makeText(getActivity(),"chat",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(),"chat",Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getContext(),chat_front.class);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
