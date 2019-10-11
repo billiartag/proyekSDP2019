@@ -1,6 +1,8 @@
 package com.example.proyek_sdp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -8,6 +10,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,11 +23,15 @@ import java.io.Serializable;
 
 public class personal_fragment extends Fragment {
     ImageView profil;
+    Button btnktp;
+    ImageView fotoktp;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_personal,container,false);
         profil=myview.findViewById(R.id.profil_user);
+        btnktp=myview.findViewById(R.id.btnktp);
+        fotoktp=myview.findViewById(R.id.ktp);
         /*
         if (getArguments().getString("data").toString().equals(null)){
             String[]user=getArguments().getString("data").toString().split("-");
@@ -38,6 +45,13 @@ public class personal_fragment extends Fragment {
                 startActivityForResult(change, 1);
             }
         });
+        btnktp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intentCamera, 2);
+            }
+        });
         return myview;
 
     }
@@ -48,6 +62,9 @@ public class personal_fragment extends Fragment {
         if (requestCode==1 && data!=null){
             Uri selected_image=data.getData();
             profil.setImageURI(selected_image);
+        }else if(requestCode == 2 && data!=null){
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+            fotoktp.setImageBitmap(bitmap);
         }
     }
 }
