@@ -1,5 +1,6 @@
 package com.example.proyek_sdp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
@@ -25,13 +26,17 @@ public class personal_fragment extends Fragment {
     ImageView profil;
     Button btnktp;
     ImageView fotoktp;
+    TextView cekktp;
+    Button topup;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View myview=inflater.inflate(R.layout.fragment_personal,container,false);
+        final View myview=inflater.inflate(R.layout.fragment_personal,container,false);
         profil=myview.findViewById(R.id.profil_user);
         btnktp=myview.findViewById(R.id.btnktp);
         fotoktp=myview.findViewById(R.id.ktp);
+        cekktp=myview.findViewById(R.id.cekktp);
+        topup=myview.findViewById(R.id.topup);
         /*
         if (getArguments().getString("data").toString().equals(null)){
             String[]user=getArguments().getString("data").toString().split("-");
@@ -50,6 +55,13 @@ public class personal_fragment extends Fragment {
             public void onClick(View view) {
                 Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intentCamera, 2);
+            }
+        });
+        topup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent move=new Intent(getActivity(),topup_activity.class);
+                startActivity(move);
             }
         });
         return myview;
