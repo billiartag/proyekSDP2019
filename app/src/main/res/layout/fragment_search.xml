@@ -7,18 +7,9 @@
     android:background="#FFFFFF"
     android:orientation="vertical" >
 
-    <ScrollView
+    <ListView
+        android:id="@+id/containerfeed"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:foregroundGravity="center">
+        android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:id="@+id/containerfeed"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:foregroundGravity="center"
-            android:gravity="center"
-            android:orientation="vertical" />
-    </ScrollView>
 </LinearLayout>

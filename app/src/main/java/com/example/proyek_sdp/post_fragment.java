@@ -7,7 +7,9 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,11 +17,19 @@ import androidx.fragment.app.Fragment;
 
 public class post_fragment extends Fragment {
     ImageView gambarpost;
+    Spinner jenis;
+    String[] isidata={
+            "Flash Sale",
+            "Pre Order"
+    };
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_post,container,false);;
         gambarpost=myview.findViewById(R.id.fotopost);
+        jenis=myview.findViewById(R.id.spinner2);
+        ArrayAdapter<String> adap=new ArrayAdapter<String>(getContext(),R.layout.custom_spinner,isidata);
+        jenis.setAdapter(adap);
         gambarpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
 public class personal_fragment extends Fragment {
@@ -28,6 +29,7 @@ public class personal_fragment extends Fragment {
     ImageView fotoktp;
     TextView cekktp;
     Button topup;
+    Bitmap passing_gambar;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,8 +66,20 @@ public class personal_fragment extends Fragment {
                 startActivity(move);
             }
         });
-        return myview;
+        fotoktp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Convert to byte array
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                passing_gambar.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
 
+                Intent in1 = new Intent(getContext(), image_viewer.class);
+                in1.putExtra("image",byteArray);
+                startActivity(in1);
+            }
+        });
+        return myview;
     }
 
     @Override
@@ -77,6 +91,7 @@ public class personal_fragment extends Fragment {
         }else if(requestCode == 2 && data!=null){
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             fotoktp.setImageBitmap(bitmap);
+            passing_gambar=bitmap;
         }
     }
 }

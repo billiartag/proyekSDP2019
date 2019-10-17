@@ -1,16 +1,20 @@
 package com.example.proyek_sdp;
 
-import android.graphics.Typeface;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,56 +22,34 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 public class search_fragment extends Fragment {
+    ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
+    ListView lv;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View myview=inflater.inflate(R.layout.fragment_search,container,false);
-        for (int i=0;i<3;i++){
-            //ambil linear layout flash sale dari fragment home
-            LinearLayout tampung=myview.findViewById(R.id.containerfeed);
-            //tambah tulisan
-            TextView tulis=new TextView(myview.getContext());
-            if (i==0){
-                tulis.setText("Flash Sale : \nPemberi Jasa : Alfonsus\nDurasi : 05:59:00\nHarga:Rp 20.000");
-            }else if (i==1){
-                tulis.setText("Pre Order : \nPemberi Jasa : Edwin");
-            }else if (i==2){
-                tulis.setText("Flash Sale : \nPemberi Jasa : Cosmas\nDurasi : 09:59:00\nHarga:Rp 100.000");
+        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",R.drawable.treadmill,"Cosmas",12));
+        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",R.drawable.electrictreadmill,"Alfon",14));
+        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",R.drawable.bike,"Edwin",6));
+        lv = myview.findViewById(R.id.containerfeed);
+        adapter adap = new adapter(getContext(),kumpulanbarang);
+        lv.setAdapter(adap);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                barang x=kumpulanbarang.get(i);
+                Bundle b = new Bundle();
+                b.putSerializable("brg", x);
+                Intent intent = new Intent(getContext(), detail_feed.class);
+                intent.putExtras(b);
+                startActivity(intent);
             }
-            tulis.setTypeface(null, Typeface.BOLD);
-            tulis.setGravity(Gravity.CENTER);
-            tampung.addView(tulis);
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            Button btn=new Button(myview.getContext());
-            //untuk border dan radius
-            /*
-            GradientDrawable drawable = new GradientDrawable();
-            drawable.setShape(GradientDrawable.RECTANGLE);
-            drawable.setStroke(5, Color.YELLOW);
-            drawable.setCornerRadius(100);
-            btn.setBackground(drawable);
-            */
-            btn.setId(i);
-            if (i==0){
-                btn.setBackgroundResource(R.drawable.bike);
-            }else if (i==1){
-                btn.setBackgroundResource(R.drawable.treadmill);
-            }else if (i==2){
-                btn.setBackgroundResource(R.drawable.electrictreadmill);
-            }
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Button x=(Button) view;
-                    Toast.makeText(getActivity(), "barang flash sale Ke "+ (Integer.parseInt(x.getId()+"")+1), Toast.LENGTH_SHORT).show();
-                }
-            });
-            tampung.addView(btn,params);
-        }
-
+        });
         return myview;
     }
     @Override
@@ -75,10 +57,48 @@ public class search_fragment extends Fragment {
         inflater.inflate(R.menu.optionmenu_search, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    class adapter extends ArrayAdapter<barang> {
+        Context context;
+        ArrayList<barang>barang;
+
+        public adapter(Context c,ArrayList<barang>barang){
+            super(c,R.layout.list_barang_layout,barang);
+            this.barang = barang;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = layoutInflater.inflate(R.layout.list_barang_layout,parent,false);
+            TextView detailbarang = row.findViewById(R.id.detail);
+            TextView durasi = row.findViewById(R.id.durasi);
+            TextView tipe = row.findViewById(R.id.tipe);
+            ImageView img = row.findViewById(R.id.gambar_barang);
+            TextView harga = row.findViewById(R.id.harga);
+            detailbarang.setTextColor(Color.BLACK);
+            detailbarang.setText(barang.get(position).toString());
+            if (barang.get(position).getTipe()=="Flash Sale"){
+                tipe.setBackgroundColor(Color.YELLOW);
+                tipe.setTextColor(Color.BLACK);
+                tipe.setText(barang.get(position).getTipe());
+            }
+            else if (barang.get(position).getTipe()=="Pre Order"){
+                tipe.setBackgroundColor(Color.BLACK);
+                tipe.setTextColor(Color.WHITE);
+                tipe.setText(barang.get(position).getTipe());
+            }
+            harga.setText("Rp. "+barang.get(position).getHarga());
+            harga.setTextColor(Color.BLACK);
+            durasi.setText("Durasi : "+barang.get(position).getDurasi()+"\n"+"Maximal Pemesanan : "+barang.get(position).getMax_barang());
+            img.setImageResource(barang.get(position).getGambar());
+
+            return row;
+        }
+
     }
 }
