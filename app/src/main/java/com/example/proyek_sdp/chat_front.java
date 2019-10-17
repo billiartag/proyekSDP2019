@@ -74,7 +74,7 @@ public class chat_front extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.list_chat_front_layout,parent,false);
-            TextView tvbubble = row.findViewById(R.id.detail);
+            TextView tvbubble = row.findViewById(R.id.nama);
             ImageView img = row.findViewById(R.id.gambar_barang);
             tvbubble.setTextColor(Color.BLACK);
             tvbubble.setText(pengirim.get(position));

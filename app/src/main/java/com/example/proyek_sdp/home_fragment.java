@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 public class home_fragment extends Fragment {
     ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
+    ArrayList<user> kumpulanuser = new ArrayList<user>();
 
     @Nullable
     @Override
@@ -30,7 +31,11 @@ public class home_fragment extends Fragment {
         final View myview=inflater.inflate(R.layout.fragment_home,container,false);
         setHasOptionsMenu(true);
         //cetak icon top seller
-        for (int i=0;i<7;i++){
+        kumpulanuser.add(new user("Chrysman Yul",5,R.drawable.img1));
+        kumpulanuser.add(new user("Cosmoz",4,R.drawable.img2));
+        kumpulanuser.add(new user("Alfonz",3,R.drawable.img3));
+
+        for (int i=0;i<kumpulanuser.size();i++){
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             Button btn=new Button(myview.getContext());
             //untuk border dan radius
@@ -42,26 +47,17 @@ public class home_fragment extends Fragment {
             btn.setBackground(drawable);
             */
             btn.setId(i);
-            if (i==0){
-                btn.setBackgroundResource(R.drawable.img1);
-            }else if (i==1){
-                btn.setBackgroundResource(R.drawable.img2);
-            }else if (i==2){
-                btn.setBackgroundResource(R.drawable.img3);
-            }else if (i==3){
-                btn.setBackgroundResource(R.drawable.img4);
-            }else if (i==4){
-                btn.setBackgroundResource(R.drawable.img5);
-            }else if (i==5){
-                btn.setBackgroundResource(R.drawable.img6);
-            }else if (i==6){
-                btn.setBackgroundResource(R.drawable.img7);
-            }
+            btn.setBackgroundResource(kumpulanuser.get(i).getProfil_picture());
+            final int finalI = i;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Button x=(Button) view;
-                    Toast.makeText(getActivity(), "User Ke "+ (Integer.parseInt(x.getId()+"")+1), Toast.LENGTH_SHORT).show();
+                    user x=kumpulanuser.get(finalI);
+                    Bundle b = new Bundle();
+                    b.putSerializable("usr", x);
+                    Intent intent = new Intent(getContext(), detailprofil.class);
+                    intent.putExtras(b);
+                    startActivity(intent);
                 }
             });
             LinearLayout tampung=myview.findViewById(R.id.containertopseller);
@@ -134,6 +130,11 @@ public class home_fragment extends Fragment {
         if (item.getItemId()== R.id.chat){
             //Toast.makeText(getActivity(),"chat",Toast.LENGTH_SHORT).show();
             Intent i = new Intent(getContext(),chat_front.class);
+            startActivity(i);
+        }
+        else if (item.getItemId()== R.id.cart){
+            //Toast.makeText(getActivity(),"chat",Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getContext(),cart.class);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);

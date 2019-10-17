@@ -43,30 +43,37 @@ public class detail_feed extends AppCompatActivity {
         barang x= (barang)getIntent().getExtras().getSerializable("brg");
         img.setBackgroundResource(x.getGambar());
         tipe.setText(x.getTipe().toString());
-        if (tipe.getText().toString().equals("Flash Sale")){
-            tipe.setBackgroundColor(Color.YELLOW);
-            tipe.setTextColor(Color.BLACK);
-        }
-        else if (tipe.getText().toString().equals("Pre Order")){
-            tipe.setBackgroundColor(Color.BLACK);
-            tipe.setTextColor(Color.WHITE);
-        }
         nama.setText("Nama Barang : "+x.getNama());
         harga.setText("Harga Barang : Rp. "+x.getHarga());
         deskripsi.setText("Deskripsi : "+x.getDeskripsi());
         pemilik.setText("Pemilik : "+x.getPemilik());
         durasi.setText("Durasi : "+x.getDurasi());
         max.setText("Max barang yang dapat dipesan : "+x.getMax_barang());
+        if (tipe.getText().toString().equals("Flash Sale")){
+            tipe.setBackgroundColor(Color.YELLOW);
+            tipe.setTextColor(Color.BLACK);
+            beli.setText("Tambah Ke Keranjang");
+        }
+        else if (tipe.getText().toString().equals("Pre Order")){
+            tipe.setBackgroundColor(Color.BLACK);
+            tipe.setTextColor(Color.WHITE);
+            beli.setText("Lakukan Pre Order");
+        }
         isi_wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Add To Wish List", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Tambah ke WishList Berhasil ", Toast.LENGTH_SHORT).show();
             }
         });
         beli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "beli", Toast.LENGTH_SHORT).show();
+                if (tipe.getText().toString().equals("Flash Sale")){
+                Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
+            }
+            else if (tipe.getText().toString().equals("Pre Order")){
+                Toast.makeText(getApplicationContext(), "Pre Order Berhasil!", Toast.LENGTH_SHORT).show();
+            }
             }
         });
     }

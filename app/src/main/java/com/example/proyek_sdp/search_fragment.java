@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,13 +15,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class search_fragment extends Fragment {
@@ -75,7 +72,7 @@ public class search_fragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.list_barang_layout,parent,false);
-            TextView detailbarang = row.findViewById(R.id.detail);
+            TextView detailbarang = row.findViewById(R.id.nama);
             TextView durasi = row.findViewById(R.id.durasi);
             TextView tipe = row.findViewById(R.id.tipe);
             ImageView img = row.findViewById(R.id.gambar_barang);

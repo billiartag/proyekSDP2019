@@ -9,11 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".detail_feed"></activity>
+        <activity android:name=".cart"></activity>
+        <activity android:name=".detailprofil" />
+        <activity android:name=".detail_feed" />
         <activity android:name=".image_viewer" />
         <activity android:name=".chat_detail" />
-        <activity android:name=".detail_history_pembeli"></activity>
-        <activity android:name=".detail_history_penjual"></activity>
+        <activity android:name=".detail_history_pembeli" />
+        <activity android:name=".detail_history_penjual" />
         <activity android:name=".history_pembeli" />
         <activity android:name=".history_penjual" />
         <activity android:name=".chat_front" />

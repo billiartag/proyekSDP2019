@@ -6,4 +6,9 @@
         android:icon="@drawable/icon_msg"
         android:title="chat"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/cart"
+        android:icon="@drawable/ic_shopping_cart_black_24dp"
+        android:title="Item"
+        app:showAsAction="always" />
 </menu>
