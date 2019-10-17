@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.QuickContactBadge;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,8 @@ public class personal_fragment extends Fragment {
         fotoktp=myview.findViewById(R.id.ktp);
         cekktp=myview.findViewById(R.id.cekktp);
         topup=myview.findViewById(R.id.topup);
+        Button btnBuyer = myview.findViewById(R.id.buyer);
+        Button btnSeller = myview.findViewById(R.id.seller);
         /*
         if (getArguments().getString("data").toString().equals(null)){
             String[]user=getArguments().getString("data").toString().split("-");
@@ -62,6 +65,20 @@ public class personal_fragment extends Fragment {
             public void onClick(View view) {
                 Intent move=new Intent(getActivity(),topup_activity.class);
                 startActivity(move);
+            }
+        });
+        btnBuyer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(),history_pembeli.class);
+                startActivity(i);
+            }
+        });
+        btnSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getActivity(),history_penjual.class);
+                startActivity(i);
             }
         });
         return myview;

@@ -9,14 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".chat_detail"></activity>
+        <activity android:name=".detail_history_pembeli"></activity>
+        <activity android:name=".detail_history_penjual"></activity>
+        <activity android:name=".history_pembeli" />
+        <activity android:name=".history_penjual" />
+        <activity android:name=".chat_detail" />
         <activity android:name=".chat_front" />
         <activity
             android:name=".home"
             android:label="@string/title_activity_home" />
         <activity android:name=".register" />
         <activity android:name=".Login" />
-        <activity android:name=".topup_activity"/>
+        <activity android:name=".topup_activity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
