@@ -19,7 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
 public class home_fragment extends Fragment {
+    ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,8 +68,11 @@ public class home_fragment extends Fragment {
             tampung.addView(btn,params);
         }
 
+        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",R.drawable.treadmill,"Cosmas",12));
+        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",R.drawable.electrictreadmill,"Alfon",14));
+        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",R.drawable.bike,"Edwin",6));
         //cetak barang flashsale
-        for (int i=0;i<3;i++){
+        for (int i=0;i<kumpulanbarang.size();i++){
             //buat linear layout vertikal untuk container gambar dan tulisan
             LinearLayout objek=new LinearLayout(myview.getContext());
             objek.setGravity(Gravity.CENTER);
@@ -85,31 +92,24 @@ public class home_fragment extends Fragment {
             btn.setBackground(drawable);
             */
             btn.setId(i);
-            if (i==0){
-                btn.setBackgroundResource(R.drawable.bike);
-            }else if (i==1){
-                btn.setBackgroundResource(R.drawable.treadmill);
-            }else if (i==2){
-                btn.setBackgroundResource(R.drawable.electrictreadmill);
-            }
+            btn.setBackgroundResource(kumpulanbarang.get(i).getGambar());
+            final int finalI = i;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Button x=(Button) view;
-                    Toast.makeText(getActivity(), "barang flash sale Ke "+ (Integer.parseInt(x.getId()+"")+1), Toast.LENGTH_SHORT).show();
+                    barang x=kumpulanbarang.get(finalI);
+                    Bundle b = new Bundle();
+                    b.putSerializable("brg", x);
+                    Intent intent = new Intent(getContext(), detail_feed.class);
+                    intent.putExtras(b);
+                    startActivity(intent);
                 }
             });
             objek.addView(btn,params);
 
             //tambah tulisan
             TextView tulis=new TextView(myview.getContext());
-            if (i==0){
-                tulis.setText("Pemberi Jasa : Alfonsus\nDurasi : 05:59:00\nHarga:Rp 20.000");
-            }else if (i==1){
-                tulis.setText("Pemberi Jasa : Edwin\nDurasi : 07:59:00\nHarga:Rp 50.000");
-            }else if (i==2){
-                tulis.setText("Pemberi Jasa : Cosmas\nDurasi : 09:59:00\nHarga:Rp 100.000");
-            }
+            tulis.setText(kumpulanbarang.get(i).toString());
             tulis.setTypeface(null,Typeface.BOLD);
             tulis.setGravity(Gravity.CENTER);
             objek.addView(tulis);

@@ -8,43 +8,4 @@
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/Region"
-        android:title="Region"
-        app:showAsAction="never">
-
-        <menu>
-            <item
-                android:id="@+id/region1"
-                android:title="region 1" />
-            <item
-                android:id="@+id/region2"
-                android:title="region 2" />
-        </menu>
-
-    </item>
-    <item
-        android:id="@+id/city"
-        android:title="city">
-        <menu>
-            <item
-                android:id="@+id/city1"
-                android:title="city 1" />
-            <item
-                android:id="@+id/city2"
-                android:title="city 2" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/jenis"
-        android:title="Jenis">
-        <menu>
-            <item
-                android:id="@+id/preorder"
-                android:title="Pre Order" />
-            <item
-                android:id="@+id/flashsale"
-                android:title="flashsale" />
-        </menu>
-    </item>
 </menu>

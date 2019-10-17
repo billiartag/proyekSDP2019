@@ -90,6 +90,6 @@ public class barang implements Serializable {
 
     @Override
     public String toString() {
-        return "Nama Barang :"+nama+"\n"+"Pemilik : "+pemilik+"\n"+"Deskripsi Barang : "+deskripsi+"\n";
+        return "Nama Barang :"+nama+"\n"+"Deskripsi Barang : "+deskripsi.substring(0,deskripsi.length()/2)+"..."+"\n";
     }
 }
