@@ -137,6 +137,10 @@ public class home_fragment extends Fragment {
             Intent i = new Intent(getContext(),cart.class);
             startActivity(i);
         }
+        else if(item.getItemId()==R.id.wishlist){
+            Intent i = new Intent(getContext(),wishlist.class);
+            startActivity(i);
+        }
         return super.onOptionsItemSelected(item);
     }
 }
