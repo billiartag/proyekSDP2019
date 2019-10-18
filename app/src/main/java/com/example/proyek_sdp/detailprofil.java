@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ public class detailprofil extends AppCompatActivity {
     TextView nama;
     TextView rating;
     Button chat;
+    ImageButton report;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +26,7 @@ public class detailprofil extends AppCompatActivity {
         ActionBar ab=getSupportActionBar();
         ab.setTitle("TitipAku");
         chat=findViewById(R.id.msg);
+        report=findViewById(R.id.btn_report);
         nama=findViewById(R.id.nama);
         profil_pict=findViewById(R.id.profil_pict);
         rating=findViewById(R.id.rating);
@@ -35,6 +38,13 @@ public class detailprofil extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent move=new Intent(getApplicationContext(),chat_front.class);
+                startActivity(move);
+            }
+        });
+        report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent move=new Intent(getApplicationContext(),report.class);
                 startActivity(move);
             }
         });
