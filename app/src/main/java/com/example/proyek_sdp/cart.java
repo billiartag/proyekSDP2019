@@ -21,12 +21,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class cart extends AppCompatActivity {
+    ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
     ListView lv;
     Button topup;
     Button bayar;
     TextView saldo;
     TextView total;
-    ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
     int totalharga=0;
     adapter adap;
     @Override
