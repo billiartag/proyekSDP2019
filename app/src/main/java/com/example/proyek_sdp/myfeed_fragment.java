@@ -21,7 +21,7 @@ public class myfeed_fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View myview=inflater.inflate(R.layout.fragment_post,container,false);;
+        View myview=inflater.inflate(R.layout.fragment_myfeed,container,false);;
         list_feed=myview.findViewById(R.id.lv_feed);
         return myview;
     }

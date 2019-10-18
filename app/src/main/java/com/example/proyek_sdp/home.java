@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class home extends AppCompatActivity {
     TextView mTextMessage;
@@ -43,6 +44,9 @@ public class home extends AppCompatActivity {
                     break;
                 case R.id.navigation_post:
                     selectedfragment=new post_fragment();
+                    break;
+                case R.id.myfeed:
+                    selectedfragment=new myfeed_fragment();
                     break;
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedfragment).commit();

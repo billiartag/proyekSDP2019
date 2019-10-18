@@ -15,7 +15,10 @@
         android:id="@+id/navigation_post"
         android:icon="@drawable/ic_add_circle_black_24dp"
         android:title="Post" />
-    <item android:title="Item" />
+    <item
+        android:id="@+id/myfeed"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="MyFeed" />
     <item
         android:id="@+id/navigation_personal"
         android:icon="@drawable/ic_account_circle_black_24dp"

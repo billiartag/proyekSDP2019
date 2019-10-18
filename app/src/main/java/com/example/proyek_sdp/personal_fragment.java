@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,6 +38,7 @@ public class personal_fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View myview=inflater.inflate(R.layout.fragment_personal,container,false);
+        setHasOptionsMenu(true);
         profil=myview.findViewById(R.id.profil_user);
         btnktp=myview.findViewById(R.id.btnktp);
         fotoktp=myview.findViewById(R.id.ktp);
@@ -98,6 +102,19 @@ public class personal_fragment extends Fragment {
         });
         return myview;
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.optionmenu_profil, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==R.id.reminder){
+            Toast.makeText(getContext(), "ini reminder", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
