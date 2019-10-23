@@ -34,7 +34,7 @@ public class detail_feed extends AppCompatActivity {
         beli=findViewById(R.id.beli);
         img=findViewById(R.id.img);
         tipe=findViewById(R.id.tipe);
-        nama=findViewById(R.id.nama);
+        nama=findViewById(R.id.judul);
         harga=findViewById(R.id.harga);
         deskripsi=findViewById(R.id.deskripsi);
         pemilik=findViewById(R.id.pemilik);
@@ -43,7 +43,7 @@ public class detail_feed extends AppCompatActivity {
         barang x= (barang)getIntent().getExtras().getSerializable("brg");
         img.setBackgroundResource(x.getGambar());
         tipe.setText(x.getTipe().toString());
-        nama.setText("Nama Barang : "+x.getNama());
+        nama.setText(x.getNama());
         harga.setText("Harga Barang : Rp. "+x.getHarga());
         deskripsi.setText("Deskripsi : "+x.getDeskripsi());
         pemilik.setText("Pemilik : "+x.getPemilik());

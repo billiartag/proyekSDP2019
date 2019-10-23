@@ -62,7 +62,7 @@ public class cart extends AppCompatActivity {
         ArrayList<barang>barang;
 
         public adapter(Context c,ArrayList<barang>barang){
-            super(c,R.layout.list_barang_layout,barang);
+            super(c,R.layout.list_search_layout,barang);
             this.barang = barang;
         }
 
@@ -70,7 +70,7 @@ public class cart extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.list_cart_layout,parent,false);
-            TextView nama = row.findViewById(R.id.nama);
+            TextView nama = row.findViewById(R.id.judul);
             TextView harga = row.findViewById(R.id.harga);
             final TextView jumlah = row.findViewById(R.id.jumlah);
             ImageView img = row.findViewById(R.id.gambar_barang);
@@ -79,6 +79,7 @@ public class cart extends AppCompatActivity {
             Button cancel=row.findViewById(R.id.cancel);
             nama.setText(barang.get(position).getNama());
             harga.setText("Rp. "+barang.get(position).getHarga());
+            harga.setTextColor(Color.parseColor("#651FFF"));
             jumlah.setText("1");
             totalharga=totalharga+(barang.get(position).getHarga()*Integer.parseInt(jumlah.getText().toString()));
             total.setText("Total : Rp. 80000");//msh paten untuk sekarang

@@ -16,38 +16,37 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="?attr/actionBarDivider" />
 
-    <Button
-        android:id="@+id/msg"
-        android:layout_width="179dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="85dp"
-        android:background="#03A9F4"
-        android:text="Send Message"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profil_pict" />
-
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="341dp"
-        android:layout_height="385dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="4dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/msg">
+        app:layout_constraintTop_toBottomOf="@+id/profil_pict">
 
         <TextView
-            android:id="@+id/nama"
-            android:layout_width="match_parent"
+            android:id="@+id/judul"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:layout_conversion_absoluteHeight="32dp"
+            tools:layout_conversion_absoluteWidth="341dp"
+            tools:layout_editor_absoluteX="70dp"
+            tools:layout_editor_absoluteY="326dp" />
 
         <TextView
             android:id="@+id/rating"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            tools:layout_conversion_absoluteHeight="32dp"
+            tools:layout_conversion_absoluteWidth="341dp"
+            tools:layout_editor_absoluteX="70dp"
+            tools:layout_editor_absoluteY="358dp" />
 
     </LinearLayout>
 
@@ -55,10 +54,22 @@
         android:id="@+id/btn_report"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="65dp"
+        android:background="#00FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profil_pict"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
         app:srcCompat="@drawable/ic_report_black_24dp" />
+
+    <Button
+        android:id="@+id/msg"
+        android:layout_width="179dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#03A9F4"
+        android:text="Send Message"
+        app:layout_constraintEnd_toStartOf="@+id/btn_report"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
