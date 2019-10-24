@@ -1,19 +1,12 @@
 package com.example.proyek_sdp;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,7 +35,7 @@ public class myfeed_fragment extends Fragment {
         ArrayList<barang>barang;
 
         public adapter(Context c,ArrayList<barang>barang){
-            super(c,R.layout.list_barang_layout,barang);
+            super(c,R.layout.list_search_layout,barang);
             this.barang = barang;
         }
 

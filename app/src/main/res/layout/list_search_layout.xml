@@ -22,8 +22,8 @@
 
         <ImageView
             android:id="@+id/gambar_barang"
-            android:layout_width="match_parent"
-            android:layout_height="143dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="3"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/bike" />
@@ -35,7 +35,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/nama"
+                android:id="@+id/judul"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -51,21 +51,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:background="#4CAF50"
+                android:background="#004CAF50"
                 android:text="TextView"
                 android:textAlignment="center"
+                android:textColor="#651FFF"
                 android:textSize="18sp"
                 android:textStyle="italic" />
 
-            <TextView
-                android:id="@+id/durasi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FF0000"
-                android:gravity="center"
-                android:text="TextView"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>

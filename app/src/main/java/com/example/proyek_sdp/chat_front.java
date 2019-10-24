@@ -65,7 +65,7 @@ public class chat_front extends AppCompatActivity {
         ArrayList<Integer>gambar;
 
         public adapter(Context c,ArrayList<String>p,ArrayList<Integer>g){
-            super(c,R.layout.list_chat_front_layout,R.id.editText15,p);
+            super(c,R.layout.list_chat_front_layout,R.id.time,p);
             this.pengirim = p;
             this.gambar = g;
         }
@@ -74,7 +74,7 @@ public class chat_front extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.list_chat_front_layout,parent,false);
-            TextView tvbubble = row.findViewById(R.id.nama);
+            TextView tvbubble = row.findViewById(R.id.judul);
             ImageView img = row.findViewById(R.id.gambar_barang);
             tvbubble.setTextColor(Color.BLACK);
             tvbubble.setText(pengirim.get(position));

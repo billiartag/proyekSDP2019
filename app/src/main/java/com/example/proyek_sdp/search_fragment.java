@@ -64,16 +64,15 @@ public class search_fragment extends Fragment {
         ArrayList<barang>barang;
 
         public adapter(Context c,ArrayList<barang>barang){
-            super(c,R.layout.list_barang_layout,barang);
+            super(c,R.layout.list_search_layout,barang);
             this.barang = barang;
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.list_barang_layout,parent,false);
-            TextView detailbarang = row.findViewById(R.id.nama);
-            TextView durasi = row.findViewById(R.id.durasi);
+            View row = layoutInflater.inflate(R.layout.list_search_layout,parent,false);
+            TextView detailbarang = row.findViewById(R.id.judul);
             TextView tipe = row.findViewById(R.id.tipe);
             ImageView img = row.findViewById(R.id.gambar_barang);
             TextView harga = row.findViewById(R.id.harga);
@@ -90,8 +89,7 @@ public class search_fragment extends Fragment {
                 tipe.setText(barang.get(position).getTipe());
             }
             harga.setText("Rp. "+barang.get(position).getHarga());
-            harga.setTextColor(Color.BLACK);
-            durasi.setText("Durasi : "+barang.get(position).getDurasi()+"\n"+"Maximal Pemesanan : "+barang.get(position).getMax_barang());
+            harga.setTextColor(Color.parseColor("#651FFF"));
             img.setImageResource(barang.get(position).getGambar());
 
             return row;
