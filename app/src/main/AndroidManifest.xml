@@ -25,6 +25,7 @@
             android:name=".home"
             android:label="@string/title_activity_home" />
         <activity android:name=".register" />
+        <activity android:name=".report" />
         <activity android:name=".Login" />
         <activity android:name=".topup_activity" />
         <activity android:name=".MainActivity">
