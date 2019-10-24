@@ -122,9 +122,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:background="#039BE5"
+        android:background="#03A9F4"
         android:text="Login"
-        android:textColor="#000000"
+        android:textColor="#FDFAFA"
         app:layout_constraintEnd_toStartOf="@+id/register"
         app:layout_constraintTop_toBottomOf="@+id/confirm_password" />
 
@@ -133,9 +133,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="76dp"
-        android:background="#039BE5"
+        android:background="#03A9F4"
         android:text="Register"
-        android:textColor="#000000"
+        android:textColor="#F5F1F1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirm_password" />
 </androidx.constraintlayout.widget.ConstraintLayout>

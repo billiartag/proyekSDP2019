@@ -112,7 +112,9 @@ public class personal_fragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId()==R.id.reminder){
-            Toast.makeText(getContext(), "ini reminder", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "ini reminder", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getContext(),reminder.class);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }

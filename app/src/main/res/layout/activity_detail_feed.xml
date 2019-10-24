@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:background="#039BE5"
+                android:background="#FFC400"
                 android:text="Beli" />
 
             <Button
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:background="#039BE5"
+                android:background="#FFC400"
                 android:text="Tambah Ke Wishlist" />
 
         </LinearLayout>
