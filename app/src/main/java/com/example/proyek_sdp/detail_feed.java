@@ -50,7 +50,7 @@ public class detail_feed extends AppCompatActivity {
         durasi.setText("Durasi : "+x.getDurasi());
         max.setText("Max barang yang dapat dipesan : "+x.getMax_barang());
         if (tipe.getText().toString().equals("Flash Sale")){
-            tipe.setBackgroundColor(Color.YELLOW);
+            tipe.setBackgroundColor(Color.parseColor("#FFB300"));
             tipe.setTextColor(Color.BLACK);
             beli.setText("Tambah Ke Keranjang");
         }

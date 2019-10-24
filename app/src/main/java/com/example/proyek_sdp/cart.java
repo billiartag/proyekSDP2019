@@ -77,6 +77,9 @@ public class cart extends AppCompatActivity {
             Button btnmin=row.findViewById(R.id.btnmin);
             Button btnplus=row.findViewById(R.id.btnplus);
             Button cancel=row.findViewById(R.id.cancel);
+            cancel.setTextColor(Color.BLACK);
+            btnmin.setTextColor(Color.BLACK);
+            btnplus.setTextColor(Color.BLACK);
             nama.setText(barang.get(position).getNama());
             harga.setText("Rp. "+barang.get(position).getHarga());
             harga.setTextColor(Color.parseColor("#651FFF"));
