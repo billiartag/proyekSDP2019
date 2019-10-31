@@ -40,7 +40,7 @@ public class detail_feed extends AppCompatActivity {
         pemilik=findViewById(R.id.pemilik);
         durasi=findViewById(R.id.durasi);
         max=findViewById(R.id.max);
-        barang x= (barang)getIntent().getExtras().getSerializable("brg");
+        barang x= (barang)getIntent().getExtras().getSerializable("barang");
         img.setBackgroundResource(x.getGambar());
         tipe.setText(x.getTipe().toString());
         nama.setText(x.getNama());
