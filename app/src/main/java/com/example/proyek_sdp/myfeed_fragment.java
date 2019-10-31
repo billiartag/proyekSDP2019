@@ -28,6 +28,8 @@ public class myfeed_fragment extends Fragment {
         kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",R.drawable.bike,"Edwin",6));
         adapter adap=new adapter(getContext(),kumpulanbarang);
         list_feed.setAdapter(adap);
+        list_feed.setDivider(null);
+        list_feed.setDividerHeight(0);
         return myview;
     }
     class adapter extends ArrayAdapter<barang> {
