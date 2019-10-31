@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,6 +67,7 @@ public class home_fragment extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 barang x = kumpulanbarang.get(position);
+                Toast.makeText(getActivity(), x.getGambar()+"", Toast.LENGTH_SHORT).show();
                 Bundle b = new Bundle();
                 b.putSerializable("barang", x);
                 Intent intent = new Intent(getActivity(), detail_feed.class);

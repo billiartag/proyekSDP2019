@@ -4,11 +4,11 @@
     >
 
     <item
-        android:orderInCategory="0"
         android:id="@+id/menuBack"
         android:checkable="false"
         android:enabled="true"
-        android:icon="?attr/actionModeCloseDrawable"
-        app:showAsAction="always"
-        android:title="Item" />
+        android:icon="@drawable/ic_cancel_black_24dp"
+        android:orderInCategory="0"
+        android:title="Item"
+        app:showAsAction="always" />
 </menu>
