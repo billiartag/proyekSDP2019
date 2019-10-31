@@ -11,6 +11,9 @@
         android:title="Top Up"
         app:showAsAction="always" />
     <item
+        android:id="@+id/logout"
+        android:title="Logout" />
+    <item
         android:id="@+id/reminder"
         android:icon="@drawable/ic_assignment_black_24dp"
         android:title="Reminder" />

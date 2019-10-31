@@ -1,5 +1,6 @@
 package com.example.proyek_sdp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
@@ -15,5 +16,7 @@ public class detail_history_pembeli extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_history_pembeli);
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("TitipAku");
     }
 }

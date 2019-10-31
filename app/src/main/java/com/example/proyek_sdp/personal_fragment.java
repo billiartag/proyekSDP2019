@@ -103,6 +103,10 @@ public class personal_fragment extends Fragment {
             Intent i = new Intent(getActivity(),history_pembeli.class);
             startActivity(i);
         }
+        else if(item.getItemId()==R.id.logout){
+            Intent i = new Intent(getActivity(),Login.class);
+            startActivity(i);
+        }
         return super.onOptionsItemSelected(item);
     }
 

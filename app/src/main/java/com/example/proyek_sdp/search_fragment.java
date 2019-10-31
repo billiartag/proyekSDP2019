@@ -41,7 +41,7 @@ public class search_fragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 barang x=kumpulanbarang.get(i);
                 Bundle b = new Bundle();
-                b.putSerializable("brg", x);
+                b.putSerializable("barang", x);
                 Intent intent = new Intent(getContext(), detail_feed.class);
                 intent.putExtras(b);
                 startActivity(intent);

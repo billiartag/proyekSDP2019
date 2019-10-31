@@ -1,5 +1,6 @@
 package com.example.proyek_sdp;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -30,6 +31,8 @@ public class detail_history_penjual extends AppCompatActivity {
         ll2 = findViewById(R.id.ll2);
         ll1.setBackgroundColor(Color.GRAY);
         ll2.setBackgroundColor(Color.GRAY);
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("TitipAku");
     }
 
 
