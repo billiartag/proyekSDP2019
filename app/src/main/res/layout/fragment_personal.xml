@@ -114,12 +114,20 @@
                         android:text="KTP : Belum Terverifikasi"
                         android:textStyle="bold" />
 
-                    <Button
-                        android:id="@+id/btnktp"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#039BE5"
-                        android:text="Verifikasi KTP" />
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingTop="20dp">
+
+                        <Button
+                            android:id="@+id/btnktp"
+                            android:layout_width="194dp"
+                            android:layout_height="wrap_content"
+                            android:background="#039BE5"
+                            android:text="Verifikasi KTP" />
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/ktp"

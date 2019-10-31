@@ -30,7 +30,7 @@ public class detailprofil extends AppCompatActivity {
         nama=findViewById(R.id.judul);
         profil_pict=findViewById(R.id.profil_pict);
         rating=findViewById(R.id.rating);
-        user x= (user) getIntent().getExtras().getSerializable("usr");
+        user x= (user) getIntent().getExtras().getSerializable("user");
         nama.setText("Nama : "+x.getNama());
         profil_pict.setBackgroundResource(x.getProfil_picture());
         rating.setText("Rating : "+x.getRating());
