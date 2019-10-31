@@ -32,7 +32,6 @@ public class personal_fragment extends Fragment {
     Button btnktp;
     ImageView fotoktp;
     TextView cekktp;
-    Button topup;
     Bitmap passing_gambar;
     @Nullable
     @Override
@@ -43,9 +42,6 @@ public class personal_fragment extends Fragment {
         btnktp=myview.findViewById(R.id.btnktp);
         fotoktp=myview.findViewById(R.id.ktp);
         cekktp=myview.findViewById(R.id.cekktp);
-        topup=myview.findViewById(R.id.topup);
-        Button btnBuyer = myview.findViewById(R.id.buyer);
-        Button btnSeller = myview.findViewById(R.id.seller);
         /*
         if (getArguments().getString("data").toString().equals(null)){
             String[]user=getArguments().getString("data").toString().split("-");
@@ -66,13 +62,6 @@ public class personal_fragment extends Fragment {
                 startActivityForResult(intentCamera, 2);
             }
         });
-        topup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent move=new Intent(getActivity(),topup_activity.class);
-                startActivity(move);
-            }
-        });
         fotoktp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,20 +73,6 @@ public class personal_fragment extends Fragment {
                 Intent in1 = new Intent(getContext(), image_viewer.class);
                 in1.putExtra("image",byteArray);
                 startActivity(in1);
-            }
-        });
-        btnBuyer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(),history_pembeli.class);
-                startActivity(i);
-            }
-        });
-        btnSeller.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getActivity(),history_penjual.class);
-                startActivity(i);
             }
         });
         return myview;
@@ -114,6 +89,18 @@ public class personal_fragment extends Fragment {
         if (item.getItemId()==R.id.reminder){
             //Toast.makeText(getContext(), "ini reminder", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(getContext(),reminder.class);
+            startActivity(i);
+        }
+        else if (item.getItemId()==R.id.top_up){
+            Intent move=new Intent(getActivity(),topup_activity.class);
+            startActivity(move);
+        }
+        else if(item.getItemId()==R.id.hsell){
+            Intent i = new Intent(getActivity(),history_penjual.class);
+            startActivity(i);
+        }
+        else if(item.getItemId()==R.id.hbuy){
+            Intent i = new Intent(getActivity(),history_pembeli.class);
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
