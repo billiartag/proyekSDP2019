@@ -29,6 +29,7 @@ public class chat_detail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_detail);
+
         lv = findViewById(R.id.lvIsiChat);
         if(getIntent().getStringArrayListExtra("isichat")!=null){
             a = (ArrayList<String>) getIntent().getStringArrayListExtra("isichat");
@@ -42,6 +43,8 @@ public class chat_detail extends AppCompatActivity {
 
         adapter ad = new adapter(this,un,penerima,a);
         lv.setAdapter(ad);
+        lv.setDivider(null);
+        lv.setDividerHeight(0);
 
     }
 

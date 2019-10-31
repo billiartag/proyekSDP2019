@@ -36,7 +36,8 @@ public class home_fragment extends Fragment {
         kumpulanuser.add(new user("Alfonz",3,R.drawable.img3));
 
         for (int i=0;i<kumpulanuser.size();i++){
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
+            params.setMargins(15,15,15,15);
             Button btn=new Button(myview.getContext());
             //untuk border dan radius
             /*
@@ -77,7 +78,9 @@ public class home_fragment extends Fragment {
             LinearLayout tampung=myview.findViewById(R.id.containerflashsale);
 
             //masukkan gambar
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250,250);
+
             Button btn=new Button(myview.getContext());
             //untuk border dan radius
             /*
@@ -87,8 +90,12 @@ public class home_fragment extends Fragment {
             drawable.setCornerRadius(100);
             btn.setBackground(drawable);
             */
+            //LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(15,15,15,15);
+            //btn.setLayoutParams(param);
             btn.setId(i);
             btn.setBackgroundResource(kumpulanbarang.get(i).getGambar());
+
             final int finalI = i;
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -112,6 +119,7 @@ public class home_fragment extends Fragment {
 
             //masukkan ke container yang di home
             tampung.addView(objek,params);
+
         }
         // Set title bar
         ((home) getActivity()).setActionBarTitle("TitipAku");
