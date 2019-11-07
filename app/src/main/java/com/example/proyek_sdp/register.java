@@ -17,6 +17,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 
@@ -35,6 +40,8 @@ public class register extends AppCompatActivity {
     EditText password;
     EditText confirmpassword;
     FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
+    user baru;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +56,8 @@ public class register extends AppCompatActivity {
         password=findViewById(R.id.edpassword_register);
         confirmpassword=findViewById(R.id.edconfirm_register);
         btnchoosedate=findViewById(R.id.btnbirth_register);
-
+        //start program
+        databaseReference=FirebaseDatabase.getInstance().getReference().child("User");
         firebaseAuth=FirebaseAuth.getInstance();
         btnchoosedate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,14 +113,15 @@ public class register extends AppCompatActivity {
                 }
 
                 if (berhasil){
-                    Toast.makeText(register.this, "Register Berhasil", Toast.LENGTH_SHORT).show();
-                    user baru=new user();
-                    baru.nama=name.getText().toString();
-                    baru.username=username.getText().toString();
-                    baru.email=email.getText().toString();
-                    baru.phone=phone.getText().toString();
-                    baru.birthdate=birthday.getText().toString();
-                    baru.password=password.getText().toString();
+                    baru=new user();
+                    baru.setNama(name.getText().toString());
+                    baru.setUsername(username.getText().toString());
+                    baru.setEmail(email.getText().toString());
+                    baru.setPhone(phone.getText().toString());
+                    baru.setBirthdate(birthday.getText().toString());
+                    baru.setPassword(password.getText().toString());
+                    baru.setRating(1);
+                    baru.setProfil_picture(R.drawable.person);
 
                     firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(register.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -120,15 +129,41 @@ public class register extends AppCompatActivity {
                             if (!task.isSuccessful()){
                                 Toast.makeText(register.this, "register gagal, coba ulang", Toast.LENGTH_SHORT).show();
                             }
-                            else {
-                                Toast.makeText(register.this, "register berhasil", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(),Login.class));
-                            }
                         }
                     });
 
-                    Intent fp=new Intent(getApplicationContext(),home.class);
-                    startActivity(fp);
+                    ValueEventListener valueEventListener=new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            boolean berhasil_register=true;
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if (email.getText().toString().equals(ds.child("email").getValue().toString())){
+                                    berhasil_register=false;
+                                }
+                            }
+                            if(berhasil_register){
+                                databaseReference.push().setValue(baru).addOnCompleteListener(register.this, new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(register.this, "Register berhasil", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(getApplicationContext(),home.class));
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                Toast.makeText(register.this, "Email sudah pernah terdaftar", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    };
+                    databaseReference.addListenerForSingleValueEvent(valueEventListener);
                     finish();
                 }
                 else {

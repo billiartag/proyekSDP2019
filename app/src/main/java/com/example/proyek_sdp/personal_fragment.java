@@ -111,6 +111,7 @@ public class personal_fragment extends Fragment {
             FirebaseAuth.getInstance().signOut();
             Intent i = new Intent(getActivity(),Login.class);
             startActivity(i);
+            getActivity().finish();
         }
         return super.onOptionsItemSelected(item);
     }

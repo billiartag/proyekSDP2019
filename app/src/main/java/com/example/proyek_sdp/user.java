@@ -2,23 +2,12 @@ package com.example.proyek_sdp;
 
 import java.io.Serializable;
 
-public class user implements Serializable {
-    public String nama,password,username,email,phone,birthdate;
-    public int rating;
-    public int profil_picture;
+public class user{
+    private String nama,password,username,email,phone,birthdate,tipe_user;
+    private int rating;
+    private int profil_picture;
 
     public user() {}
-
-    public user(String nama, String password, String username, String email, String phone, String birthdate, int rating, int profil_picture) {
-        this.nama = nama;
-        this.password = password;
-        this.username = username;
-        this.email = email;
-        this.phone = phone;
-        this.birthdate = birthdate;
-        this.rating = rating;
-        this.profil_picture = profil_picture;
-    }
 
     public String getNama() {
         return nama;
@@ -68,6 +57,14 @@ public class user implements Serializable {
         this.birthdate = birthdate;
     }
 
+    public String getTipe_user() {
+        return tipe_user;
+    }
+
+    public void setTipe_user(String tipe_user) {
+        this.tipe_user = tipe_user;
+    }
+
     public int getRating() {
         return rating;
     }
@@ -81,6 +78,18 @@ public class user implements Serializable {
     }
 
     public void setProfil_picture(int profil_picture) {
+        this.profil_picture = profil_picture;
+    }
+
+    public user(String nama, String password, String username, String email, String phone, String birthdate, String tipe_user, int rating, int profil_picture) {
+        this.nama = nama;
+        this.password = password;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.birthdate = birthdate;
+        this.tipe_user = tipe_user;
+        this.rating = rating;
         this.profil_picture = profil_picture;
     }
 }
