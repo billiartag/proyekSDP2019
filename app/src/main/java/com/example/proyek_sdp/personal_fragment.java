@@ -109,9 +109,9 @@ public class personal_fragment extends Fragment {
         }
         else if(item.getItemId()==R.id.logout){
             FirebaseAuth.getInstance().signOut();
+            getActivity().finish();
             Intent i = new Intent(getActivity(),Login.class);
             startActivity(i);
-            getActivity().finish();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -149,12 +149,15 @@ public class register extends AppCompatActivity {
                                         if (task.isSuccessful()){
                                             Toast.makeText(register.this, "Register berhasil", Toast.LENGTH_SHORT).show();
                                             startActivity(new Intent(getApplicationContext(),home.class));
+                                            finish();
                                         }
                                     }
                                 });
                             }
                             else {
                                 Toast.makeText(register.this, "Email sudah pernah terdaftar", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(),Login.class));
+                                finish();
                             }
                         }
 
@@ -164,7 +167,6 @@ public class register extends AppCompatActivity {
                         }
                     };
                     databaseReference.addListenerForSingleValueEvent(valueEventListener);
-                    finish();
                 }
                 else {
                     Toast.makeText(register.this, "Register Gagal!", Toast.LENGTH_SHORT).show();
@@ -172,8 +174,6 @@ public class register extends AppCompatActivity {
 
             }
         });
-        ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
     }
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         String time = ""+hourOfDay+"h"+minute+"m"+second;
