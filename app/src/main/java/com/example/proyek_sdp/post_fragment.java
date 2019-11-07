@@ -12,12 +12,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+
+import java.util.Calendar;
 
 public class post_fragment extends Fragment {
     ImageView gambarpost;
@@ -26,7 +32,7 @@ public class post_fragment extends Fragment {
     EditText city;
     EditText region;
     EditText max;
-    EditText time;
+    TextView time_dari,time_ke;
     Spinner jenis;
     String[] isidata={
             "Flash Sale",
@@ -41,7 +47,8 @@ public class post_fragment extends Fragment {
         city=myview.findViewById(R.id.city);
         region=myview.findViewById(R.id.region);
         max=myview.findViewById(R.id.max);
-        time=myview.findViewById(R.id.time);
+        time_dari=myview.findViewById(R.id.time_dari);
+        time_ke=myview.findViewById(R.id.time_ke);
         post=myview.findViewById(R.id.post);
         jenis=myview.findViewById(R.id.jenis);
         //program
@@ -52,6 +59,32 @@ public class post_fragment extends Fragment {
             public void onClick(View view) {
                 Intent change=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(change, 1);
+            }
+        });
+        time_dari.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        post_fragment.this::onDateSet,
+                        now.get(Calendar.YEAR), // Initial year selection
+                        now.get(Calendar.MONTH), // Initial month selection
+                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+        time_ke.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        post_fragment.this::onDateSet1,
+                        now.get(Calendar.YEAR), // Initial year selection
+                        now.get(Calendar.MONTH), // Initial month selection
+                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
         post.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +103,10 @@ public class post_fragment extends Fragment {
                 if (max.getText().toString().trim().equals("")){
                     validation=validation+"-max barang yang dimasukkan kosong\n";
                 }
-                if (time.getText().toString().trim().equals("")){
+                if (time_dari.getText().toString().trim().equals("")){
+                    validation=validation+"-Waktu yang dimasukkan kosong\n";
+                }
+                if (time_ke.getText().toString().trim().equals("")){
                     validation=validation+"-Waktu yang dimasukkan kosong\n";
                 }
                 if (!validation.equals("")){
@@ -90,5 +126,14 @@ public class post_fragment extends Fragment {
             Uri selected_image=data.getData();
             gambarpost.setImageURI(selected_image);
         }
+    }
+
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = ""+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        time_dari.setText(date);
+    }
+    public void onDateSet1(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = ""+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        time_ke.setText(date);
     }
 }
