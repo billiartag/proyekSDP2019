@@ -1,51 +1,78 @@
 package com.example.proyek_sdp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+
+import java.util.Calendar;
 
 public class register extends AppCompatActivity {
 
     Button register;
     Button login;
-    AlertDialog.Builder builder;
-    AlertDialog dialog;
+    Button btnchoosedate;
     EditText name;
     EditText username;
     EditText email;
     EditText phone;
-    EditText postal;
-    EditText birthday;
+    TextView birthday;
     EditText password;
     EditText confirmpassword;
+    FirebaseAuth firebaseAuth;
+    DatabaseReference databaseReference;
+    user baru;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        register=findViewById(R.id.register);
-        login=findViewById(R.id.login);
-        name=findViewById(R.id.name);
-        username=findViewById(R.id.username);
-        email=findViewById(R.id.email);
-        phone=findViewById(R.id.phone);
-        birthday=findViewById(R.id.birthdate);
-        postal=findViewById(R.id.postal);
-        password=findViewById(R.id.password);
-        confirmpassword=findViewById(R.id.confirm_password);
-        //start game
+        register=findViewById(R.id.btnregister_register);
+        login=findViewById(R.id.btnlogin_register);
+        name=findViewById(R.id.edname_register);
+        username=findViewById(R.id.edusername_register);
+        email=findViewById(R.id.edemail_register);
+        phone=findViewById(R.id.edphone_register);
+        birthday=findViewById(R.id.hasil_tanggal_register);
+        password=findViewById(R.id.edpassword_register);
+        confirmpassword=findViewById(R.id.edconfirm_register);
+        btnchoosedate=findViewById(R.id.btnbirth_register);
+        //start program
+        databaseReference=FirebaseDatabase.getInstance().getReference().child("User");
+        firebaseAuth=FirebaseAuth.getInstance();
+        btnchoosedate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        register.this::onDateSet,
+                        now.get(Calendar.YEAR), // Initial year selection
+                        now.get(Calendar.MONTH), // Initial month selection
+                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                );
+                dpd.show(getSupportFragmentManager(), "Datepickerdialog");
+            }
+        });
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,72 +84,105 @@ public class register extends AppCompatActivity {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String validation="";
                 boolean berhasil=true;
                 int ctr=0;
                 if (name.getText().toString().trim().equals("")){
-                    ctr++;
-                    validation=validation+ctr+". Nama Tidak Boleh Kosong\n";
+                    name.setError("Nama Tidak Boleh Kosong");
                     berhasil=false;
                 }
                 if (username.getText().toString().trim().equals("") || username.getText().toString().length()>8){
-                    ctr++;
-                    validation=validation+ctr+". username Tidak Boleh Kosong dan username tidak boleh lebih dari 8 huruf\n";
+                    username.setError("username Tidak Boleh Kosong dan username tidak boleh lebih dari 8 huruf");
                     berhasil=false;
                 }
                 if (!isEmailValid(email.getText().toString())){
-                    ctr++;
-                    validation=validation+ctr+". email harus sesuai dengan format email\n";
+                    email.setError("email harus sesuai dengan format email");
                     berhasil=false;
                 }
                 if (phone.getText().toString().trim().equals("")||phone.getText().toString().length()<11 && phone.getText().toString().length()>14){
-                    ctr++;
-                    validation=validation+ctr+". phone Tidak Boleh Kosong dan phone tidak kurang 11 atau lebih dari 14 huruf\n";
+                    phone.setError("phone Tidak Boleh Kosong dan phone tidak kurang 11 atau lebih dari 14 huruf");
                     berhasil=false;
                 }
                 if (birthday.getText().toString().equals("")){
-                    ctr++;
-                    validation=validation+ctr+". birthday Tidak Boleh Kosong \n";
-                    berhasil=false;
-                }
-                if (postal.getText().toString().equals("")){
-                    ctr++;
-                    validation=validation+ctr+". Postal Tidak Boleh Kosong \n";
+                    birthday.setError("birthday Tidak Boleh Kosong");
                     berhasil=false;
                 }
                 if (password.getText().toString().trim().equals("")||password.getText().toString().length()<8||!password.getText().toString().equals(confirmpassword.getText().toString())){
-                    ctr++;
-                    validation=validation+ctr+". password Tidak Boleh Kosong atau kurang dari 8 huruf atau Password tidak sama dengan confirm password\n";
+                    password.setError("password Tidak Boleh Kosong atau kurang dari 8 huruf atau Password tidak sama dengan confirm password");
+                    confirmpassword.setError("password Tidak Boleh Kosong atau kurang dari 8 huruf atau Password tidak sama dengan confirm password");
                     berhasil=false;
                 }
 
                 if (berhasil){
-                    Toast.makeText(register.this, "Register Berhasil", Toast.LENGTH_SHORT).show();
-                    /*
-                    user baru=new user();
-                    baru.nama=name.getText().toString();
-                    baru.username=username.getText().toString();
-                    baru.email=email.getText().toString();
-                    baru.phone=phone.getText().toString();
-                    baru.postal=postal.getText().toString();
-                    baru.birthdate=birthday.getText().toString();
-                    baru.passsword=password.getText().toString();git remote add origin https://github.com/billiartag/proyekSDP2019.git
+                    baru=new user();
+                    baru.setNama(name.getText().toString());
+                    baru.setUsername(username.getText().toString());
+                    baru.setEmail(email.getText().toString());
+                    baru.setPhone(phone.getText().toString());
+                    baru.setBirthdate(birthday.getText().toString());
+                    baru.setPassword(password.getText().toString());
+                    baru.setRating(1);
+                    baru.setProfil_picture(R.drawable.person);
 
-                    fp.putExtra("data",name.getText().toString()+"-"+username.getText().toString()+"-"+email.getText().toString()+"-"+phone.getText().toString()+"-"+postal.getText().toString()+"-"+birthday.getText().toString()+"-"+password.getText().toString());
+                    firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(register.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (!task.isSuccessful()){
+                                Toast.makeText(register.this, "register gagal, coba ulang", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
 
-                     */
-                    Intent fp=new Intent(getApplicationContext(),home.class);
-                    startActivity(fp);
-                    finish();
+                    ValueEventListener valueEventListener=new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            boolean berhasil_register=true;
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if (email.getText().toString().equals(ds.child("email").getValue().toString())){
+                                    berhasil_register=false;
+                                }
+                            }
+                            if(berhasil_register){
+                                databaseReference.push().setValue(baru).addOnCompleteListener(register.this, new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(register.this, "Register berhasil", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(getApplicationContext(),home.class));
+                                            finish();
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                Toast.makeText(register.this, "Email sudah pernah terdaftar", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(),Login.class));
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    };
+                    databaseReference.addListenerForSingleValueEvent(valueEventListener);
                 }
                 else {
-                    Toast.makeText(register.this, validation, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(register.this, "Register Gagal!", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
-        ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
+    }
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        String time = ""+hourOfDay+"h"+minute+"m"+second;
+        birthday.setText(time);
+    }
+
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = ""+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
+        birthday.setText(date);
     }
     public boolean isEmailValid(CharSequence Email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(Email).matches();

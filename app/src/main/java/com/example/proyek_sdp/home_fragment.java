@@ -32,14 +32,12 @@ public class home_fragment extends Fragment {
         rv_flashsale=myview.findViewById(R.id.rv_flashsale);
 
         //cetak icon top seller
-        kumpulanuser.add(new user("Chrysman Yul",5,R.drawable.img1));
-        kumpulanuser.add(new user("Cosmoz",4,R.drawable.img2));
-        kumpulanuser.add(new user("Alfonz",3,R.drawable.img3));
-        kumpulanuser.add(new user("Edwin Sidharta",5,R.drawable.img1));
-        kumpulanuser.add(new user("Julianto",4,R.drawable.img2));
-        kumpulanuser.add(new user("Ferdinan",3,R.drawable.img3));
-        kumpulanuser.add(new user("Richard Ivan",3,R.drawable.img3));
-
+        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
+        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
+        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
+        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
+        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
+        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
         rv_topuser.setHasFixedSize(true);
         rv_topuser.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
         TopuserAdapter adaptertopuser = new TopuserAdapter(getActivity(), kumpulanuser);
@@ -48,7 +46,7 @@ public class home_fragment extends Fragment {
             public void onClick(View view, int position) {
                 user x=kumpulanuser.get(position);
                 Bundle b = new Bundle();
-                b.putSerializable("user", x);
+                //b.putSerializable("user", x);
                 Intent intent = new Intent(getActivity(), detailprofil.class);
                 intent.putExtras(b);
                 startActivity(intent);
