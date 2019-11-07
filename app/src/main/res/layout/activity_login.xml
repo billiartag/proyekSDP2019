@@ -18,7 +18,7 @@
         app:srcCompat="@drawable/logo" />
 
     <Button
-        android:id="@+id/login"
+        android:id="@+id/btnlogin_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="296dp"
@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/register"
+        android:id="@+id/btnregister_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="296dp"
@@ -42,31 +42,29 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/edemail_login"
         android:layout_width="300dp"
         android:layout_height="70dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="36dp"
         android:ems="10"
-        android:gravity="center_horizontal"
-        android:hint="Enter Username"
+        android:hint="Enter Email"
         android:inputType="textPersonName"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/edpassword_login"
         android:layout_width="300dp"
         android:layout_height="70dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="36dp"
         android:ems="10"
-        android:gravity="center_horizontal"
         android:hint="Enter Password"
         android:inputType="textPassword"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintTop_toBottomOf="@+id/edemail_login" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

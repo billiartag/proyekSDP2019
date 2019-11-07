@@ -1,17 +1,12 @@
 package com.example.proyek_sdp;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -56,7 +51,7 @@ public class TopuserAdapter extends RecyclerView.Adapter<TopuserAdapter.TopuserV
         public TopuserViewHolder(@NonNull final View itemView) {
             super(itemView);
             fotoprofil=itemView.findViewById(R.id.profile_image);
-            username=itemView.findViewById(R.id.username);
+            username=itemView.findViewById(R.id.edemail_login);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -24,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
@@ -33,6 +35,8 @@ public class personal_fragment extends Fragment {
     ImageView fotoktp;
     TextView cekktp;
     Bitmap passing_gambar;
+    FirebaseAuth firebaseAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -104,6 +108,7 @@ public class personal_fragment extends Fragment {
             startActivity(i);
         }
         else if(item.getItemId()==R.id.logout){
+            FirebaseAuth.getInstance().signOut();
             Intent i = new Intent(getActivity(),Login.class);
             startActivity(i);
         }
