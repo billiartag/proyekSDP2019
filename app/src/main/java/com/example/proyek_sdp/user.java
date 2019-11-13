@@ -2,7 +2,7 @@ package com.example.proyek_sdp;
 
 import java.io.Serializable;
 
-public class user{
+public class user implements Serializable{
     private String nama,password,username,email,phone,birthdate,tipe_user;
     private int rating;
     private int profil_picture;

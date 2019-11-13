@@ -46,7 +46,7 @@ public class home_fragment extends Fragment {
             public void onClick(View view, int position) {
                 user x=kumpulanuser.get(position);
                 Bundle b = new Bundle();
-                //b.putSerializable("user", x);
+                b.putSerializable("user", x);
                 Intent intent = new Intent(getActivity(), detailprofil.class);
                 intent.putExtras(b);
                 startActivity(intent);
