@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.proyek_sdp">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".report"></activity>
+        <activity android:name=".cart" />
+        <activity android:name=".wishlist"></activity>
+        <activity android:name=".detailprofil" />
+        <activity android:name=".detail_feed" />
+        <activity android:name=".image_viewer" />
+        <activity android:name=".chat_detail" />
+        <activity android:name=".detail_history_pembeli" />
+        <activity android:name=".detail_history_penjual" />
+        <activity android:name=".history_pembeli" />
+        <activity android:name=".history_penjual" />
+        <activity android:name=".chat_front" />
+        <activity
+            android:name=".home"
+            android:label="@string/title_activity_home" />
+        <activity android:name=".register" />
+        <activity android:name=".Login" />
+        <activity android:name=".topup_activity" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
