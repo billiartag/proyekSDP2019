@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +55,17 @@ public class post_fragment extends Fragment {
         //program
         ArrayAdapter<String> adap=new ArrayAdapter<String>(getContext(),R.layout.custom_spinner,isidata);
         jenis.setAdapter(adap);
+        jenis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getActivity(), jenis.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         gambarpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
