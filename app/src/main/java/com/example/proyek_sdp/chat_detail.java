@@ -1,6 +1,7 @@
 package com.example.proyek_sdp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -34,10 +35,12 @@ public class chat_detail extends AppCompatActivity {
         if(getIntent().getStringArrayListExtra("isichat")!=null){
             a = (ArrayList<String>) getIntent().getStringArrayListExtra("isichat");
         }
-        un.add("edwin");
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("alfon");
         un.add("alfon");
         un.add("edwin");
         un.add("alfon");
+        un.add("edwin");
         final ArrayAdapter adap = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,a);
         //lv.setAdapter(adap);
 
@@ -69,8 +72,8 @@ public class chat_detail extends AppCompatActivity {
             TextView tvbubble = row.findViewById(R.id.tvBubbleChat);
             TextView tvuser = row.findViewById(R.id.tvUsername);
             if(username.equals(pengirim.get(position))){
-                tvbubble.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
-                tvuser.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                tvbubble.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                tvuser.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
             }
             tvbubble.setText(isi.get(position));
             tvbubble.setTextColor(Color.BLACK);

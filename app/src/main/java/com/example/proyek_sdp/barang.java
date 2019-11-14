@@ -13,33 +13,6 @@ public class barang implements Serializable {
     private int gambar;
     private String pemilik;
 
-    public barang(String nama, int harga, String deskripsi, String durasi, String tipe, int gambar, String pemilik, int max_barang) {
-        this.nama = nama;
-        this.harga = harga;
-        this.deskripsi = deskripsi;
-        this.durasi = durasi;
-        this.tipe = tipe;
-        this.max_barang = max_barang;
-        this.gambar = gambar;
-        this.pemilik = pemilik;
-    }
-
-    public int getMax_barang() {
-        return max_barang;
-    }
-
-    public void setMax_barang(int max_barang) {
-        this.max_barang = max_barang;
-    }
-
-    public String getPemilik() {
-        return pemilik;
-    }
-
-    public void setPemilik(String pemilik) {
-        this.pemilik = pemilik;
-    }
-
     public String getNama() {
         return nama;
     }
@@ -80,12 +53,41 @@ public class barang implements Serializable {
         this.tipe = tipe;
     }
 
+    public int getMax_barang() {
+        return max_barang;
+    }
+
+    public void setMax_barang(int max_barang) {
+        this.max_barang = max_barang;
+    }
+
     public int getGambar() {
         return gambar;
     }
 
     public void setGambar(int gambar) {
         this.gambar = gambar;
+    }
+
+    public String getPemilik() {
+        return pemilik;
+    }
+
+    public void setPemilik(String pemilik) {
+        this.pemilik = pemilik;
+    }
+
+
+    public barang(String nama, int harga, String deskripsi, String durasi, String tipe, int max_barang, int gambar, String pemilik) {
+
+        this.nama = nama;
+        this.harga = harga;
+        this.deskripsi = deskripsi;
+        this.durasi = durasi;
+        this.tipe = tipe;
+        this.max_barang = max_barang;
+        this.gambar = gambar;
+        this.pemilik = pemilik;
     }
 
     @Override

@@ -12,12 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class TopFlashSaleHome extends RecyclerView.Adapter<TopFlashSaleHome.TopFlashSaleHomeViewHolder> {
+public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHomeAdapter.TopFlashSaleHomeViewHolder> {
     private Context context;
     private ArrayList<barang> list_barang;
     private OnItemClickListener onItemClickListener;
 
-    public TopFlashSaleHome(Context context, ArrayList<barang> list_barang) {
+    public TopFlashSaleHomeAdapter(Context context, ArrayList<barang> list_barang) {
         this.context = context;
         this.list_barang = list_barang;
     }

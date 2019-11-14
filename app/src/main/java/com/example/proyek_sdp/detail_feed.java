@@ -34,7 +34,7 @@ public class detail_feed extends AppCompatActivity {
         beli=findViewById(R.id.beli);
         img=findViewById(R.id.img);
         tipe=findViewById(R.id.tipe);
-        nama=findViewById(R.id.judul);
+        nama=findViewById(R.id.username);
         harga=findViewById(R.id.harga);
         deskripsi=findViewById(R.id.deskripsi);
         pemilik=findViewById(R.id.pemilik);

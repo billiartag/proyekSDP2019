@@ -27,7 +27,7 @@ public class detailprofil extends AppCompatActivity {
         ab.setTitle("TitipAku");
         chat=findViewById(R.id.msg);
         report=findViewById(R.id.btn_report);
-        nama=findViewById(R.id.judul);
+        nama=findViewById(R.id.username);
         profil_pict=findViewById(R.id.profil_pict);
         rating=findViewById(R.id.rating);
         user x= (user) getIntent().getExtras().getSerializable("user");

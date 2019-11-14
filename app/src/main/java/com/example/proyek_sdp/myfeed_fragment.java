@@ -23,9 +23,9 @@ public class myfeed_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_myfeed,container,false);;
         list_feed=myview.findViewById(R.id.lv_feed);
-        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",R.drawable.treadmill,"Cosmas",12));
-        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",R.drawable.electrictreadmill,"Alfon",14));
-        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",R.drawable.bike,"Edwin",6));
+        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",12,R.drawable.treadmill,"cosmas"));
+        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
+        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
         adapter adap=new adapter(getContext(),kumpulanbarang);
         list_feed.setAdapter(adap);
         list_feed.setDivider(null);
@@ -37,7 +37,7 @@ public class myfeed_fragment extends Fragment {
         ArrayList<barang>barang;
 
         public adapter(Context c,ArrayList<barang>barang){
-            super(c,R.layout.list_search_layout,barang);
+            super(c,R.layout.rv_search_layout,barang);
             this.barang = barang;
         }
 
