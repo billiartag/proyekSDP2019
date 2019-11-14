@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.Calendar;
 
@@ -58,7 +59,20 @@ public class post_fragment extends Fragment {
         jenis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), jenis.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+                if(jenis.getSelectedItem().toString().equals("Pre Order")){
+                    time_dari.setText("");
+                    time_dari.setHint("Pilih Awal Tanggal");
+                    time_dari.setEnabled(true);
+                    time_ke.setText("");
+                    time_ke.setHint("Pilih Akhir Tanggal");
+                }
+                else {
+                    Calendar now = Calendar.getInstance();
+                    time_dari.setText(now.get(Calendar.HOUR)+":"+now.get(Calendar.MINUTE));
+                    time_dari.setEnabled(false);
+                    time_ke.setText("");
+                    time_ke.setHint("Pilih Akhir Jam");
+                }
             }
 
             @Override
@@ -89,14 +103,26 @@ public class post_fragment extends Fragment {
         time_ke.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar now = Calendar.getInstance();
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        post_fragment.this::onDateSet1,
-                        now.get(Calendar.YEAR), // Initial year selection
-                        now.get(Calendar.MONTH), // Initial month selection
-                        now.get(Calendar.DAY_OF_MONTH) // Inital day selection
-                );
-                dpd.show(getFragmentManager(), "Datepickerdialog");
+                if(jenis.getSelectedItem().toString().equals("Flash Sale")){
+                    Calendar now = Calendar.getInstance();
+                    TimePickerDialog dpd = TimePickerDialog.newInstance(
+                            post_fragment.this::onTimeSet,
+                            now.get(Calendar.HOUR),
+                            now.get(Calendar.MINUTE),
+                            true
+                    );
+                    dpd.show(getFragmentManager(), "TimePickerDialog");
+                }
+                else {
+                    Calendar now = Calendar.getInstance();
+                    DatePickerDialog dpd = DatePickerDialog.newInstance(
+                            post_fragment.this::onDateSet1,
+                            now.get(Calendar.YEAR), // Initial year selection
+                            now.get(Calendar.MONTH), // Initial month selection
+                            now.get(Calendar.DAY_OF_MONTH) // Inital day selection
+                    );
+                    dpd.show(getFragmentManager(), "Datepickerdialog");
+                }
             }
         });
         post.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +157,8 @@ public class post_fragment extends Fragment {
         });
         return myview;
     }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -147,5 +175,10 @@ public class post_fragment extends Fragment {
     public void onDateSet1(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         String date = ""+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
         time_ke.setText(date);
+    }
+
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+        String time = hourOfDay+":"+minute;
+        time_ke.setText(time);
     }
 }
