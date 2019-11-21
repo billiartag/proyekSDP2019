@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 public class search_fragment extends Fragment {
     ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
     RecyclerView rv_search_feed;
+    SearchFeedAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,13 +46,29 @@ public class search_fragment extends Fragment {
         rv_search_feed = myview.findViewById(R.id.rv_search_feed);
         rv_search_feed.setHasFixedSize(true);
         rv_search_feed.setLayoutManager(new GridLayoutManager(getContext(),2));
-        SearchFeedAdapter adapter = new SearchFeedAdapter(getActivity(), kumpulanbarang);
+        adapter = new SearchFeedAdapter(getActivity(), kumpulanbarang);
         rv_search_feed.setAdapter(adapter);
         return myview;
     }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.optionmenu_search, menu);
+        MenuInflater menuInflater=getActivity().getMenuInflater();
+        MenuItem searchitem=menu.findItem(R.id.search);
+        SearchView searchView=(SearchView) searchitem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adapter.getFilter().filter(s);
+                return false;
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override

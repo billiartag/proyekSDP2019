@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,13 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.SearchFeedViewHolder> {
+public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.SearchFeedViewHolder> implements Filterable {
     private Context context;
     private ArrayList<barang>list_barang;
+    private ArrayList<barang>list_barang_example=new ArrayList<barang>();
 
     public SearchFeedAdapter(Context context, ArrayList<barang> list_barang) {
         this.context = context;
         this.list_barang = list_barang;
+        list_barang_example.addAll(list_barang);
     }
 
     @NonNull
@@ -36,24 +40,24 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
     @Override
     public void onBindViewHolder(@NonNull SearchFeedViewHolder holder, int position) {
         holder.detailbarang.setTextColor(Color.BLACK);
-        holder.detailbarang.setText(list_barang.get(position).toString());
-        if (list_barang.get(position).getTipe()=="Flash Sale"){
+        holder.detailbarang.setText(list_barang_example.get(position).toString());
+        if (list_barang_example.get(position).getTipe()=="Flash Sale"){
             holder.tipe.setBackgroundColor(Color.parseColor("#FB8C00"));
             holder.tipe.setTextColor(Color.BLACK);
-            holder.tipe.setText(list_barang.get(position).getTipe());
+            holder.tipe.setText(list_barang_example.get(position).getTipe());
         }
-        else if (list_barang.get(position).getTipe()=="Pre Order"){
+        else if (list_barang_example.get(position).getTipe()=="Pre Order"){
             holder.tipe.setBackgroundColor(Color.BLACK);
             holder.tipe.setTextColor(Color.WHITE);
-            holder.tipe.setText(list_barang.get(position).getTipe());
+            holder.tipe.setText(list_barang_example.get(position).getTipe());
         }
-        holder.harga.setText("Rp. "+list_barang.get(position).getHarga());
+        holder.harga.setText("Rp. "+list_barang_example.get(position).getHarga());
         holder.harga.setTextColor(Color.parseColor("#651FFF"));
-        holder.img.setImageResource(list_barang.get(position).getGambar());
+        holder.img.setImageResource(list_barang_example.get(position).getGambar());
         holder.container_search_feed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                barang x=list_barang.get(position);
+                barang x=list_barang_example.get(position);
                 Bundle b = new Bundle();
                 b.putSerializable("barang", x);
                 Intent intent = new Intent(context, detail_feed.class);
@@ -65,8 +69,42 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
 
     @Override
     public int getItemCount() {
-        return list_barang.size();
+        return list_barang_example.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return cobafilter;
+    }
+
+    private Filter cobafilter=new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            ArrayList<barang>filtered_barang=new ArrayList<barang>();
+            if(charSequence==null || charSequence.length()==0){
+                filtered_barang.addAll(list_barang);
+            }
+            else {
+                String fillterpatter = charSequence.toString().toLowerCase().trim();
+                for (barang x:list_barang) {
+                    if(x.getNama().toLowerCase().contains(fillterpatter)){
+                        filtered_barang.add(x);
+                    }
+                }
+            }
+            FilterResults results=new FilterResults();
+            results.values=filtered_barang;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            list_barang_example.clear();
+            list_barang_example.addAll((ArrayList<barang>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class SearchFeedViewHolder extends RecyclerView.ViewHolder {
         LinearLayout container_search_feed;

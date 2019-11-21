@@ -1,7 +1,9 @@
 package com.example.proyek_sdp;
 
-import androidx.appcompat.app.ActionBar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +11,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,10 +25,11 @@ public class history_penjual extends AppCompatActivity {
 
     ArrayList<barangHistory>listBarang = new ArrayList<barangHistory>();
     ListView lvHistory;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_histoy_penjual);
+        setContentView(R.layout.activity_histoy_penjual_layout);
         lvHistory = findViewById(R.id.lvHistoryPenjualFront);
 
         listBarang.add(new barangHistory("sepeda",0,"edwin","0123L01121D","31 Februari 2021"));
@@ -36,13 +37,7 @@ public class history_penjual extends AppCompatActivity {
         listBarang.add(new barangHistory("sepeda",1,"edwin3","0123L01126D","31 Februari 2021"));
         listBarang.add(new barangHistory("sepeda",0,"edwin4","0123L41421D","31 Februari 2021"));
 
-
-
-
-
-
         adapter adap = new adapter(getApplicationContext(),listBarang);
-
 
         lvHistory.setAdapter(adap);
         lvHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -52,23 +47,8 @@ public class history_penjual extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
-        return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==R.id.close){
-            finish();
-        }
-        return true;
-    }
     class barangHistory{
         private String namabarang;
         private int status;
@@ -135,7 +115,7 @@ public class history_penjual extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater layoutInflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = layoutInflater.inflate(R.layout.list_history_penjual_layout,parent,false);
             TextView tvNamaBarang = row.findViewById(R.id.tvNamaBarang);
             TextView tvStatus = row.findViewById(R.id.tvStatus);
