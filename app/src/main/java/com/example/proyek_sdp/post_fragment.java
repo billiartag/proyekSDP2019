@@ -27,10 +27,10 @@ import java.util.Calendar;
 
 public class post_fragment extends Fragment {
     ImageView gambarpost;
-    Button post;
+    Button post,lokasi_post;
     EditText judul;
-    EditText city;
-    EditText region;
+    EditText lokasi;
+    EditText Varian;
     EditText max;
     TextView time_dari,time_ke;
     Spinner jenis;
@@ -43,17 +43,40 @@ public class post_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_post,container,false);
         gambarpost=myview.findViewById(R.id.fotopost);
-        judul=myview.findViewById(R.id.username);
-        city=myview.findViewById(R.id.city);
-        region=myview.findViewById(R.id.region);
-        max=myview.findViewById(R.id.max);
-        time_dari=myview.findViewById(R.id.time_dari);
-        time_ke=myview.findViewById(R.id.time_ke);
+        judul=myview.findViewById(R.id.judul_post);
+        lokasi=myview.findViewById(R.id.lokasi_post);
+        Varian=myview.findViewById(R.id.varian_post);
+        max=myview.findViewById(R.id.max_post);
+        time_dari=myview.findViewById(R.id.time_dari_post);
+        time_ke=myview.findViewById(R.id.time_ke_post);
         post=myview.findViewById(R.id.post);
-        jenis=myview.findViewById(R.id.jenis);
+        jenis=myview.findViewById(R.id.jenis_post);
+        lokasi_post=myview.findViewById(R.id.btn_lokasi_post);
+        if(!((home)getActivity()).lokasi.equals("")){
+            judul.setText(((home)getActivity()).judul);
+            lokasi.setText(((home)getActivity()).lokasi);
+            Varian.setText(((home)getActivity()).varian);
+            max.setText(((home)getActivity()).max);
+            time_dari.setText(((home)getActivity()).time_dari);
+            time_ke.setText(((home)getActivity()).time_ke);
+            Toast.makeText(getContext(), time_ke.getText().toString(), Toast.LENGTH_SHORT).show();
+        }
         //program
         ArrayAdapter<String> adap=new ArrayAdapter<String>(getContext(),R.layout.custom_spinner,isidata);
         jenis.setAdapter(adap);
+        lokasi_post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent move=new Intent(getContext(), google_maps_current_location.class);
+                move.putExtra("judul",judul.getText().toString());
+                move.putExtra("jenis",jenis.getSelectedItem().toString());
+                move.putExtra("varian",Varian.getText().toString());
+                move.putExtra("max",max.getText().toString());
+                move.putExtra("time_dari",time_dari.getText().toString());
+                move.putExtra("time_ke",time_ke.getText().toString());
+                startActivity(move);
+            }
+        });
         jenis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -63,13 +86,27 @@ public class post_fragment extends Fragment {
                     time_dari.setEnabled(true);
                     time_ke.setText("");
                     time_ke.setHint("Pilih Akhir Tanggal");
+                    judul.setError(null);
+                    lokasi.setError(null);
+                    Varian.setError(null);
+                    max.setError(null);
+                    time_ke.setError(null);
+                    time_dari.setError(null);
                 }
                 else {
+
+
                     Calendar now = Calendar.getInstance();
                     time_dari.setText(now.get(Calendar.HOUR)+":"+now.get(Calendar.MINUTE));
                     time_dari.setEnabled(false);
                     time_ke.setText("");
                     time_ke.setHint("Pilih Akhir Jam");
+                    judul.setError(null);
+                    lokasi.setError(null);
+                    Varian.setError(null);
+                    max.setError(null);
+                    time_ke.setError(null);
+                    time_dari.setError(null);
                 }
             }
 
@@ -95,6 +132,7 @@ public class post_fragment extends Fragment {
                         now.get(Calendar.MONTH), // Initial month selection
                         now.get(Calendar.DAY_OF_MONTH) // Inital day selection
                 );
+                time_dari.setError(null);
                 dpd.show(getFragmentManager(), "Datepickerdialog");
             }
         });
@@ -109,6 +147,7 @@ public class post_fragment extends Fragment {
                             now.get(Calendar.MINUTE),
                             true
                     );
+                    time_ke.setError(null);
                     dpd.show(getFragmentManager(), "TimePickerDialog");
                 }
                 else {
@@ -126,30 +165,33 @@ public class post_fragment extends Fragment {
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String validation="";
+                boolean berhasil=true;
                 if (judul.getText().toString().trim().equals("")){
-                    validation=validation+"-judul yang dimasukkan kosong\n";
+                    judul.setError("judul kosong !");
+                    berhasil=false;
                 }
-                if (city.getText().toString().trim().equals("")){
-                    validation=validation+"-city yang dimasukkan kosong\n";
+                if (lokasi.getText().toString().trim().equals("")){
+                    lokasi.setError("lokasi kosong !");
+                    berhasil=false;
                 }
-                if (region.getText().toString().trim().equals("")){
-                    validation=validation+"-region yang dimasukkan kosong\n";
+                if (Varian.getText().toString().trim().equals("")){
+                    Varian.setError("Varian kosong !");
+                    berhasil=false;
                 }
                 if (max.getText().toString().trim().equals("")){
-                    validation=validation+"-max barang yang dimasukkan kosong\n";
+                    max.setError("max kosong !");
+                    berhasil=false;
                 }
                 if (time_dari.getText().toString().trim().equals("")){
-                    validation=validation+"-Waktu yang dimasukkan kosong\n";
+                    time_dari.setError("time_dari kosong !");
+                    berhasil=false;
                 }
                 if (time_ke.getText().toString().trim().equals("")){
-                    validation=validation+"-Waktu yang dimasukkan kosong\n";
+                    time_ke.setError("time_ke kosong !");
+                    berhasil=false;
                 }
-                if (!validation.equals("")){
-                    Toast.makeText(getContext(), validation, Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(getContext(), "Post Berhasil", Toast.LENGTH_SHORT).show();
+                if(berhasil){
+                    Toast.makeText(getContext(), "post berhasil di buat", Toast.LENGTH_SHORT).show();
                 }
             }
         });

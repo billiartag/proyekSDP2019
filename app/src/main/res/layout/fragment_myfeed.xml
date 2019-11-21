@@ -7,9 +7,9 @@
     android:orientation="vertical"
     android:background="#FFFFFF">
 
-    <ListView
-        android:id="@+id/lv_feed"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_myfeed"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp" />
+        android:layout_margin="15dp" />
 </LinearLayout>

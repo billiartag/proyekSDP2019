@@ -1,5 +1,7 @@
 package com.example.proyek_sdp;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -7,6 +9,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -39,6 +43,8 @@ public class chat_front extends AppCompatActivity {
         ArrayList<Integer> kumpulangambar = new ArrayList<Integer>();
         kumpulanchatstring.add("alfon");
         kumpulangambar.add(R.drawable.bike);
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("TitipAku");
 
         //final ArrayAdapter adap = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,kumpulanChat);
         adapter adap = new adapter(this,kumpulanchatstring,kumpulangambar,kumpulanChat);
@@ -91,6 +97,18 @@ public class chat_front extends AppCompatActivity {
         }
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_back,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.menuBack){
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

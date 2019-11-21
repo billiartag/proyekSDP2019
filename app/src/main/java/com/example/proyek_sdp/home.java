@@ -14,14 +14,32 @@ import android.widget.Toast;
 
 public class home extends AppCompatActivity {
     TextView mTextMessage;
-
+    String judul="";
+    String jenis="";
+    String varian="";
+    String max="";
+    String lokasi="";
+    String time_dari="";
+    String time_ke="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(navlistener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();
+        if(getIntent().hasExtra("lokasi")){
+            judul=getIntent().getExtras().getString("judul");
+            jenis=getIntent().getExtras().getString("jenis");
+            varian=getIntent().getExtras().getString("varian");
+            max=getIntent().getExtras().getString("max");
+            lokasi=getIntent().getExtras().getString("lokasi");
+            time_dari=getIntent().getExtras().getString("time_dari");
+            time_ke=getIntent().getExtras().getString("time_ke");
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new post_fragment()).commit();
+        }
+        else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();
+        }
     }
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);

@@ -1,12 +1,15 @@
 package com.example.proyek_sdp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,72 +21,34 @@ import java.util.ArrayList;
 
 public class wishlist extends AppCompatActivity {
 
-    ArrayList<barang> listBarang = new ArrayList<barang>();
+    ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
     RecyclerView rvWishlist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wishlist);
         rvWishlist = findViewById(R.id.rvWishlist);
-
-        listBarang.add(new barang("sepeda",R.drawable.bike));
-        listBarang.add(new barang("treadmill",R.drawable.electrictreadmill));
-        listBarang.add(new barang("logo",R.drawable.logo));
+        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",12,R.drawable.treadmill,"cosmas"));
+        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
+        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
 
         rvWishlist.setLayoutManager(new GridLayoutManager(this,2));
-
-        GridWishlist adap = new GridWishlist(listBarang);
+        WishlistAdapter adap=new WishlistAdapter(getApplicationContext(),kumpulanbarang);
         rvWishlist.setAdapter(adap);
-
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("TitipAku");
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
+        return true;
     }
 
-    class barang{
-        String nama;
-        int gambar;
-
-        public barang(String nama, int gambar) {
-            this.nama = nama;
-            this.gambar = gambar;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==R.id.close){
+            finish();
         }
-    }
-
-    public class GridWishlist extends RecyclerView.Adapter<GridWishlist.GridViewHolder> {
-        ArrayList<barang> listBarang = new ArrayList<barang>();
-
-        public GridWishlist(ArrayList<barang> listBarang) {
-            this.listBarang = listBarang;
-        }
-
-
-        @NonNull
-        @Override
-        public GridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_wishlist, parent, false);
-            return new GridViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
-            holder.namaBarang.setText(listBarang.get(holder.getAdapterPosition()).nama);
-            holder.imageBarang.setImageResource(listBarang.get(holder.getAdapterPosition()).gambar);
-        }
-
-        @Override
-        public int getItemCount() {
-            return listBarang.size();
-        }
-
-        public class GridViewHolder extends RecyclerView.ViewHolder {
-            ImageView imageBarang;
-            TextView namaBarang;
-            Button btnCari;
-
-            public GridViewHolder(@NonNull View itemView) {
-                super(itemView);
-                imageBarang = itemView.findViewById(R.id.ivImageBarang);
-                namaBarang = itemView.findViewById(R.id.tvNamaBarang);
-                btnCari = itemView.findViewById(R.id.btnCari);
-            }
-        }
+        return true;
     }
 }

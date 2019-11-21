@@ -1,12 +1,9 @@
 package com.example.proyek_sdp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,58 +12,86 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.QuickContactBadge;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationMenu;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 
 public class personal_fragment extends Fragment {
-    ImageView profil;
-    Button btnktp;
-    ImageView fotoktp;
-    TextView cekktp;
+    ImageView profil_picture_user;
+    ImageView gambar_ktp_profil;
+    EditText edusername_profil,edname_profil,edemail_profil,edtanggal_lahir_profil,ednotelp_profil;
+    Button btn_change_profil,btn_edit_profil,btn_verifikasi_ktp;
     Bitmap passing_gambar;
     FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View myview=inflater.inflate(R.layout.fragment_personal,container,false);
+        View myview=inflater.inflate(R.layout.fragment_personal,container,false);
         setHasOptionsMenu(true);
-        profil=myview.findViewById(R.id.profil_user);
-        btnktp=myview.findViewById(R.id.btnktp);
-        fotoktp=myview.findViewById(R.id.ktp);
-        cekktp=myview.findViewById(R.id.cekktp);
-        /*
-        if (getArguments().getString("data").toString().equals(null)){
-            String[]user=getArguments().getString("data").toString().split("-");
-            Toast.makeText(getActivity(), user[0], Toast.LENGTH_SHORT).show();
-        }
-         */
-        profil.setOnClickListener(new View.OnClickListener() {
+        profil_picture_user=myview.findViewById(R.id.picture_profil_user);
+        edusername_profil=myview.findViewById(R.id.edusername_profil);
+        edname_profil=myview.findViewById(R.id.edname_profil);
+        edemail_profil=myview.findViewById(R.id.edemail_profil);
+        edtanggal_lahir_profil=myview.findViewById(R.id.ed_tanggal_lahir_profil);
+        btn_change_profil=myview.findViewById(R.id.btn_change_profil);
+        btn_edit_profil=myview.findViewById(R.id.btn_edit_profil);
+        btn_verifikasi_ktp=myview.findViewById(R.id.btn_verifikasi_ktp);
+        gambar_ktp_profil=myview.findViewById(R.id.gambar_ktp_profil);
+        ednotelp_profil=myview.findViewById(R.id.edphone_profil);
+        edemail_profil.setEnabled(false);
+        edname_profil.setEnabled(false);
+        ednotelp_profil.setEnabled(false);
+        edtanggal_lahir_profil.setEnabled(false);
+
+        btn_change_profil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "ganti username berhasil", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btn_edit_profil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(btn_edit_profil.getText().toString().toUpperCase().equals("EDIT")){
+                    edname_profil.setEnabled(true);
+                    ednotelp_profil.setEnabled(true);
+                    btn_edit_profil.setText("SAVE");
+                }
+                else if(btn_edit_profil.getText().toString().toUpperCase().equals("SAVE")){
+                    edname_profil.setEnabled(false);
+                    ednotelp_profil.setEnabled(false);
+                    btn_edit_profil.setText("EDIT");
+                }
+            }
+        });
+        profil_picture_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent change=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(change, 1);
             }
         });
-        btnktp.setOnClickListener(new View.OnClickListener() {
+        btn_verifikasi_ktp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(intentCamera, 2);
             }
         });
-        fotoktp.setOnClickListener(new View.OnClickListener() {
+        gambar_ktp_profil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Convert to byte array
@@ -121,10 +146,10 @@ public class personal_fragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==1 && data!=null){
             Uri selected_image=data.getData();
-            profil.setImageURI(selected_image);
+            profil_picture_user.setImageURI(selected_image);
         }else if(requestCode == 2 && data!=null){
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            fotoktp.setImageBitmap(bitmap);
+            gambar_ktp_profil.setImageBitmap(bitmap);
             passing_gambar=bitmap;
         }
     }

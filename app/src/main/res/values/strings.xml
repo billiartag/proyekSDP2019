@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">PROYEK_SDP</string>
     <string name="title_activity_home">home</string>
+    <string name="map_key" translatable="false">AIzaSyC4l7apK2oaj0gJBsGBSDqzyw11ZokPYqI</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_post">Post</string>

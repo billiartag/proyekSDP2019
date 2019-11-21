@@ -162,9 +162,7 @@ public class register extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
+                        public void onCancelled(@NonNull DatabaseError databaseError) { }
                     };
                     databaseReference.addListenerForSingleValueEvent(valueEventListener);
                 }

@@ -109,6 +109,13 @@
                 android:text="Beli" />
 
             <Button
+                android:id="@+id/btn_nego_detail_feed"
+                android:layout_width="194dp"
+                android:layout_height="wrap_content"
+                android:background="#039BE5"
+                android:text="Nego" />
+
+            <Button
                 android:id="@+id/isi_wishlist"
                 android:layout_width="196dp"
                 android:layout_height="wrap_content"
