@@ -109,6 +109,13 @@
                 android:text="Beli" />
 
             <Button
+                android:id="@+id/button_nego"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#039BE5"
+                android:text="Nego" />
+
+            <Button
                 android:id="@+id/isi_wishlist"
                 android:layout_width="196dp"
                 android:layout_height="wrap_content"

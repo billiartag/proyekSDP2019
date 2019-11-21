@@ -3,6 +3,7 @@ package com.example.proyek_sdp;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,6 +25,7 @@ public class detail_feed extends AppCompatActivity {
     TextView max;
     Button isi_wishlist;
     Button beli;
+    Button nego;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,7 @@ public class detail_feed extends AppCompatActivity {
         ab.setTitle("TitipAku");
         isi_wishlist=findViewById(R.id.isi_wishlist);
         beli=findViewById(R.id.beli);
+        nego = findViewById(R.id.button_nego);
         img=findViewById(R.id.img);
         tipe=findViewById(R.id.tipe);
         nama=findViewById(R.id.username);
@@ -76,6 +79,15 @@ public class detail_feed extends AppCompatActivity {
             }
             }
         });
+        nego.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent (detail_feed.this,nego_user.class);
+                //isi param lempar disini
+                startActivity(i);
+            }
+        });
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
