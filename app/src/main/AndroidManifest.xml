@@ -23,6 +23,7 @@
         <activity android:name=".detail_history_penjual" />
         <activity android:name=".reminder" />
         <activity android:name=".history_pembeli" />
+        <activity android:name=".nego_user" />
         <activity android:name=".history_penjual" />
         <activity android:name=".chat_front" />
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/map_key"/>
