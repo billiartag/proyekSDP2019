@@ -26,7 +26,6 @@ public class detailprofil extends AppCompatActivity {
         ActionBar ab=getSupportActionBar();
         ab.setTitle("TitipAku");
         chat=findViewById(R.id.msg);
-        report=findViewById(R.id.btn_report);
         nama=findViewById(R.id.username);
         profil_pict=findViewById(R.id.profil_pict);
         rating=findViewById(R.id.rating);
@@ -41,17 +40,10 @@ public class detailprofil extends AppCompatActivity {
                 startActivity(move);
             }
         });
-        report.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent move=new Intent(getApplicationContext(),report.class);
-                startActivity(move);
-            }
-        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
+        getMenuInflater().inflate(R.menu.optionmenu_detailprofil, menu);
         return true;
     }
 
@@ -59,6 +51,10 @@ public class detailprofil extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.close){
             finish();
+        }
+        else{
+            Intent move=new Intent(getApplicationContext(),report.class);
+            startActivity(move);
         }
         return true;
     }
