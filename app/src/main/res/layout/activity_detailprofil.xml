@@ -6,70 +6,91 @@
     android:layout_height="match_parent"
     tools:context=".detailprofil">
 
-    <ImageView
-        android:id="@+id/profil_pict"
-        android:layout_width="270dp"
-        android:layout_height="242dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="42dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="?attr/actionBarDivider" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="341dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerProfile"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="4dp"
-        android:orientation="vertical"
+        android:layout_margin="12dp"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:padding="15dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profil_pict">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/profil_pict"
+            android:layout_width="270dp"
+            android:layout_height="242dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="@id/containerProfile"
+            app:layout_constraintStart_toStartOf="@id/containerProfile"
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:srcCompat="?attr/actionBarDivider" />
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="24sp"
-            tools:layout_conversion_absoluteHeight="32dp"
-            tools:layout_conversion_absoluteWidth="341dp"
-            tools:layout_editor_absoluteX="70dp"
-            tools:layout_editor_absoluteY="326dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Profil User:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/containerProfile"
+            app:layout_constraintTop_toTopOf="@id/containerProfile" />
 
-        <TextView
-            android:id="@+id/rating"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="24sp"
-            tools:layout_conversion_absoluteHeight="32dp"
-            tools:layout_conversion_absoluteWidth="341dp"
-            tools:layout_editor_absoluteX="70dp"
-            tools:layout_editor_absoluteY="358dp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@id/containerProfile"
+            app:layout_constraintStart_toStartOf="@id/containerProfile"
+            app:layout_constraintTop_toBottomOf="@+id/profil_pict">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:layout_conversion_absoluteHeight="32dp"
+                tools:layout_conversion_absoluteWidth="341dp"
+                tools:layout_editor_absoluteX="70dp"
+                tools:layout_editor_absoluteY="326dp" />
 
-    <ImageButton
-        android:id="@+id/btn_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="65dp"
-        android:background="#00FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:srcCompat="@drawable/ic_report_black_24dp" />
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="TextView"
+                android:textSize="24sp"
+                tools:layout_conversion_absoluteHeight="32dp"
+                tools:layout_conversion_absoluteWidth="341dp"
+                tools:layout_editor_absoluteX="70dp"
+                tools:layout_editor_absoluteY="358dp" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/msg"
         android:layout_width="179dp"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:background="#039BE5"
         android:text="Send Message"
-        app:layout_constraintEnd_toStartOf="@+id/btn_report"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/containerProfile" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
