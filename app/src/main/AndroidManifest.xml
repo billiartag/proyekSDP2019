@@ -11,8 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".google_maps_current_location">
-        </activity>
+        <activity android:name=".google_maps_current_location"></activity>
+        <activity android:name=".google_maps_search_location"></activity>
         <activity android:name=".wishlist" />
         <activity android:name=".cart" />
         <activity android:name=".detailprofil" />
