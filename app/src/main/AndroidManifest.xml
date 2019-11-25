@@ -14,6 +14,7 @@
         <activity android:name=".nego_seller"></activity>
         <activity android:name=".google_maps_current_location"></activity>
         <activity android:name=".google_maps_search_location"></activity>
+        <activity android:name=".nego_seller"></activity>
         <activity android:name=".wishlist" />
         <activity android:name=".cart" />
         <activity android:name=".detailprofil" />

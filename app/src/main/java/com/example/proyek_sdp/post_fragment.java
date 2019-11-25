@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +34,9 @@ public class post_fragment extends Fragment {
     EditText lokasi;
     EditText Varian;
     EditText max;
-    TextView time_dari,time_ke;
+    EditText deskripsi;
+    EditText harga;
+    TextView time_dari,time_ke,tvharga;
     Spinner jenis;
     String[] isidata={
             "Flash Sale",
@@ -51,7 +55,12 @@ public class post_fragment extends Fragment {
         time_ke=myview.findViewById(R.id.time_ke_post);
         post=myview.findViewById(R.id.post);
         jenis=myview.findViewById(R.id.jenis_post);
+        deskripsi=myview.findViewById(R.id.eddeskripsi_post);
+        harga=myview.findViewById(R.id.ed_harga_post);
+        tvharga=myview.findViewById(R.id.tv_harga_post);
+
         lokasi_post=myview.findViewById(R.id.btn_lokasi_post);
+        lokasi.setFocusable(false);
         //program
         ArrayAdapter<String> adap=new ArrayAdapter<String>(getContext(),R.layout.custom_spinner,isidata);
         jenis.setAdapter(adap);
@@ -114,6 +123,9 @@ public class post_fragment extends Fragment {
                     if(((home)getActivity()).time_ke.equals("")){
                         time_ke.setText("");
                     }
+                    harga.setVisibility(View.INVISIBLE);
+                    tvharga.setVisibility(View.INVISIBLE);
+
                     time_ke.setHint("Pilih Akhir Tanggal");
                     judul.setError(null);
                     lokasi.setError(null);
@@ -144,6 +156,8 @@ public class post_fragment extends Fragment {
                     if(((home)getActivity()).time_ke.equals("")){
                         time_ke.setText("");
                     }
+                    harga.setVisibility(View.VISIBLE);
+                    tvharga.setVisibility(View.VISIBLE);
                     time_ke.setHint("Pilih Akhir Jam");
                     judul.setError(null);
                     lokasi.setError(null);
