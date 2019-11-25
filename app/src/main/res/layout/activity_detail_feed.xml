@@ -105,14 +105,18 @@
                 android:layout_margin="5dp"
                 android:layout_marginTop="15dp"
                 android:layout_weight="1"
-                android:background="#039BE5"
-                android:text="Beli" />
+                android:background="@drawable/custom_button"
+                android:text="Beli"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false"
+                />
 
             <Button
                 android:id="@+id/button_nego"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#039BE5"
+                android:background="@drawable/custom_button"
+                android:textColor="#FFFFFF"
                 android:text="Nego" />
 
             <Button
@@ -122,9 +126,9 @@
                 android:layout_margin="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:background="#039BE5"
-                android:text="Tambah Ke Wishlist" />
-
+                android:background="@drawable/custom_button"
+                android:text="Tambah Ke Wishlist"
+                android:textColor="#FFFFFF"/>
         </LinearLayout>
     </ScrollView>
 
