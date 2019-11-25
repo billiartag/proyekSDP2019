@@ -52,6 +52,9 @@ public class post_fragment extends Fragment {
         post=myview.findViewById(R.id.post);
         jenis=myview.findViewById(R.id.jenis_post);
         lokasi_post=myview.findViewById(R.id.btn_lokasi_post);
+        //program
+        ArrayAdapter<String> adap=new ArrayAdapter<String>(getContext(),R.layout.custom_spinner,isidata);
+        jenis.setAdapter(adap);
         if(!((home)getActivity()).lokasi.equals("")){
             judul.setText(((home)getActivity()).judul);
             lokasi.setText(((home)getActivity()).lokasi);
@@ -59,32 +62,58 @@ public class post_fragment extends Fragment {
             max.setText(((home)getActivity()).max);
             time_dari.setText(((home)getActivity()).time_dari);
             time_ke.setText(((home)getActivity()).time_ke);
-            Toast.makeText(getContext(), time_ke.getText().toString(), Toast.LENGTH_SHORT).show();
+            if(((home)getActivity()).jenis.equals("Pre Order")){
+                jenis.setSelection(1);
+            }
+            else {
+                jenis.setSelection(0);
+            }
         }
-        //program
-        ArrayAdapter<String> adap=new ArrayAdapter<String>(getContext(),R.layout.custom_spinner,isidata);
-        jenis.setAdapter(adap);
         lokasi_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent move=new Intent(getContext(), google_maps_current_location.class);
-                move.putExtra("judul",judul.getText().toString());
-                move.putExtra("jenis",jenis.getSelectedItem().toString());
-                move.putExtra("varian",Varian.getText().toString());
-                move.putExtra("max",max.getText().toString());
-                move.putExtra("time_dari",time_dari.getText().toString());
-                move.putExtra("time_ke",time_ke.getText().toString());
-                startActivity(move);
+                if(jenis.getSelectedItem().toString().equals("Pre Order")){
+                    Intent move=new Intent(getContext(), google_maps_search_location.class);
+                    move.putExtra("judul",judul.getText().toString());
+                    move.putExtra("jenis",jenis.getSelectedItem().toString());
+                    move.putExtra("varian",Varian.getText().toString());
+                    move.putExtra("max",max.getText().toString());
+                    move.putExtra("time_dari",time_dari.getText().toString());
+                    move.putExtra("time_ke",time_ke.getText().toString());
+                    startActivity(move);
+                }
+                else {
+                    Intent move=new Intent(getContext(), google_maps_current_location.class);
+                    move.putExtra("judul",judul.getText().toString());
+                    move.putExtra("jenis",jenis.getSelectedItem().toString());
+                    move.putExtra("varian",Varian.getText().toString());
+                    move.putExtra("max",max.getText().toString());
+                    move.putExtra("time_dari",time_dari.getText().toString());
+                    move.putExtra("time_ke",time_ke.getText().toString());
+                    startActivity(move);
+                }
             }
         });
         jenis.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(jenis.getSelectedItem().toString().equals("Pre Order")){
-                    time_dari.setText("");
+                    if(((home)getActivity()).lokasi.equals("")){
+                        judul.setText("");
+                        lokasi.setText("");
+                        Varian.setText("");
+                        max.setText("");
+                        time_dari.setText("");;
+                        time_ke.setText("");
+                    }
+                    if(((home)getActivity()).time_ke.equals("")){
+                        time_dari.setText("");
+                    }
                     time_dari.setHint("Pilih Awal Tanggal");
                     time_dari.setEnabled(true);
-                    time_ke.setText("");
+                    if(((home)getActivity()).time_ke.equals("")){
+                        time_ke.setText("");
+                    }
                     time_ke.setHint("Pilih Akhir Tanggal");
                     judul.setError(null);
                     lokasi.setError(null);
@@ -92,14 +121,29 @@ public class post_fragment extends Fragment {
                     max.setError(null);
                     time_ke.setError(null);
                     time_dari.setError(null);
+                    ((home)getActivity()).judul="";
+                    ((home)getActivity()).lokasi="";
+                    ((home)getActivity()).varian="";
+                    ((home)getActivity()).max="";
+                    ((home)getActivity()).time_dari="";
+                    ((home)getActivity()).time_ke="";
                 }
                 else {
 
-
+                    if(((home)getActivity()).lokasi.equals("")){
+                        judul.setText("");
+                        lokasi.setText("");
+                        Varian.setText("");
+                        max.setText("");
+                        time_dari.setText("");;
+                        time_ke.setText("");
+                    }
                     Calendar now = Calendar.getInstance();
                     time_dari.setText(now.get(Calendar.HOUR)+":"+now.get(Calendar.MINUTE));
                     time_dari.setEnabled(false);
-                    time_ke.setText("");
+                    if(((home)getActivity()).time_ke.equals("")){
+                        time_ke.setText("");
+                    }
                     time_ke.setHint("Pilih Akhir Jam");
                     judul.setError(null);
                     lokasi.setError(null);
@@ -107,6 +151,12 @@ public class post_fragment extends Fragment {
                     max.setError(null);
                     time_ke.setError(null);
                     time_dari.setError(null);
+                    ((home)getActivity()).judul="";
+                    ((home)getActivity()).lokasi="";
+                    ((home)getActivity()).varian="";
+                    ((home)getActivity()).max="";
+                    ((home)getActivity()).time_dari="";
+                    ((home)getActivity()).time_ke="";
                 }
             }
 
