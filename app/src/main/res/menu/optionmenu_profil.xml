@@ -19,8 +19,14 @@
         android:title="Reminder" />
     <item
         android:id="@+id/hsell"
-        android:title="History Sell" />
+        android:title="History Penjualan" />
     <item
         android:id="@+id/hbuy"
-        android:title="History Buy" />
+        android:title="History Pembelian" />
+    <item
+        android:id="@+id/nbuy"
+        android:title="Aku Nego" />
+    <item
+        android:id="@+id/nsell"
+        android:title="Di Nego" />
 </menu>
