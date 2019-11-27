@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class detail_feed extends AppCompatActivity {
-    ImageView img;
+    ImageView img,imghati;
     TextView tipe;
     TextView nama;
     TextView harga;
@@ -32,10 +32,11 @@ public class detail_feed extends AppCompatActivity {
         setContentView(R.layout.activity_detail_feed);
         ActionBar ab=getSupportActionBar();
         ab.setTitle("TitipAku");
-        isi_wishlist=findViewById(R.id.isi_wishlist);
+        //isi_wishlist=findViewById(R.id.isi_wishlist);
         beli=findViewById(R.id.beli);
         nego = findViewById(R.id.button_nego);
         img=findViewById(R.id.img);
+        imghati=findViewById(R.id.imghatikosong);
         tipe=findViewById(R.id.tipe);
         nama=findViewById(R.id.username);
         harga=findViewById(R.id.harga);
@@ -62,12 +63,29 @@ public class detail_feed extends AppCompatActivity {
             tipe.setTextColor(Color.WHITE);
             beli.setText("Lakukan Pre Order");
         }
-        isi_wishlist.setOnClickListener(new View.OnClickListener() {
+       /* isi_wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getApplicationContext(), "Tambah ke WishList Berhasil ", Toast.LENGTH_SHORT).show();
             }
+        });*/
+        imghati.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int sudahfavorite = 1;
+                boolean sudahada = false;
+
+                if(sudahfavorite == 1) {
+                //    sudahada = true;
+                    imghati.setImageResource(R.drawable.ic_hatimerah_black_24dp);
+                    Toast.makeText(getApplicationContext(), "Tambah ke WishList Berhasil ", Toast.LENGTH_SHORT).show();
+                }/*else if(sudahada == true) {
+                    Toast.makeText(getApplicationContext(), "Removed From WishList", Toast.LENGTH_SHORT).show();
+                    imghati.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                }*/
+            }
         });
+
         beli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
