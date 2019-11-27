@@ -36,16 +36,6 @@
                 android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/edusername_register"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:ems="10"
-                android:hint="Enter Username"
-                android:inputType="textPersonName"
-                android:textSize="18sp" />
-
-            <EditText
                 android:id="@+id/edemail_register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -29,12 +31,23 @@ public class detail_history_penjual extends AppCompatActivity {
         //set Linear Layout background color
         ll1 = findViewById(R.id.ll1);
         ll2 = findViewById(R.id.ll2);
-        ll1.setBackgroundColor(Color.GRAY);
-        ll2.setBackgroundColor(Color.GRAY);
         ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
+        ab.setTitle("Detail item");
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==R.id.close){
+            finish();
+        }
+        return true;
+    }
 
 
 }

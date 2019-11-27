@@ -3,11 +3,23 @@ package com.example.proyek_sdp;
 import java.io.Serializable;
 
 public class user implements Serializable{
-    private String nama,password,username,email,phone,birthdate,tipe_user;
-    private int rating;
-    private int profil_picture;
+    private String nama,password,email,birthdate,phone;
+    private int saldo,profil_picture,status,verifikasi_ktp;
+    private float rating;
+    public user(){ }
 
-    public user() {}
+    public user(String nama, String password, String email, String birthdate, String phone, int saldo, int profil_picture, int status, int verifikasi_ktp, float rating) {
+        this.nama = nama;
+        this.password = password;
+        this.email = email;
+        this.birthdate = birthdate;
+        this.phone = phone;
+        this.saldo = saldo;
+        this.profil_picture = profil_picture;
+        this.status = status;
+        this.verifikasi_ktp = verifikasi_ktp;
+        this.rating = rating;
+    }
 
     public String getNama() {
         return nama;
@@ -25,28 +37,12 @@ public class user implements Serializable{
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getBirthdate() {
@@ -57,20 +53,20 @@ public class user implements Serializable{
         this.birthdate = birthdate;
     }
 
-    public String getTipe_user() {
-        return tipe_user;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTipe_user(String tipe_user) {
-        this.tipe_user = tipe_user;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public int getRating() {
-        return rating;
+    public int getSaldo() {
+        return saldo;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setSaldo(int saldo) {
+        this.saldo = saldo;
     }
 
     public int getProfil_picture() {
@@ -81,15 +77,27 @@ public class user implements Serializable{
         this.profil_picture = profil_picture;
     }
 
-    public user(String nama, String password, String username, String email, String phone, String birthdate, String tipe_user, int rating, int profil_picture) {
-        this.nama = nama;
-        this.password = password;
-        this.username = username;
-        this.email = email;
-        this.phone = phone;
-        this.birthdate = birthdate;
-        this.tipe_user = tipe_user;
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getVerifikasi_ktp() {
+        return verifikasi_ktp;
+    }
+
+    public void setVerifikasi_ktp(int verifikasi_ktp) {
+        this.verifikasi_ktp = verifikasi_ktp;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
         this.rating = rating;
-        this.profil_picture = profil_picture;
     }
 }

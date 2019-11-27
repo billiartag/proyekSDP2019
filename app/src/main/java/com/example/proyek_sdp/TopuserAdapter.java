@@ -36,8 +36,8 @@ public class TopuserAdapter extends RecyclerView.Adapter<TopuserAdapter.TopuserV
 
     @Override
     public void onBindViewHolder(@NonNull TopuserViewHolder holder, int position) {
-        holder.fotoprofil.setImageResource(list_user.get(position).getProfil_picture());
         holder.username.setText(list_user.get(position).getNama());
+        holder.fotoprofil.setBackgroundResource(list_user.get(position).getProfil_picture());
     }
 
     @Override

@@ -33,7 +33,6 @@ public class register extends AppCompatActivity {
     Button login;
     Button btnchoosedate;
     EditText name;
-    EditText username;
     EditText email;
     EditText phone;
     TextView birthday;
@@ -49,7 +48,6 @@ public class register extends AppCompatActivity {
         register=findViewById(R.id.btnregister_register);
         login=findViewById(R.id.btnlogin_register);
         name=findViewById(R.id.edname_register);
-        username=findViewById(R.id.edusername_register);
         email=findViewById(R.id.edemail_register);
         phone=findViewById(R.id.edphone_register);
         birthday=findViewById(R.id.hasil_tanggal_register);
@@ -57,7 +55,7 @@ public class register extends AppCompatActivity {
         confirmpassword=findViewById(R.id.edconfirm_register);
         btnchoosedate=findViewById(R.id.btnbirth_register);
         //start program
-        databaseReference=FirebaseDatabase.getInstance().getReference().child("User");
+        databaseReference=FirebaseDatabase.getInstance().getReference().child("UserDatabase");
         firebaseAuth=FirebaseAuth.getInstance();
         btnchoosedate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,10 +88,6 @@ public class register extends AppCompatActivity {
                     name.setError("Nama Tidak Boleh Kosong");
                     berhasil=false;
                 }
-                if (username.getText().toString().trim().equals("") || username.getText().toString().length()>8){
-                    username.setError("username Tidak Boleh Kosong dan username tidak boleh lebih dari 8 huruf");
-                    berhasil=false;
-                }
                 if (!isEmailValid(email.getText().toString())){
                     email.setError("email harus sesuai dengan format email");
                     berhasil=false;
@@ -115,13 +109,15 @@ public class register extends AppCompatActivity {
                 if (berhasil){
                     baru=new user();
                     baru.setNama(name.getText().toString());
-                    baru.setUsername(username.getText().toString());
                     baru.setEmail(email.getText().toString());
                     baru.setPhone(phone.getText().toString());
                     baru.setBirthdate(birthday.getText().toString());
                     baru.setPassword(password.getText().toString());
                     baru.setRating(1);
-                    baru.setProfil_picture(R.drawable.person);
+                    baru.setStatus(1);
+                    baru.setSaldo(0);
+                    baru.setVerifikasi_ktp(0);
+                    baru.setProfil_picture(R.drawable.default_profil);
 
                     firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(register.this, new OnCompleteListener<AuthResult>() {
                         @Override

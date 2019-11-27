@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Layout;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -46,6 +50,7 @@ public class post_fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_post,container,false);
+        setHasOptionsMenu(true);
         gambarpost=myview.findViewById(R.id.fotopost);
         judul=myview.findViewById(R.id.judul_post);
         lokasi=myview.findViewById(R.id.lokasi_post);
@@ -262,7 +267,39 @@ public class post_fragment extends Fragment {
         return myview;
     }
 
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater=getActivity().getMenuInflater();
+        inflater.inflate(R.menu.optionmenu_profil, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==R.id.reminder){
+            //Toast.makeText(getContext(), "ini reminder", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getContext(),reminder.class);
+            startActivity(i);
+        }
+        else if (item.getItemId()==R.id.top_up){
+            Intent move=new Intent(getActivity(),topup_activity.class);
+            startActivity(move);
+        }
+        else if(item.getItemId()==R.id.hsell){
+            Intent i = new Intent(getActivity(),history_penjual.class);
+            startActivity(i);
+        }
+        else if(item.getItemId()==R.id.hbuy){
+            Intent i = new Intent(getActivity(),history_pembeli.class);
+            startActivity(i);
+        }
+        else if(item.getItemId()==R.id.logout){
+            FirebaseAuth.getInstance().signOut();
+            getActivity().finish();
+            Intent i = new Intent(getActivity(),Login.class);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -17,6 +17,6 @@ public class detail_history_pembeli extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_history_pembeli);
         ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
+        ab.setTitle("Pembelianku");
     }
 }
