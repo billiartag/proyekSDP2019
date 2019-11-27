@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,46 +23,79 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationMenu;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 public class personal_fragment extends Fragment {
     ImageView profil_picture_user;
     ImageView gambar_ktp_profil;
-    EditText edusername_profil,edname_profil,edemail_profil,edtanggal_lahir_profil,ednotelp_profil;
-    Button btn_change_profil,btn_edit_profil,btn_verifikasi_ktp;
+    EditText edname_profil,edemail_profil,edtanggal_lahir_profil,ednotelp_profil;
+    Button btn_edit_profil,btn_verifikasi_ktp;
     Bitmap passing_gambar;
-    FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
+    DatabaseReference databaseReference;
+    TextView status_verifikasi_ktp;
+    int saldo=0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_personal,container,false);
         setHasOptionsMenu(true);
         profil_picture_user=myview.findViewById(R.id.picture_profil_user);
-        edusername_profil=myview.findViewById(R.id.edusername_profil);
         edname_profil=myview.findViewById(R.id.edname_profil);
         edemail_profil=myview.findViewById(R.id.edemail_profil);
         edtanggal_lahir_profil=myview.findViewById(R.id.ed_tanggal_lahir_profil);
-        btn_change_profil=myview.findViewById(R.id.btn_change_profil);
         btn_edit_profil=myview.findViewById(R.id.btn_edit_profil);
         btn_verifikasi_ktp=myview.findViewById(R.id.btn_verifikasi_ktp);
         gambar_ktp_profil=myview.findViewById(R.id.gambar_ktp_profil);
         ednotelp_profil=myview.findViewById(R.id.edphone_profil);
+        status_verifikasi_ktp=myview.findViewById(R.id.status_verifikasi_ktp);
+
         edemail_profil.setEnabled(false);
         edname_profil.setEnabled(false);
         ednotelp_profil.setEnabled(false);
         edtanggal_lahir_profil.setEnabled(false);
 
-        btn_change_profil.setOnClickListener(new View.OnClickListener() {
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getActivity(), "ganti username berhasil", Toast.LENGTH_SHORT).show();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                boolean berhasil_register=true;
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("email").getValue().toString())){
+                        profil_picture_user.setBackgroundResource(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                        edname_profil.setText(ds.child("nama").getValue().toString());
+                        edemail_profil.setText(ds.child("email").getValue().toString());
+                        ednotelp_profil.setText(ds.child("phone").getValue().toString());
+                        saldo=Integer.parseInt(ds.child("saldo").getValue().toString());
+                        edtanggal_lahir_profil.setText(ds.child("birthdate").getValue().toString());
+                        if (ds.child("verifikasi_ktp").getValue().toString().equals("0")){
+                            status_verifikasi_ktp.setText("belum");
+                        }
+                        else if (ds.child("verifikasi_ktp").getValue().toString().equals("1")){
+                            status_verifikasi_ktp.setText("sudah");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
+
         btn_edit_profil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,6 +146,24 @@ public class personal_fragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.optionmenu_profil, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                boolean berhasil_register=true;
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("email").getValue().toString())){
+                        menu.getItem(0).setTitle("Saldo : "+Integer.parseInt(ds.child("saldo").getValue().toString()));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

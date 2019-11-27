@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class home extends AppCompatActivity {
-    TextView mTextMessage;
     String judul="";
     String jenis="";
     String varian="";

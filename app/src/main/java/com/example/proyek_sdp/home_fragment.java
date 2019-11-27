@@ -16,6 +16,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class home_fragment extends Fragment {
@@ -23,6 +30,7 @@ public class home_fragment extends Fragment {
     ArrayList<user> kumpulanuser = new ArrayList<user>();
     RecyclerView rv_topuser;
     RecyclerView rv_flashsale;
+    DatabaseReference databaseReference;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,27 +40,45 @@ public class home_fragment extends Fragment {
         rv_flashsale=myview.findViewById(R.id.rv_flashsale);
 
         //cetak icon top seller
-        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
-        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
-        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
-        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
-        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
-        kumpulanuser.add(new user("edwin sidharta","12345678","etern1ty430","edwin0sidharta@gmail.com","081331322570","11/12/2000","ADMIN",3,R.drawable.img1));
-        rv_topuser.setHasFixedSize(true);
-        rv_topuser.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
-        TopuserAdapter adaptertopuser = new TopuserAdapter(getActivity(), kumpulanuser);
-        adaptertopuser.setOnItemClickListener(new OnItemClickListener() {
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View view, int position) {
-                user x=kumpulanuser.get(position);
-                Bundle b = new Bundle();
-                b.putSerializable("user", x);
-                Intent intent = new Intent(getActivity(), detailprofil.class);
-                intent.putExtras(b);
-                startActivity(intent);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    user baru=new user();
+                    baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                    baru.setBirthdate(ds.child("birthdate").getValue().toString());
+                    baru.setEmail(ds.child("email").getValue().toString());
+                    baru.setPhone(ds.child("phone").getValue().toString());
+                    baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                    baru.setNama(ds.child("nama").getValue().toString());
+                    baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                    kumpulanuser.add(baru);
+                }
+                rv_topuser.setHasFixedSize(true);
+                rv_topuser.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                TopuserAdapter adaptertopuser = new TopuserAdapter(getActivity(), kumpulanuser);
+                adaptertopuser.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        user x=kumpulanuser.get(position);
+                        Bundle b = new Bundle();
+                        b.putSerializable("user", x);
+                        Intent intent = new Intent(getActivity(), detailprofil.class);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                    }
+                });
+                rv_topuser.setAdapter(adaptertopuser);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
-        rv_topuser.setAdapter(adaptertopuser);
+
 
         kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",12,R.drawable.treadmill,"cosmas"));
         kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));

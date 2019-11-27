@@ -31,8 +31,8 @@ public class detailprofil extends AppCompatActivity {
         rating=findViewById(R.id.rating);
         user x= (user) getIntent().getExtras().getSerializable("user");
         nama.setText("Nama : "+x.getNama());
-        profil_pict.setBackgroundResource(x.getProfil_picture());
         rating.setText("Rating : "+x.getRating());
+        profil_pict.setBackgroundResource(x.getProfil_picture());
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
