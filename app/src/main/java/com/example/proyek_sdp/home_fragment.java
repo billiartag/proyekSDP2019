@@ -46,15 +46,17 @@ public class home_fragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long count=dataSnapshot.getChildrenCount();
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    user baru=new user();
-                    baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
-                    baru.setBirthdate(ds.child("birthdate").getValue().toString());
-                    baru.setEmail(ds.child("email").getValue().toString());
-                    baru.setPhone(ds.child("phone").getValue().toString());
-                    baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
-                    baru.setNama(ds.child("nama").getValue().toString());
-                    baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
-                    kumpulanuser.add(baru);
+                    if(!ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        user baru=new user();
+                        baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                        baru.setBirthdate(ds.child("birthdate").getValue().toString());
+                        baru.setEmail(ds.child("email").getValue().toString());
+                        baru.setPhone(ds.child("phone").getValue().toString());
+                        baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                        baru.setNama(ds.child("nama").getValue().toString());
+                        baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                        kumpulanuser.add(baru);
+                    }
                 }
                 rv_topuser.setHasFixedSize(true);
                 rv_topuser.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));

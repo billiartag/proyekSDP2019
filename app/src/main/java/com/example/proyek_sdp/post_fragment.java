@@ -26,6 +26,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -40,6 +45,7 @@ public class post_fragment extends Fragment {
     EditText max;
     EditText deskripsi;
     EditText harga;
+    DatabaseReference databaseReference;
     TextView time_dari,time_ke,tvharga;
     Spinner jenis;
     String[] isidata={
@@ -272,6 +278,23 @@ public class post_fragment extends Fragment {
         inflater=getActivity().getMenuInflater();
         inflater.inflate(R.menu.optionmenu_profil, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                boolean berhasil_register=true;
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("email").getValue().toString())){
+                        menu.getItem(0).setTitle("Saldo : "+Integer.parseInt(ds.child("saldo").getValue().toString()));
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

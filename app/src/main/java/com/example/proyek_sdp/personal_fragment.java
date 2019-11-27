@@ -108,6 +108,34 @@ public class personal_fragment extends Fragment {
                     edname_profil.setEnabled(false);
                     ednotelp_profil.setEnabled(false);
                     btn_edit_profil.setText("EDIT");
+                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            boolean berhasil_register=true;
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("email").getValue().toString())){
+                                    user baru=new user();
+                                    baru.setNama(edname_profil.getText().toString());
+                                    baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                                    baru.setSaldo(Integer.parseInt(ds.child("saldo").getValue().toString()));
+                                    baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                                    baru.setPhone(ednotelp_profil.getText().toString());
+                                    baru.setEmail(ds.child("email").getValue().toString());
+                                    baru.setBirthdate(ds.child("birthdate").getValue().toString());
+                                    baru.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
+                                    baru.setPassword(ds.child("password").getValue().toString());
+                                    baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                                    databaseReference.child(ds.getKey()).setValue(baru);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
         });

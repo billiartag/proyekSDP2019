@@ -36,6 +36,9 @@ public class home extends AppCompatActivity {
             time_ke=getIntent().getExtras().getString("time_ke");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new post_fragment()).commit();
         }
+        else if(getIntent().hasExtra("topup")){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new personal_fragment()).commit();
+        }
         else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();
         }
