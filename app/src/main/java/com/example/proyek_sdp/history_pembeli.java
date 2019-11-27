@@ -2,6 +2,7 @@ package com.example.proyek_sdp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -9,6 +10,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -27,15 +30,18 @@ public class history_pembeli extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_pembeli_layout);
         lvHistory = findViewById(R.id.listHistoryPembeliFront);
-        listBarang.add(new barangHistory("sepeda",0,"edwin","Jakartah","31 Februari 2021"));
-        listBarang.add(new barangHistory("sepeda",1,"edwin2","Jakartah","31 Februari 2021"));
-        listBarang.add(new barangHistory("sepeda",1,"edwin3","Jakartah","31 Februari 2021"));
-        listBarang.add(new barangHistory("sepeda",0,"edwin4","Jakartah","31 Februari 2021"));
+        listBarang.add(new barangHistory("sepeda1",0,"edwin","Jakartah","31 Februari 2021"));
+        listBarang.add(new barangHistory("sepeda2",1,"edwin2","Jakartah","31 Februari 2021"));
+        listBarang.add(new barangHistory("sepeda3",1,"edwin3","Jakartah","31 Februari 2021"));
+        listBarang.add(new barangHistory("sepeda4",2,"edwin4","Jakartah","31 Februari 2021"));
 
         adapter adap = new adapter(getApplicationContext(),listBarang);
         lvHistory.setAdapter(adap);
         //lvHistory.setDivider(null);
         lvHistory.setDividerHeight(10);
+
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("Aku titip");
     }
 
 
@@ -114,20 +120,25 @@ public class history_pembeli extends AppCompatActivity {
             ImageView img = row.findViewById(R.id.ivImageBarang);
 
             if(brg.get(position).getStatus() == 0){
-                tvstatus.setText("Belum Dikonfirmasi");
-                tvstatus.setBackgroundColor(Color.RED);
-                tvstatus.setTextColor(Color.WHITE);
+                tvstatus.setText("Dikonfirmasi");
+                tvstatus.setTextColor(Color.BLACK);
+                tvstatus.setBackgroundColor(Color.GRAY);
             }
             else if(brg.get(position).getStatus() == 1){
-                tvstatus.setText("Dikonfirmasi");
+                tvstatus.setText("Dikirim");
                 tvstatus.setTextColor(Color.BLACK);
                 tvstatus.setBackgroundColor(Color.YELLOW);
             }
+            else if(brg.get(position).getStatus() == 2){
+                tvstatus.setText("Sudah sampai");
+                tvstatus.setTextColor(Color.BLACK);
+                tvstatus.setBackgroundColor(Color.GREEN);
+            }
             img.setImageResource(R.drawable.bike);
-            tvnamabarang.setText("Nama Barang : "+brg.get(position).getNamabarang());
-            tvPenjual.setText("Penjual : "+brg.get(position).getPenjual());
-            tvLokasi.setText("Lokasi : "+brg.get(position).getLokasi());
-            tvTglBeli.setText("Tanggal : "+brg.get(position).getTgl());
+            tvnamabarang.setText("Barang: "+brg.get(position).getNamabarang());
+            tvPenjual.setText("Penjual: "+brg.get(position).getPenjual());
+            tvLokasi.setText("Lokasi: "+brg.get(position).getLokasi());
+            tvTglBeli.setText(brg.get(position).getTgl()+"");
 
             tvnamabarang.setTextColor(Color.BLACK);
             tvPenjual.setTextColor(Color.BLACK);
@@ -137,5 +148,19 @@ public class history_pembeli extends AppCompatActivity {
             return row;
 
         }
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==R.id.close){
+            finish();
+        }
+        return true;
     }
 }

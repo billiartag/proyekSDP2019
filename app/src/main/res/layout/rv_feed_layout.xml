@@ -4,79 +4,89 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
+    android:layout_margin="4dp"
     android:background="@android:drawable/dialog_holo_light_frame"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerProfileFeed"
         android:layout_width="match_parent"
         android:layout_height="97dp"
-        android:layout_margin="10dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginBottom="5dp"
         android:background="#c9c9ff"
-        android:gravity="center"
-        android:padding="5dp">
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/img_barang_feed"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_margin="10dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/profil_picture_feed"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="55sp"
+            android:layout_height="55sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:src="@drawable/img2"
             app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp" />
+            app:civ_border_width="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/user_feed"
-                android:layout_width="match_parent"
-                android:layout_height="24dp"
-                android:layout_margin="5dp"
-                android:gravity="center_vertical"
-                android:text="CosmazMAgicJar"
-                android:textAlignment="center"
-                android:textColor="#000000"
-                android:textSize="12sp" />
+        <TextView
+            android:id="@+id/user_feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="CosmazMAgicJar"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@+id/profil_picture_feed"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/hapus_feed"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_margin="5dp"
-                android:text="Hapus Feed"
-                android:textSize="8sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/hapus_feed"
+            style="@style/whiteOnRed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Hapus Feed"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/profil_picture_feed"
+            app:layout_constraintStart_toEndOf="@+id/img_barang_feed"
+            app:layout_constraintTop_toBottomOf="@+id/user_feed" />
 
-    </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/img_barang_feed"
-            android:layout_width="328dp"
-            android:layout_height="61dp"
-            android:layout_margin="10dp"
-            android:layout_weight="3" />
-
         <TextView
             android:id="@+id/desc"
             android:layout_width="match_parent"
-            android:layout_height="62dp"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:background="@android:drawable/dialog_holo_light_frame"
             android:text="Deskripsi : "
             android:textColor="#000000"
-            android:textSize="10sp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
