@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.proyek_sdp">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo_icon_app_round"
@@ -11,9 +13,11 @@
         android:roundIcon="@mipmap/logo_icon_app_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".nego_seller"></activity>
-        <activity android:name=".google_maps_current_location"></activity>
-        <activity android:name=".google_maps_search_location"></activity>
+        <activity android:name=".DiNego"></activity>
+        <activity android:name=".AkuNego" />
+        <activity android:name=".nego_seller" />
+        <activity android:name=".google_maps_current_location" />
+        <activity android:name=".google_maps_search_location" />
         <activity android:name=".wishlist" />
         <activity android:name=".cart" />
         <activity android:name=".detailprofil" />
@@ -27,7 +31,11 @@
         <activity android:name=".nego_user" />
         <activity android:name=".history_penjual" />
         <activity android:name=".chat_front" />
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/map_key"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/map_key" />
+
         <activity
             android:name=".home"
             android:label="@string/title_activity_home" />
