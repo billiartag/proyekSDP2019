@@ -255,6 +255,14 @@ public class personal_fragment extends Fragment {
             Intent i = new Intent(getActivity(),Login.class);
             startActivity(i);
         }
+        else if(item.getItemId()==R.id.nsell){
+            Intent i = new Intent(getActivity(),DiNego.class);
+            startActivity(i);
+        }
+        else if(item.getItemId()==R.id.nbuy){
+            Intent i = new Intent(getActivity(),AkuNego.class);
+            startActivity(i);
+        }
         return super.onOptionsItemSelected(item);
     }
 
