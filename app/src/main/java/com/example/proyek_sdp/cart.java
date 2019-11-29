@@ -26,9 +26,6 @@ public class cart extends AppCompatActivity {
         bayar=findViewById(R.id.bayar_cart);
         total_harga=findViewById(R.id.harga_barang_cart);
         rv_cart=findViewById(R.id.rv_cart);
-        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",12,R.drawable.treadmill,"cosmas"));
-        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
-        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
         rv_cart.setHasFixedSize(true);
         rv_cart.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
         CartAdapter adapter = new CartAdapter(getApplicationContext(), kumpulanbarang);
@@ -36,7 +33,7 @@ public class cart extends AppCompatActivity {
 
         int total=0;
         for (barang x:kumpulanbarang) {
-            total=total+x.getHarga();
+           // total=total+x.getHarga();
         }
         total_harga.setText("Rp "+total);
         ActionBar ab=getSupportActionBar();

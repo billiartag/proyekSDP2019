@@ -34,20 +34,20 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
 
     @Override
     public void onBindViewHolder(@NonNull WishlistViewHolder holder, int position) {
-        holder.namabarang.setText(list_barang.get(position).getNama());
-        holder.imgbarang.setBackgroundResource(list_barang.get(position).getGambar());
-        holder.cari.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                barang x=list_barang.get(position);
-                Bundle b = new Bundle();
-                b.putSerializable("barang", x);
-                Intent intent = new Intent(context, detail_feed.class);
-                intent.putExtras(b);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        });
+//        holder.namabarang.setText(list_barang.get(position).getNama());
+//        holder.imgbarang.setBackgroundResource(list_barang.get(position).getGambar());
+//        holder.cari.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                barang x=list_barang.get(position);
+//                Bundle b = new Bundle();
+//                b.putSerializable("barang", x);
+//                Intent intent = new Intent(context, detail_feed.class);
+//                intent.putExtras(b);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                context.startActivity(intent);
+//            }
+//        });
     }
 
     @Override

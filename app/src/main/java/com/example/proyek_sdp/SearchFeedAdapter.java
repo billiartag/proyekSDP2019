@@ -3,6 +3,7 @@ package com.example.proyek_sdp;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,14 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -41,19 +47,26 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
     public void onBindViewHolder(@NonNull SearchFeedViewHolder holder, int position) {
         holder.detailbarang.setTextColor(Color.BLACK);
         holder.detailbarang.setText(list_barang_example.get(position).toString());
-        if (list_barang_example.get(position).getTipe()=="Flash Sale"){
+        if (list_barang_example.get(position).getJenis().equals("Flash Sale")){
             holder.tipe.setBackgroundColor(Color.parseColor("#FB8C00"));
             holder.tipe.setTextColor(Color.BLACK);
-            holder.tipe.setText(list_barang_example.get(position).getTipe());
+            holder.tipe.setText(list_barang_example.get(position).getJenis());
         }
-        else if (list_barang_example.get(position).getTipe()=="Pre Order"){
+        else if (list_barang_example.get(position).getJenis().equals("Pre Order")){
             holder.tipe.setBackgroundColor(Color.BLACK);
             holder.tipe.setTextColor(Color.WHITE);
-            holder.tipe.setText(list_barang_example.get(position).getTipe());
+            holder.tipe.setText(list_barang_example.get(position).getJenis());
         }
         holder.harga.setText("Rp. "+list_barang_example.get(position).getHarga());
         holder.harga.setTextColor(Color.parseColor("#651FFF"));
-        holder.img.setImageResource(list_barang_example.get(position).getGambar());
+
+        FirebaseStorage.getInstance().getReference().child("img_barang").child(list_barang_example.get(position).getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context).load(uri).into(holder.img);
+            }
+        });
+
         holder.container_search_feed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

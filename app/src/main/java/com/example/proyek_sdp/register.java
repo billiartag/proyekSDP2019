@@ -139,7 +139,9 @@ public class register extends AppCompatActivity {
                                 }
                             }
                             if(berhasil_register){
-                                databaseReference.push().setValue(baru).addOnCompleteListener(register.this, new OnCompleteListener<Void>() {
+                                String key=databaseReference.push().getKey();
+                                baru.setId(key);
+                                databaseReference.child(key).setValue(baru).addOnCompleteListener(register.this, new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){

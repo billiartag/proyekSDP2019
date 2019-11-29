@@ -12,16 +12,22 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
     EditText email,password;
     Button register;
     Button login;
     FirebaseAuth firebaseAuth;
+    boolean berhasil_login;
     private FirebaseAuth.AuthStateListener authStateListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,18 +75,41 @@ public class Login extends AppCompatActivity {
                     password.setError("Please Enter Your Email");
                 }
                 else {
-                    firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                    FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (!task.isSuccessful()){
-                                Toast.makeText(Login.this, "login gagal", Toast.LENGTH_SHORT).show();
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            berhasil_login=false;
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if(ds.child("email").getValue().toString().equals(email.getText().toString())){
+                                    if(ds.child("status").getValue().toString().equals("1")){
+                                        firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(Login.this, new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (!task.isSuccessful()){
+                                                }
+                                                else {
+                                                    berhasil_login=true;
+                                                    Toast.makeText(Login.this, "login berhasil", Toast.LENGTH_SHORT).show();
+                                                    Intent i =new Intent(getApplicationContext(),home.class);
+                                                    startActivity(i);
+                                                    finish();
+                                                }
+                                                if(berhasil_login==false){
+                                                    Toast.makeText(Login.this, "login gagal", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        Toast.makeText(Login.this, "anda di blokir oleh admin", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             }
-                            else {
-                                Toast.makeText(Login.this, "login berhasil", Toast.LENGTH_SHORT).show();
-                                Intent i =new Intent(getApplicationContext(),home.class);
-                                startActivity(i);
-                                finish();
-                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
                     });
                 }

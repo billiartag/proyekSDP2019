@@ -1,6 +1,7 @@
 package com.example.proyek_sdp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -37,7 +48,17 @@ public class TopuserAdapter extends RecyclerView.Adapter<TopuserAdapter.TopuserV
     @Override
     public void onBindViewHolder(@NonNull TopuserViewHolder holder, int position) {
         holder.username.setText(list_user.get(position).getNama());
-        holder.fotoprofil.setBackgroundResource(list_user.get(position).getProfil_picture());
+        FirebaseStorage.getInstance().getReference().child("profil_picture").child(list_user.get(position).getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context).load(uri).into(holder.fotoprofil);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                holder.fotoprofil.setBackgroundResource(R.drawable.default_profil);
+            }
+        });
     }
 
     @Override

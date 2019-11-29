@@ -1,5 +1,6 @@
 package com.example.proyek_sdp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,12 +26,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -45,7 +54,9 @@ public class post_fragment extends Fragment {
     EditText max;
     EditText deskripsi;
     EditText harga;
+    Uri selected_image=null;
     DatabaseReference databaseReference;
+    DatabaseReference databaseReference_barang;
     TextView time_dari,time_ke,tvharga;
     Spinner jenis;
     String[] isidata={
@@ -134,8 +145,6 @@ public class post_fragment extends Fragment {
                     if(((home)getActivity()).time_ke.equals("")){
                         time_ke.setText("");
                     }
-                    harga.setVisibility(View.INVISIBLE);
-                    tvharga.setVisibility(View.INVISIBLE);
 
                     time_ke.setHint("Pilih Akhir Tanggal");
                     judul.setError(null);
@@ -162,13 +171,11 @@ public class post_fragment extends Fragment {
                         time_ke.setText("");
                     }
                     Calendar now = Calendar.getInstance();
-                    time_dari.setText(now.get(Calendar.HOUR)+":"+now.get(Calendar.MINUTE));
+                    time_dari.setText(now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND));
                     time_dari.setEnabled(false);
                     if(((home)getActivity()).time_ke.equals("")){
                         time_ke.setText("");
                     }
-                    harga.setVisibility(View.VISIBLE);
-                    tvharga.setVisibility(View.VISIBLE);
                     time_ke.setHint("Pilih Akhir Jam");
                     judul.setError(null);
                     lokasi.setError(null);
@@ -218,8 +225,9 @@ public class post_fragment extends Fragment {
                     Calendar now = Calendar.getInstance();
                     TimePickerDialog dpd = TimePickerDialog.newInstance(
                             post_fragment.this::onTimeSet,
-                            now.get(Calendar.HOUR),
+                            now.get(Calendar.HOUR_OF_DAY),
                             now.get(Calendar.MINUTE),
+                            now.get(Calendar.SECOND),
                             true
                     );
                     time_ke.setError(null);
@@ -266,7 +274,86 @@ public class post_fragment extends Fragment {
                     berhasil=false;
                 }
                 if(berhasil){
-                    Toast.makeText(getContext(), "post berhasil di buat", Toast.LENGTH_SHORT).show();
+                    barang barang_baru=new barang();
+                    barang_baru.setDeskripsi(deskripsi.getText().toString());
+                    barang_baru.setIdpenjual(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    barang_baru.setJenis(jenis.getSelectedItem().toString());
+                    barang_baru.setNama(judul.getText().toString());
+                    barang_baru.setLokasi(lokasi.getText().toString());
+                    barang_baru.setVarian(Varian.getText().toString());
+                    barang_baru.setMaksimal(Integer.parseInt(max.getText().toString()));
+                    barang_baru.setWaktu_selesai(time_ke.getText().toString());
+                    barang_baru.setWaktu_mulai(time_dari.getText().toString());
+                    barang_baru.setHarga(Integer.parseInt(harga.getText().toString()));
+                    Calendar now = Calendar.getInstance();
+                    if(jenis.getSelectedItem().toString().equals("Flash Sale")){
+                        barang_baru.setWaktu_upload(time_dari.getText().toString());
+                    }
+                    else {
+                        barang_baru.setWaktu_upload(now.get(Calendar.DAY_OF_MONTH)+":"+now.get(Calendar.MONTH)+":"+now.get(Calendar.YEAR));
+                    }
+
+                    if (selected_image!=null){
+                        databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                long count=dataSnapshot.getChildrenCount();
+                                boolean berhasil_register=true;
+                                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("email").getValue().toString())){
+                                        if(ds.child("verifikasi_ktp").getValue().toString().equals("1")){
+                                            databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
+                                            String Key = databaseReference_barang.push().getKey();
+                                            barang_baru.setId(Key);
+                                            databaseReference_barang.child(Key).setValue(barang_baru).addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()){
+                                                        final ProgressDialog progressDialog=new ProgressDialog(getActivity());
+                                                        progressDialog.setTitle("Mengupload Post....");
+                                                        progressDialog.show();
+                                                        StorageReference reference = FirebaseStorage.getInstance().getReference().child("img_barang/"+ Key);
+                                                        reference.putFile(selected_image).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                            @Override
+                                                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                Toast.makeText(getActivity(), "berhasil upload post", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Toast.makeText(getContext(), "gagal upload post", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                                            @Override
+                                                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                                                                progressDialog.setMessage("Upload Post "+(int)progress+"%");
+                                                                if(progress==100){
+                                                                    progressDialog.dismiss();
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            Toast.makeText(getActivity(), "Anda Belum Melakukan Verifikasi KTP", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    else {
+                        Toast.makeText(getActivity(), "gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -327,7 +414,7 @@ public class post_fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==1 && data!=null){
-            Uri selected_image=data.getData();
+            selected_image=data.getData();
             gambarpost.setImageURI(selected_image);
         }
     }
@@ -342,7 +429,7 @@ public class post_fragment extends Fragment {
     }
 
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        String time = hourOfDay+":"+minute;
+        String time = hourOfDay+":"+minute+":"+second;
         time_ke.setText(time);
     }
 }

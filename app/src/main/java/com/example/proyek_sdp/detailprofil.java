@@ -1,9 +1,11 @@
 package com.example.proyek_sdp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,11 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class detailprofil extends AppCompatActivity {
     ImageView profil_pict;
@@ -32,11 +39,24 @@ public class detailprofil extends AppCompatActivity {
         user x= (user) getIntent().getExtras().getSerializable("user");
         nama.setText("Nama : "+x.getNama());
         rating.setText("Rating : "+x.getRating());
-        profil_pict.setBackgroundResource(x.getProfil_picture());
+        FirebaseStorage.getInstance().getReference().child("profil_picture").child(x.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext()).load(uri).into(profil_pict);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                profil_pict.setBackgroundResource(R.drawable.default_profil);
+            }
+        });
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent move=new Intent(getApplicationContext(),chat_front.class);
+                Intent move=new Intent(getApplicationContext(),chat_detail.class);
+                Bundle b = new Bundle();
+                b.putSerializable("user", x);
+                move.putExtras(b);
                 startActivity(move);
             }
         });

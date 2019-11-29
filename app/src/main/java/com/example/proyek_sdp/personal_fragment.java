@@ -1,9 +1,11 @@
 package com.example.proyek_sdp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +25,11 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationMenu;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,9 +39,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class personal_fragment extends Fragment {
     ImageView profil_picture_user;
@@ -74,17 +85,41 @@ public class personal_fragment extends Fragment {
                 boolean berhasil_register=true;
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
                     if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("email").getValue().toString())){
-                        profil_picture_user.setBackgroundResource(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                        FirebaseStorage.getInstance().getReference().child("profil_picture").child(FirebaseAuth.getInstance().getCurrentUser().getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                if (getActivity()!=null){
+                                    Glide.with(getActivity()).load(uri).into(profil_picture_user);
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                profil_picture_user.setBackgroundResource(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                            }
+                        });
+                        FirebaseStorage.getInstance().getReference().child("foto_ktp").child(FirebaseAuth.getInstance().getCurrentUser().getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                if (getActivity()!=null){
+                                    Glide.with(getActivity()).load(uri).into(gambar_ktp_profil);
+                                }
+                            }
+                        });
                         edname_profil.setText(ds.child("nama").getValue().toString());
                         edemail_profil.setText(ds.child("email").getValue().toString());
                         ednotelp_profil.setText(ds.child("phone").getValue().toString());
                         saldo=Integer.parseInt(ds.child("saldo").getValue().toString());
                         edtanggal_lahir_profil.setText(ds.child("birthdate").getValue().toString());
                         if (ds.child("verifikasi_ktp").getValue().toString().equals("0")){
-                            status_verifikasi_ktp.setText("belum");
+                            status_verifikasi_ktp.setText("Belum Diverifikasi");
                         }
                         else if (ds.child("verifikasi_ktp").getValue().toString().equals("1")){
-                            status_verifikasi_ktp.setText("sudah");
+                            status_verifikasi_ktp.setText("Sudah Diverifikasi");
+                            btn_verifikasi_ktp.setEnabled(false);
+                        }
+                        else if (ds.child("verifikasi_ktp").getValue().toString().equals("2")){
+                            status_verifikasi_ktp.setText("Gagal diverifikasi");
                         }
                     }
                 }
@@ -116,6 +151,7 @@ public class personal_fragment extends Fragment {
                             for (DataSnapshot ds :dataSnapshot.getChildren()) {
                                 if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("email").getValue().toString())){
                                     user baru=new user();
+                                    baru.setId(ds.child("id").getValue().toString());
                                     baru.setNama(edname_profil.getText().toString());
                                     baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
                                     baru.setSaldo(Integer.parseInt(ds.child("saldo").getValue().toString()));
@@ -143,6 +179,7 @@ public class personal_fragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent change=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
                 startActivityForResult(change, 1);
             }
         });
@@ -157,13 +194,13 @@ public class personal_fragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //Convert to byte array
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                passing_gambar.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-
-                Intent in1 = new Intent(getContext(), image_viewer.class);
-                in1.putExtra("image",byteArray);
-                startActivity(in1);
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                passing_gambar.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//                byte[] byteArray = stream.toByteArray();
+//
+//                Intent in1 = new Intent(getContext(), image_viewer.class);
+//                in1.putExtra("image",byteArray);
+//                startActivity(in1);
             }
         });
         return myview;
@@ -226,11 +263,59 @@ public class personal_fragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==1 && data!=null){
             Uri selected_image=data.getData();
-            profil_picture_user.setImageURI(selected_image);
+            final ProgressDialog progressDialog=new ProgressDialog(getActivity());
+            progressDialog.setTitle("Mengupload....");
+            progressDialog.show();
+            StorageReference reference= FirebaseStorage.getInstance().getReference().child("profil_picture/"+ FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            reference.putFile(selected_image).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    profil_picture_user.setImageURI(selected_image);
+                    Toast.makeText(getActivity(), "berhasil upload profil picture", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(), "gagal upload file profile picture", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setMessage("Upload "+(int)progress+"%");
+                    if(progress==100){
+                        progressDialog.dismiss();
+                    }
+                }
+            });
         }else if(requestCode == 2 && data!=null){
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            gambar_ktp_profil.setImageBitmap(bitmap);
-            passing_gambar=bitmap;
+            Uri selected_ktp=data.getData();
+
+            final ProgressDialog progressDialog=new ProgressDialog(getActivity());
+            progressDialog.setTitle("Mengupload....");
+            progressDialog.show();
+            StorageReference reference= FirebaseStorage.getInstance().getReference().child("foto_ktp/"+ FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            reference.putFile(selected_ktp).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    gambar_ktp_profil.setImageURI(selected_ktp);
+                    Toast.makeText(getActivity(), "berhasil upload profil picture", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getContext(), "gagal upload file profile picture", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    progressDialog.setMessage("Upload "+(int)progress+"%");
+                    if(progress==100){
+                        progressDialog.dismiss();
+                    }
+                }
+            });
         }
     }
 }

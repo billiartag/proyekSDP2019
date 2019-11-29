@@ -4,14 +4,34 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class barang implements Serializable {
-    private String nama;
-    private int harga;
-    private String deskripsi;
-    private String durasi;
-    private String tipe;
-    private int max_barang;
-    private int gambar;
-    private String pemilik;
+    private String id,nama,jenis,deskripsi,idpenjual,waktu_upload,waktu_selesai,waktu_mulai,lokasi,varian;
+    private int maksimal,harga;
+
+    public barang() {
+    }
+
+    public barang(String id, String nama, String jenis, String deskripsi, String idpenjual, String waktu_upload, String waktu_selesai, String waktu_mulai, String lokasi, String varian, int maksimal, int harga) {
+        this.id = id;
+        this.nama = nama;
+        this.jenis = jenis;
+        this.deskripsi = deskripsi;
+        this.idpenjual = idpenjual;
+        this.waktu_upload = waktu_upload;
+        this.waktu_selesai = waktu_selesai;
+        this.waktu_mulai = waktu_mulai;
+        this.lokasi = lokasi;
+        this.varian = varian;
+        this.maksimal = maksimal;
+        this.harga = harga;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getNama() {
         return nama;
@@ -21,12 +41,12 @@ public class barang implements Serializable {
         this.nama = nama;
     }
 
-    public int getHarga() {
-        return harga;
+    public String getJenis() {
+        return jenis;
     }
 
-    public void setHarga(int harga) {
-        this.harga = harga;
+    public void setJenis(String jenis) {
+        this.jenis = jenis;
     }
 
     public String getDeskripsi() {
@@ -37,57 +57,68 @@ public class barang implements Serializable {
         this.deskripsi = deskripsi;
     }
 
-    public String getDurasi() {
-        return durasi;
+    public String getIdpenjual() {
+        return idpenjual;
     }
 
-    public void setDurasi(String durasi) {
-        this.durasi = durasi;
+    public void setIdpenjual(String idpenjual) {
+        this.idpenjual = idpenjual;
     }
 
-    public String getTipe() {
-        return tipe;
+    public String getWaktu_upload() {
+        return waktu_upload;
     }
 
-    public void setTipe(String tipe) {
-        this.tipe = tipe;
+    public void setWaktu_upload(String waktu_upload) {
+        this.waktu_upload = waktu_upload;
     }
 
-    public int getMax_barang() {
-        return max_barang;
+    public String getWaktu_selesai() {
+        return waktu_selesai;
     }
 
-    public void setMax_barang(int max_barang) {
-        this.max_barang = max_barang;
+    public void setWaktu_selesai(String waktu_selesai) {
+        this.waktu_selesai = waktu_selesai;
     }
 
-    public int getGambar() {
-        return gambar;
+    public String getWaktu_mulai() {
+        return waktu_mulai;
     }
 
-    public void setGambar(int gambar) {
-        this.gambar = gambar;
+    public void setWaktu_mulai(String waktu_mulai) {
+        this.waktu_mulai = waktu_mulai;
     }
 
-    public String getPemilik() {
-        return pemilik;
+    public String getLokasi() {
+        return lokasi;
     }
 
-    public void setPemilik(String pemilik) {
-        this.pemilik = pemilik;
+    public void setLokasi(String lokasi) {
+        this.lokasi = lokasi;
     }
 
+    public String getVarian() {
+        return varian;
+    }
 
-    public barang(String nama, int harga, String deskripsi, String durasi, String tipe, int max_barang, int gambar, String pemilik) {
+    public void setVarian(String varian) {
+        this.varian = varian;
+    }
 
-        this.nama = nama;
+    public int getMaksimal() {
+        return maksimal;
+    }
+
+    public void setMaksimal(int maksimal) {
+        this.maksimal = maksimal;
+    }
+
+    public int getHarga() {
+        return harga;
+    }
+
+    public void setHarga(int harga) {
         this.harga = harga;
-        this.deskripsi = deskripsi;
-        this.durasi = durasi;
-        this.tipe = tipe;
-        this.max_barang = max_barang;
-        this.gambar = gambar;
-        this.pemilik = pemilik;
     }
 
     @Override

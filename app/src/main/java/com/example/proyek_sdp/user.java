@@ -3,12 +3,13 @@ package com.example.proyek_sdp;
 import java.io.Serializable;
 
 public class user implements Serializable{
-    private String nama,password,email,birthdate,phone;
+    private String id,nama,password,email,birthdate,phone;
     private int saldo,profil_picture,status,verifikasi_ktp;
     private float rating;
     public user(){ }
 
-    public user(String nama, String password, String email, String birthdate, String phone, int saldo, int profil_picture, int status, int verifikasi_ktp, float rating) {
+    public user(String id, String nama, String password, String email, String birthdate, String phone, int saldo, int profil_picture, int status, int verifikasi_ktp, float rating) {
+        this.id = id;
         this.nama = nama;
         this.password = password;
         this.email = email;
@@ -19,6 +20,14 @@ public class user implements Serializable{
         this.status = status;
         this.verifikasi_ktp = verifikasi_ktp;
         this.rating = rating;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNama() {

@@ -1,10 +1,13 @@
 package com.example.proyek_sdp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +16,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class detail_feed extends AppCompatActivity {
     ImageView img,imghati;
@@ -45,14 +57,34 @@ public class detail_feed extends AppCompatActivity {
         durasi=findViewById(R.id.durasi);
         max=findViewById(R.id.max);
         barang x= (barang)getIntent().getExtras().getSerializable("barang");
-        img.setBackgroundResource(x.getGambar());
-        tipe.setText(x.getTipe().toString());
+        FirebaseStorage.getInstance().getReference().child("img_barang").child(x.getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(getApplicationContext()).load(uri).into(img);
+            }
+        });
+        tipe.setText(x.getJenis().toString());
         nama.setText(x.getNama());
         harga.setText("Harga Barang : Rp. "+x.getHarga());
         deskripsi.setText("Deskripsi : "+x.getDeskripsi());
-        pemilik.setText("Pemilik : "+x.getPemilik());
-        durasi.setText("Durasi : "+x.getDurasi());
-        max.setText("Max barang yang dapat dipesan : "+x.getMax_barang());
+        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("email").getValue().toString().equals(x.getIdpenjual())){
+                        pemilik.setText("Pemilik : "+ds.child("nama").getValue().toString());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        durasi.setText("Durasi : "+x.getWaktu_selesai());
+        max.setText("Max barang yang dapat dipesan : "+x.getMaksimal());
         if (tipe.getText().toString().equals("Flash Sale")){
             tipe.setBackgroundColor(Color.YELLOW);
             tipe.setTextColor(Color.BLACK);

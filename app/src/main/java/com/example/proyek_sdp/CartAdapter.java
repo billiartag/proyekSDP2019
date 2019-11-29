@@ -37,9 +37,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
         holder.container_barang_cart.setBackgroundResource(android.R.drawable.alert_light_frame);
-        holder.img_barang_cart.setBackgroundResource(list_barang.get(position).getGambar());
+        //holder.img_barang_cart.setBackgroundResource(list_barang.get(position).getGambar());
         holder.nama_barang.setText(list_barang.get(position).getNama());
-        holder.harga_barang.setText("Rp "+list_barang.get(position).getHarga());
+        //holder.harga_barang.setText("Rp "+list_barang.get(position).getHarga());
         holder.wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

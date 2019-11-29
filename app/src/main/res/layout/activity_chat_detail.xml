@@ -7,15 +7,12 @@
     android:orientation="vertical"
     tools:context=".chat_detail">
 
-    <ListView
-        android:id="@+id/lvIsiChat"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_detail_chat"
         android:layout_width="match_parent"
-        android:layout_height="561dp"
-        android:layout_margin="10dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:padding="5dp">
-
-    </ListView>
+        android:padding="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

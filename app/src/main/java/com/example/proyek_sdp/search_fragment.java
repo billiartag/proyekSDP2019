@@ -25,6 +25,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class search_fragment extends Fragment {
@@ -36,18 +42,40 @@ public class search_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View myview=inflater.inflate(R.layout.fragment_search,container,false);
-        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",12,R.drawable.treadmill,"cosmas"));
-        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
-        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
-        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
-        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
-        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
-        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
         rv_search_feed = myview.findViewById(R.id.rv_search_feed);
-        rv_search_feed.setHasFixedSize(true);
-        rv_search_feed.setLayoutManager(new GridLayoutManager(getContext(),2));
-        adapter = new SearchFeedAdapter(getActivity(), kumpulanbarang);
-        rv_search_feed.setAdapter(adapter);
+
+        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString())){
+                        barang data=new barang();
+                        data.setId(ds.child("id").getValue().toString());
+                        data.setDeskripsi(ds.child("deskripsi").getValue().toString());
+                        data.setIdpenjual(ds.child("idpenjual").getValue().toString());
+                        data.setJenis(ds.child("jenis").getValue().toString());
+                        data.setNama(ds.child("nama").getValue().toString());
+                        data.setLokasi(ds.child("lokasi").getValue().toString());
+                        data.setVarian(ds.child("varian").getValue().toString());
+                        data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
+                        data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
+                        data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
+                        data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
+                        kumpulanbarang.add(data);
+                    }
+                }
+                rv_search_feed.setHasFixedSize(true);
+                rv_search_feed.setLayoutManager(new GridLayoutManager(getContext(),2));
+                adapter = new SearchFeedAdapter(getActivity(), kumpulanbarang);
+                rv_search_feed.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         return myview;
     }
     @Override

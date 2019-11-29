@@ -46,16 +46,19 @@ public class home_fragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long count=dataSnapshot.getChildrenCount();
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if(!ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
-                        user baru=new user();
-                        baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
-                        baru.setBirthdate(ds.child("birthdate").getValue().toString());
-                        baru.setEmail(ds.child("email").getValue().toString());
-                        baru.setPhone(ds.child("phone").getValue().toString());
-                        baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
-                        baru.setNama(ds.child("nama").getValue().toString());
-                        baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
-                        kumpulanuser.add(baru);
+                    if(ds!=null){
+                        if(!ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                            user baru=new user();
+                            baru.setId(ds.child("id").getValue().toString());
+                            baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                            baru.setBirthdate(ds.child("birthdate").getValue().toString());
+                            baru.setEmail(ds.child("email").getValue().toString());
+                            baru.setPhone(ds.child("phone").getValue().toString());
+                            baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                            baru.setNama(ds.child("nama").getValue().toString());
+                            baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                            kumpulanuser.add(baru);
+                        }
                     }
                 }
                 rv_topuser.setHasFixedSize(true);
@@ -82,26 +85,52 @@ public class home_fragment extends Fragment {
         });
 
 
-        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",12,R.drawable.treadmill,"cosmas"));
-        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
-        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
-        //cetak barang flashsale
-        rv_flashsale.setHasFixedSize(true);
-        rv_flashsale.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
-        TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanbarang);
-        adapterflashsale.setOnItemClickListener(new OnItemClickListener() {
+        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View view, int position) {
-                barang x = kumpulanbarang.get(position);
-                Toast.makeText(getActivity(), x.getGambar()+"", Toast.LENGTH_SHORT).show();
-                Bundle b = new Bundle();
-                b.putSerializable("barang", x);
-                Intent intent = new Intent(getActivity(), detail_feed.class);
-                intent.putExtras(b);
-                startActivity(intent);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString())){
+                        if(ds.child("jenis").getValue().toString().equals("Flash Sale")){
+                            barang data=new barang();
+                            data.setId(ds.child("id").getValue().toString());
+                            data.setDeskripsi(ds.child("deskripsi").getValue().toString());
+                            data.setIdpenjual(ds.child("idpenjual").getValue().toString());
+                            data.setJenis(ds.child("jenis").getValue().toString());
+                            data.setNama(ds.child("nama").getValue().toString());
+                            data.setLokasi(ds.child("lokasi").getValue().toString());
+                            data.setVarian(ds.child("varian").getValue().toString());
+                            data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
+                            data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
+                            data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
+                            data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
+                            kumpulanbarang.add(data);
+                        }
+                    }
+                }
+                //cetak barang flashsale
+                rv_flashsale.setHasFixedSize(true);
+                rv_flashsale.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanbarang);
+                adapterflashsale.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        barang x = kumpulanbarang.get(position);
+                        //Toast.makeText(getActivity(), x.getGambar()+"", Toast.LENGTH_SHORT).show();
+                        Bundle b = new Bundle();
+                        b.putSerializable("barang", x);
+                        Intent intent = new Intent(getActivity(), detail_feed.class);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                    }
+                });
+                rv_flashsale.setAdapter(adapterflashsale);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
-        rv_flashsale.setAdapter(adapterflashsale);
         // Set title bar
         ((home) getActivity()).setActionBarTitle("TitipAku");
         return myview;

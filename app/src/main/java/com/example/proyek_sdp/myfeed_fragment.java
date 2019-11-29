@@ -2,6 +2,7 @@ package com.example.proyek_sdp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,12 +21,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -39,13 +44,40 @@ public class myfeed_fragment extends Fragment {
         View myview=inflater.inflate(R.layout.fragment_myfeed,container,false);;
         setHasOptionsMenu(true);
         rv_myfeed=myview.findViewById(R.id.rv_myfeed);
-        kumpulanbarang.add(new barang("Treadmill",25000,"bagus untuk kesehatan","05:45:21","Flash Sale",12,R.drawable.treadmill,"cosmas"));
-        kumpulanbarang.add(new barang("electronic Treadmill",55000,"bagus untuk kesehatan dan otot kaki","07:45:21","Pre Order",14,R.drawable.electrictreadmill,"Alfon"));
-        kumpulanbarang.add(new barang("Bike",75000,"bagus untuk kesehatan dan mudah di pakai tanpa keluar rumah","08:45:21","Flash Sale",6,R.drawable.bike,"Edwin"));
-        MyFeedAdapter adapter=new MyFeedAdapter(getContext(),kumpulanbarang);
-        rv_myfeed.setHasFixedSize(true);
-        rv_myfeed.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
-        rv_myfeed.setAdapter(adapter);
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                boolean berhasil_register=true;
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString())){
+                        barang data=new barang();
+                        data.setId(ds.child("id").getValue().toString());
+                        data.setDeskripsi(ds.child("deskripsi").getValue().toString());
+                        data.setIdpenjual(ds.child("idpenjual").getValue().toString());
+                        data.setJenis(ds.child("jenis").getValue().toString());
+                        data.setNama(ds.child("nama").getValue().toString());
+                        data.setLokasi(ds.child("lokasi").getValue().toString());
+                        data.setVarian(ds.child("varian").getValue().toString());
+                        data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
+                        data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
+                        data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
+                        data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
+                        kumpulanbarang.add(data);
+                    }
+                }
+                MyFeedAdapter adapter=new MyFeedAdapter(getContext(),kumpulanbarang);
+                rv_myfeed.setHasFixedSize(true);
+                rv_myfeed.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
+                rv_myfeed.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         return myview;
     }
     @Override

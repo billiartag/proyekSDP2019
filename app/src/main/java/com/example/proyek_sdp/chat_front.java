@@ -1,23 +1,34 @@
 package com.example.proyek_sdp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -25,77 +36,86 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class chat_front extends AppCompatActivity {
 
-    ArrayList<chat> kumpulanChat = new ArrayList<chat>();
-    ListView lv;
+    ArrayList<chat> list_chat = new ArrayList<chat>();
+    ArrayList<String> list_all_user_chatted = new ArrayList<String>();
+    RecyclerView rv_chat_front;
+    ChatFrontAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_front);
-        kumpulanChat.add(new chat("edwin","alfon"));
-        ArrayList<isi_chat> list_chat = new ArrayList<isi_chat>();
-        list_chat.add(new isi_chat("edwin","hai"));
-        list_chat.add(new isi_chat("alfon","hmmmm"));
-        list_chat.add(new isi_chat("edwin","Hiya :D"));
-        list_chat.add(new isi_chat("alfon",">:O"));
-        kumpulanChat.get(0).setIsi(list_chat);
-        lv = findViewById(R.id.lvchat);
-        ArrayList<String> kumpulanchatstring = new ArrayList<String>();
-        ArrayList<Integer> kumpulangambar = new ArrayList<Integer>();
-        kumpulanchatstring.add("alfon");
-        kumpulangambar.add(R.drawable.bike);
+        rv_chat_front = findViewById(R.id.rv_chat_front);
         ActionBar ab=getSupportActionBar();
         ab.setTitle("TitipAku");
-
-        //final ArrayAdapter adap = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_list_item_1,kumpulanChat);
-        adapter adap = new adapter(this,kumpulanchatstring,kumpulangambar,kumpulanChat);
-        lv.setAdapter(adap);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        FirebaseDatabase.getInstance().getReference().child("ChatDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ArrayList<String> isichat = new ArrayList<String >();
-                for (int j = 0; j < kumpulanChat.get(i).getIsi().size(); j++) {
-                    isichat.add(kumpulanChat.get(i).getIsi().get(j).isi);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("pengirim_chat").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail()) || ds.child("penerima_chat").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        chat x=new chat();
+                        x.setId(ds.child("id").getValue().toString());
+                        x.setIsi_chat(ds.child("isi_chat").getValue().toString());
+                        x.setPenerima_chat(ds.child("penerima_chat").getValue().toString());
+                        x.setPengirim_chat(ds.child("pengirim_chat").getValue().toString());
+                        x.setWaktu_kirim_chat(ds.child("waktu_kirim_chat").getValue().toString());
+                        list_chat.add(x);
+                    }
                 }
-                Intent in = new Intent(getApplicationContext(),chat_detail.class);
-                Bundle b = new Bundle();
-                b.putStringArrayList("isichat",isichat);
-                in.putExtras(b);
-                startActivity(in);
+                for (chat x:list_chat) {
+                    if (x.getPenerima_chat().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        boolean berhasil=true;
+                        for (String y:list_all_user_chatted) {
+                            if(y.equals(x.getPengirim_chat())){
+                                berhasil=false;
+                            }
+                        }
+                        if(berhasil){
+                            list_all_user_chatted.add(x.getPengirim_chat());
+                        }
+                    }
+                    else {
+                        boolean berhasil=true;
+                        for (String y:list_all_user_chatted) {
+                            if(y.equals(x.getPenerima_chat())){
+                                berhasil=false;
+                            }
+                        }
+                        if(berhasil){
+                            list_all_user_chatted.add(x.getPenerima_chat());
+                        }
+                    }
+                }
+                rv_chat_front.setHasFixedSize(true);
+                rv_chat_front.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+                adapter=new ChatFrontAdapter(getApplicationContext(),list_all_user_chatted);
+                adapter.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        Intent move=new Intent(getApplicationContext(),chat_detail.class);
+                        Bundle b = new Bundle();
+                        b.putSerializable("iduser", list_all_user_chatted.get(position));
+                        move.putExtras(b);
+                        startActivity(move);
+                    }
+                });
+                rv_chat_front.setAdapter(adapter);
+                registerForContextMenu(rv_chat_front);
+                if (list_all_user_chatted.size()==0){
+                    Toast.makeText(chat_front.this, "Chat Anda Kosong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
-
     }
-
-    class adapter extends ArrayAdapter<String>{
-        Context context;
-        ArrayList<String> pengirim;
-        String username;
-        ArrayList<Integer>gambar;
-        ArrayList<chat>list_chat;
-
-        public adapter(Context c,ArrayList<String>list_pengirim,ArrayList<Integer>list_gambar,ArrayList<chat>list_chat){
-            super(c,R.layout.list_chat_front_layout,R.id.time,list_pengirim);
-            this.pengirim = list_pengirim;
-            this.gambar = list_gambar;
-            this.list_chat = list_chat;
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId()==121){
+            adapter.delete_chat(item.getGroupId());
         }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater layoutInflater = (LayoutInflater)getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.list_chat_front_layout,parent,false);
-            TextView username = row.findViewById(R.id.username_chat);
-            TextView display_chat = row.findViewById(R.id.isi_chat_display);
-            CircleImageView img = row.findViewById(R.id.profile_image_chat);
-            username.setTextColor(Color.BLACK);
-            username.setText(pengirim.get(position));
-            display_chat.setTextColor(Color.BLACK);
-            display_chat.setText(list_chat.get(0).getIsi().get(list_chat.get(0).getIsi().size()-1).isi);
-            img.setImageResource(gambar.get(position));
-
-            return row;
-        }
-
+        return super.onContextItemSelected(item);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,5 +130,4 @@ public class chat_front extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
