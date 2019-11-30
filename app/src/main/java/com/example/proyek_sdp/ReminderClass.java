@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 @Entity
 public class ReminderClass {
     @PrimaryKey(autoGenerate = true)
@@ -12,6 +14,9 @@ public class ReminderClass {
 
     @ColumnInfo(name = "nama_barang")
     private String nama_barang;
+
+    @ColumnInfo(name = "email_user")
+    private String email_user;
 
     @ColumnInfo(name = "jumlah_barang")
     private Integer jumlah_barang;
@@ -23,6 +28,7 @@ public class ReminderClass {
         this.nama_barang = nama_barang;
         this.jumlah_barang = jumlah_barang;
         this.is_checked = is_checked;
+        this.email_user= FirebaseAuth.getInstance().getCurrentUser().getEmail();
     }
 
     public Integer getId_reminder() {
@@ -55,5 +61,13 @@ public class ReminderClass {
 
     public void setIs_checked(Boolean is_checked) {
         this.is_checked = is_checked;
+    }
+
+    public String getEmail_user() {
+        return email_user;
+    }
+
+    public void setEmail_user(String email_user) {
+        this.email_user = email_user;
     }
 }

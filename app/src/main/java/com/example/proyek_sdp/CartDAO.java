@@ -11,8 +11,8 @@ import java.util.List;
 @Dao
 public interface CartDAO {
 
-    @Query("SELECT * FROM CartClass")
-    List<CartClass> getAllBarang();
+    @Query("SELECT * FROM CartClass where email_user=:email")
+    List<CartClass> getAllBarang(String email);
     @Insert
     void addNewBarang(CartClass obj);
     @Delete

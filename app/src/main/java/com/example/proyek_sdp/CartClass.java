@@ -7,6 +7,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 @Entity
 public class CartClass implements Parcelable {
 
@@ -25,6 +27,8 @@ public class CartClass implements Parcelable {
     private int jumlah_barang;
     @ColumnInfo(name = "jumlah_maks_barang")
     private int jumlah_maks_barang;
+    @ColumnInfo(name = "email_user")
+    private String email_user;
 
     public CartClass(String id_barang_cart, String nama_barang_cart, String waktu_selesai_cart, int harga_barang, int jumlah_barang, int jumlah_maks_barang) {
         this.id_barang_cart = id_barang_cart;
@@ -33,6 +37,7 @@ public class CartClass implements Parcelable {
         this.harga_barang = harga_barang;
         this.jumlah_barang = jumlah_barang;
         this.jumlah_maks_barang = jumlah_maks_barang;
+        this.email_user = FirebaseAuth.getInstance().getCurrentUser().getEmail();
     }
 
     protected CartClass(Parcel in) {
@@ -43,6 +48,7 @@ public class CartClass implements Parcelable {
         harga_barang = in.readInt();
         jumlah_barang = in.readInt();
         jumlah_maks_barang = in.readInt();
+        email_user = in.readString();
     }
 
     public static final Creator<CartClass> CREATOR = new Creator<CartClass>() {
@@ -56,6 +62,23 @@ public class CartClass implements Parcelable {
             return new CartClass[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id_cart);
+        parcel.writeString(id_barang_cart);
+        parcel.writeString(nama_barang_cart);
+        parcel.writeString(waktu_selesai_cart);
+        parcel.writeInt(harga_barang);
+        parcel.writeInt(jumlah_barang);
+        parcel.writeInt(jumlah_maks_barang);
+        parcel.writeString(email_user);
+    }
 
     public int getId_cart() {
         return id_cart;
@@ -113,19 +136,11 @@ public class CartClass implements Parcelable {
         this.jumlah_maks_barang = jumlah_maks_barang;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getEmail_user() {
+        return email_user;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id_cart);
-        parcel.writeString(id_barang_cart);
-        parcel.writeString(nama_barang_cart);
-        parcel.writeString(waktu_selesai_cart);
-        parcel.writeInt(harga_barang);
-        parcel.writeInt(jumlah_barang);
-        parcel.writeInt(jumlah_maks_barang);
+    public void setEmail_user(String email_user) {
+        this.email_user = email_user;
     }
 }

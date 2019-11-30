@@ -128,6 +128,7 @@ public class detail_feed extends AppCompatActivity {
                 //intent ke cart
                     finish();
                     Intent i = new Intent(detail_feed.this, cart.class);
+
                     CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal());
                     i.putExtra("barang", temp);
                     startActivity(i);

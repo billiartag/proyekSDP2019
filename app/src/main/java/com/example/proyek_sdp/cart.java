@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 public class cart extends AppCompatActivity {
@@ -28,7 +30,7 @@ public class cart extends AppCompatActivity {
 
     CartAdapter adapter;
     CartDB db;
-
+    Boolean sudahSelesaiInsert;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,54 +45,19 @@ public class cart extends AppCompatActivity {
 
         db = Room.databaseBuilder(this, CartDB.class, "db_sdp").build();
 
+        sudahSelesaiInsert = false;
         //ambil data semua dari room
         getData();
-        // ambil dari bundle kalau ada
-        Intent i = getIntent();
-        CartClass b =  i.getParcelableExtra("barang");
-        if (b != null) {
-            barang_bundle =b;
-        //masukin room disini
-
-            //cek kalau ada sudahan
-            boolean isAdaSudah = false;
-            CartClass kalau_ada = null;
-            Toast.makeText(this, kumpulanbarang.size()+"", Toast.LENGTH_SHORT).show();
-            for (CartClass r:kumpulanbarang) {
-                Toast.makeText(this, r.getId_barang_cart()+"=="+b.getId_barang_cart()+"", Toast.LENGTH_SHORT).show();
-                if(r.getId_barang_cart().equalsIgnoreCase(b.getId_barang_cart())){
-                    isAdaSudah=true;
-                    kalau_ada = r;
-                    break;
-                }
-            }
-            //kalau ada
-            if(isAdaSudah){
-                if(kalau_ada.getJumlah_barang()+1<=kalau_ada.getJumlah_maks_barang()){
-                    kalau_ada.setJumlah_barang(kalau_ada.getJumlah_barang()+1);
-                    updateEntryCart(kalau_ada);
-                }
-                else{
-                    Toast.makeText(this, "Maaf, titipan barang sudah melebihi batas titipan", Toast.LENGTH_SHORT).show();
-                }
-            }
-            //kalau gaada buat baru
-            else{
-                insertEntryCart(barang_bundle);
-            }
-            //
-            Toast.makeText(this, barang_bundle.getNama_barang_cart() + " ini ", Toast.LENGTH_SHORT).show();
-        }
-
-        int total = 0;
-        for (CartClass x : kumpulanbarang) {
-            total += (x.getHarga_barang()*x.getJumlah_barang());
-        }
-        total_harga.setText("Rp " + total);
         ActionBar ab = getSupportActionBar();
         ab.setTitle("Cart");
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -126,7 +93,7 @@ public class cart extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             kumpulanbarang.clear();
-            kumpulanbarang.addAll(db.cartDAO().getAllBarang());
+            kumpulanbarang.addAll(db.cartDAO().getAllBarang(FirebaseAuth.getInstance().getCurrentUser().getEmail()));
             return null;
         }
 
@@ -134,6 +101,49 @@ public class cart extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             adapter.notifyDataSetChanged();
+            //kalau sudah selesai masuk bool true in
+
+            if(!sudahSelesaiInsert){
+                // ambil dari bundle kalau ada
+                Intent i = getIntent();
+                CartClass b =  i.getParcelableExtra("barang");
+                if (b != null) {
+                    barang_bundle =b;
+                    //masukin room disini
+                    //cek kalau ada sudahan
+                    boolean isAdaSudah = false;
+                    CartClass kalau_ada = null;
+                    for (CartClass r:kumpulanbarang) {
+                        if(r.getId_barang_cart().equalsIgnoreCase(b.getId_barang_cart())){
+                            isAdaSudah=true;
+                            kalau_ada = r;
+                            break;
+                        }
+                    }
+                    //kalau ada
+                    if(isAdaSudah){
+                        if(kalau_ada.getJumlah_barang()+1<=kalau_ada.getJumlah_maks_barang()){
+                            kalau_ada.setJumlah_barang(kalau_ada.getJumlah_barang()+1);
+                            updateEntryCart(kalau_ada);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Maaf, titipan barang sudah melebihi batas titipan", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    //kalau gaada buat baru
+                    else{
+                        insertEntryCart(barang_bundle);
+                    }
+                    //
+                }
+                sudahSelesaiInsert = true;
+            }
+            int total = 0;
+            for (CartClass x : kumpulanbarang) {
+                total += (x.getHarga_barang()*x.getJumlah_barang());
+            }
+            total_harga.setText("Rp " + total);
+
         }
     }
     private class deleteCart extends AsyncTask<CartClass,Void,Void>{

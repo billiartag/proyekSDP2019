@@ -52,6 +52,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 Glide.with(context).load(uri).into(holder.img_barang_cart);
             }
         });
+    //jumlah barang
+        holder.total_barang.setText(cartSekarang.getJumlah_barang()+"");
     //nama barang
         holder.nama_barang.setText(cartSekarang.getNama_barang_cart());
     //harga barang

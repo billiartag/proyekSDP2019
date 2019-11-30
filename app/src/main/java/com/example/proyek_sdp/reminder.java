@@ -20,6 +20,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 public class reminder extends AppCompatActivity {
@@ -42,7 +44,7 @@ public class reminder extends AppCompatActivity {
         btnInsert = findViewById(R.id.buttonReminderInsertEntry);
         list_reminder = new ArrayList<>();
 
-        db = Room.databaseBuilder(this, ReminderDB.class,"db_sdp").build();
+        db = Room.databaseBuilder(this, ReminderDB.class,"db_sdp_reminder").build();
 
         rvReminder.setHasFixedSize(true);
         rvReminder.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
@@ -69,6 +71,12 @@ public class reminder extends AppCompatActivity {
         getData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
+    }
+
     public void removeEntryCheckBox(ReminderClass obj, boolean is_cb_checked){
         ReminderClass temp = obj;
         obj.setIs_checked(is_cb_checked);
@@ -92,7 +100,8 @@ public class reminder extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             list_reminder.clear();
-            list_reminder.addAll(db.ReminderDAO().getAllReminder());
+            String email_user = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+            list_reminder.addAll(db.ReminderDAO().getAllReminder(email_user));
             return null;
         }
 
