@@ -11,12 +11,10 @@ import java.util.List;
 @Dao
 public interface ReminderDAO {
 
-    @Query("SELECT * FROM ReminderClass")
-    List<ReminderClass> getAllReminder();
-
+    @Query("SELECT * FROM ReminderClass where email_user=:email")
+    List<ReminderClass> getAllReminder(String email);
     @Insert
     void addNewReminder(ReminderClass obj);
-
     @Delete
     void deleteReminder(ReminderClass obj);
     @Update

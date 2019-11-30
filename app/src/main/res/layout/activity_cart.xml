@@ -41,10 +41,10 @@
 
         <Button
             android:id="@+id/bayar_cart"
+            style="@style/whiteOnBlue"
             android:layout_width="66dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#039BE5"
             android:text="Bayar" />
     </LinearLayout>
 

@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.io.Serializable;
+
 public class detail_feed extends AppCompatActivity {
     ImageView img,imghati;
     TextView tipe;
@@ -123,6 +125,13 @@ public class detail_feed extends AppCompatActivity {
             public void onClick(View view) {
                 if (tipe.getText().toString().equals("Flash Sale")){
                 Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
+                //intent ke cart
+                    finish();
+                    Intent i = new Intent(detail_feed.this, cart.class);
+
+                    CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal());
+                    i.putExtra("barang", temp);
+                    startActivity(i);
             }
             else if (tipe.getText().toString().equals("Pre Order")){
                 Toast.makeText(getApplicationContext(), "Pre Order Berhasil!", Toast.LENGTH_SHORT).show();
@@ -137,7 +146,6 @@ public class detail_feed extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
