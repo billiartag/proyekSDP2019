@@ -83,6 +83,7 @@ public class topup_activity extends AppCompatActivity {
                                 baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
                                 baru.setPhone(ds.child("phone").getValue().toString());
                                 baru.setEmail(ds.child("email").getValue().toString());
+                                baru.setId(ds.child("id").getValue().toString());
                                 baru.setBirthdate(ds.child("birthdate").getValue().toString());
                                 baru.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
                                 baru.setPassword(ds.child("password").getValue().toString());
@@ -100,10 +101,13 @@ public class topup_activity extends AppCompatActivity {
                                 Date dt = new Date();
                                 SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
                                 String time1 = sdf.format(dt);
-                                hist_baru.setWaktu_history(time1);
+                                SimpleDateFormat sdf2 = new SimpleDateFormat("d/MM/yyyy");
+                                String time2 = sdf2.format(dt);
+                                hist_baru.setWaktu_history(time2+" - "+time1);
                                 databaseReference_history_wallet.child(key).setValue(hist_baru);
                             }
                         }
+                        load_history_wallet();
                     }
 
                     @Override
@@ -113,25 +117,7 @@ public class topup_activity extends AppCompatActivity {
                 });
             }
         });
-        databaseReference_history_wallet.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long count=dataSnapshot.getChildrenCount();
-                boolean berhasil_register=true;
-                for (DataSnapshot ds :dataSnapshot.getChildren()) {
-
-                }
-                rv_history_wallet.setHasFixedSize(true);
-                rv_history_wallet.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
-                HistoryWalletAdapter adapterflashsale = new HistoryWalletAdapter(getApplicationContext(), list_history_wallet);
-                rv_history_wallet.setAdapter(adapterflashsale);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        load_history_wallet();
         load_saldo_user();
         for (int i=1;i<=10;i++){
             daftar_nominal.add("Rp "+i*50000);
@@ -141,7 +127,34 @@ public class topup_activity extends AppCompatActivity {
         list_nominal.setAdapter(nominal_adap);
     }
     public void load_history_wallet(){
+        databaseReference_history_wallet.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                boolean berhasil_register=true;
+                list_history_wallet.clear();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id_user_wallet").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        history_wallet history_baru=new history_wallet();
+                        history_baru.setWaktu_history(ds.child("waktu_history").getValue().toString());
+                        history_baru.setStatus_history(ds.child("status_history").getValue().toString());
+                        history_baru.setId_user_wallet(ds.child("id_user_wallet").getValue().toString());
+                        history_baru.setId_hist_wallet(ds.child("id_hist_wallet").getValue().toString());
+                        history_baru.setNominal_berubah(ds.child("nominal_berubah").getValue().toString());
+                        list_history_wallet.add(history_baru);
+                    }
+                }
+                rv_history_wallet.setHasFixedSize(true);
+                rv_history_wallet.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+                HistoryWalletAdapter adapterhistorywallet = new HistoryWalletAdapter(getApplicationContext(), list_history_wallet);
+                rv_history_wallet.setAdapter(adapterhistorywallet);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     public void load_saldo_user(){
         databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");

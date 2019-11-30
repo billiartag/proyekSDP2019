@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +30,9 @@ public class HistoryWalletAdapter extends RecyclerView.Adapter<HistoryWalletAdap
 
     @Override
     public void onBindViewHolder(@NonNull HistoryWalletViewHolder holder, int position) {
+        holder.tanggal_history_wallet.setText(list_hist_wallet.get(position).getWaktu_history());
+        holder.detail_transfer_history_wallet.setText(list_hist_wallet.get(position).getStatus_history());
+        holder.jumlah_transfer_history_wallet.setText(list_hist_wallet.get(position).getNominal_berubah());
     }
 
     @Override
@@ -37,8 +41,12 @@ public class HistoryWalletAdapter extends RecyclerView.Adapter<HistoryWalletAdap
     }
 
     public class HistoryWalletViewHolder extends RecyclerView.ViewHolder {
+        TextView tanggal_history_wallet,detail_transfer_history_wallet,jumlah_transfer_history_wallet;
         public HistoryWalletViewHolder(@NonNull View itemView) {
             super(itemView);
+            tanggal_history_wallet=itemView.findViewById(R.id.tanggal_history_wallet);
+            detail_transfer_history_wallet=itemView.findViewById(R.id.detail_transfer_history_wallet);
+            jumlah_transfer_history_wallet=itemView.findViewById(R.id.jumlah_transfer_history_wallet);
         }
     }
 }
