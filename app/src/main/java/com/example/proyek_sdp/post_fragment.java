@@ -54,6 +54,7 @@ public class post_fragment extends Fragment {
     EditText max;
     EditText deskripsi;
     EditText harga;
+    EditText edkategori_post;
     Uri selected_image=null;
     DatabaseReference databaseReference;
     DatabaseReference databaseReference_barang;
@@ -77,9 +78,10 @@ public class post_fragment extends Fragment {
         time_ke=myview.findViewById(R.id.time_ke_post);
         post=myview.findViewById(R.id.post);
         jenis=myview.findViewById(R.id.jenis_post);
+        tvharga=myview.findViewById(R.id.tv_harga_post);
         deskripsi=myview.findViewById(R.id.eddeskripsi_post);
         harga=myview.findViewById(R.id.ed_harga_post);
-        tvharga=myview.findViewById(R.id.tv_harga_post);
+        edkategori_post=myview.findViewById(R.id.edkategori_post);
 
         lokasi_post=myview.findViewById(R.id.btn_lokasi_post);
         lokasi.setFocusable(false);
@@ -93,6 +95,9 @@ public class post_fragment extends Fragment {
             max.setText(((home)getActivity()).max);
             time_dari.setText(((home)getActivity()).time_dari);
             time_ke.setText(((home)getActivity()).time_ke);
+            deskripsi.setText(((home)getActivity()).deskripsi);
+            harga.setText(((home)getActivity()).harga);
+            edkategori_post.setText(((home)getActivity()).kategori);
             if(((home)getActivity()).jenis.equals("Pre Order")){
                 jenis.setSelection(1);
             }
@@ -111,6 +116,9 @@ public class post_fragment extends Fragment {
                     move.putExtra("max",max.getText().toString());
                     move.putExtra("time_dari",time_dari.getText().toString());
                     move.putExtra("time_ke",time_ke.getText().toString());
+                    move.putExtra("deskripsi",deskripsi.getText().toString());
+                    move.putExtra("harga",harga.getText().toString());
+                    move.putExtra("kategori",edkategori_post.getText().toString());
                     startActivity(move);
                 }
                 else {
@@ -121,6 +129,9 @@ public class post_fragment extends Fragment {
                     move.putExtra("max",max.getText().toString());
                     move.putExtra("time_dari",time_dari.getText().toString());
                     move.putExtra("time_ke",time_ke.getText().toString());
+                    move.putExtra("deskripsi",deskripsi.getText().toString());
+                    move.putExtra("harga",harga.getText().toString());
+                    move.putExtra("kategori",edkategori_post.getText().toString());
                     startActivity(move);
                 }
             }
@@ -136,6 +147,9 @@ public class post_fragment extends Fragment {
                         max.setText("");
                         time_dari.setText("");;
                         time_ke.setText("");
+                        harga.setText("");
+                        edkategori_post.setText("");;
+                        deskripsi.setText("");
                     }
                     if(((home)getActivity()).time_ke.equals("")){
                         time_dari.setText("");
@@ -159,6 +173,9 @@ public class post_fragment extends Fragment {
                     ((home)getActivity()).max="";
                     ((home)getActivity()).time_dari="";
                     ((home)getActivity()).time_ke="";
+                    ((home)getActivity()).deskripsi="";
+                    ((home)getActivity()).kategori="";
+                    ((home)getActivity()).harga="";
                 }
                 else {
 
@@ -169,6 +186,9 @@ public class post_fragment extends Fragment {
                         max.setText("");
                         time_dari.setText("");;
                         time_ke.setText("");
+                        harga.setText("");
+                        edkategori_post.setText("");;
+                        deskripsi.setText("");
                     }
                     Calendar now = Calendar.getInstance();
                     time_dari.setText(now.get(Calendar.HOUR_OF_DAY)+":"+now.get(Calendar.MINUTE)+":"+now.get(Calendar.SECOND));
@@ -189,6 +209,9 @@ public class post_fragment extends Fragment {
                     ((home)getActivity()).max="";
                     ((home)getActivity()).time_dari="";
                     ((home)getActivity()).time_ke="";
+                    ((home)getActivity()).deskripsi="";
+                    ((home)getActivity()).kategori="";
+                    ((home)getActivity()).harga="";
                 }
             }
 
@@ -273,6 +296,18 @@ public class post_fragment extends Fragment {
                     time_ke.setError("time_ke kosong !");
                     berhasil=false;
                 }
+                if (harga.getText().toString().trim().equals("")){
+                    harga.setError("harga kosong !");
+                    berhasil=false;
+                }
+                if (edkategori_post.getText().toString().trim().equals("")){
+                    edkategori_post.setError("kategori kosong !");
+                    berhasil=false;
+                }
+                if (deskripsi.getText().toString().trim().equals("")){
+                    deskripsi.setError("deskripsi kosong !");
+                    berhasil=false;
+                }
                 if(berhasil){
                     barang barang_baru=new barang();
                     barang_baru.setDeskripsi(deskripsi.getText().toString());
@@ -285,6 +320,8 @@ public class post_fragment extends Fragment {
                     barang_baru.setWaktu_selesai(time_ke.getText().toString());
                     barang_baru.setWaktu_mulai(time_dari.getText().toString());
                     barang_baru.setHarga(Integer.parseInt(harga.getText().toString()));
+                    barang_baru.setKategori(edkategori_post.getText().toString());
+
                     Calendar now = Calendar.getInstance();
                     if(jenis.getSelectedItem().toString().equals("Flash Sale")){
                         barang_baru.setWaktu_upload(time_dari.getText().toString());

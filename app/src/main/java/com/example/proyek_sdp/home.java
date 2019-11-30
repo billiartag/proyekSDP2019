@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,9 @@ public class home extends AppCompatActivity {
     String lokasi="";
     String time_dari="";
     String time_ke="";
+    String deskripsi="";
+    String harga="";
+    String kategori="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +38,9 @@ public class home extends AppCompatActivity {
             lokasi=getIntent().getExtras().getString("lokasi");
             time_dari=getIntent().getExtras().getString("time_dari");
             time_ke=getIntent().getExtras().getString("time_ke");
+            deskripsi=getIntent().getExtras().getString("deskripsi");
+            harga=getIntent().getExtras().getString("harga");
+            kategori=getIntent().getExtras().getString("kategori");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new post_fragment()).commit();
         }
         else if(getIntent().hasExtra("topup")){

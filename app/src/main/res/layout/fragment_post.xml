@@ -136,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint='Masukkan Varian Dengan " , " Sebagai Pemisah'
+                android:hint='Masukkan Dengan " , " Sebagai Pemisah'
                 android:inputType="textPersonName" />
         </LinearLayout>
 
@@ -159,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Masukkan Jumlah Makimal Pesanan"
+                android:hint="Masukkan Jumlah Maksimal Pesanan"
                 android:inputType="number" />
 
         </LinearLayout>
@@ -229,6 +229,7 @@
                 android:layout_height="77dp"
                 android:ems="10"
                 android:gravity="start|top"
+                android:hint="Masukkan deskripsi"
                 android:inputType="textMultiLine" />
 
         </LinearLayout>
@@ -255,17 +256,35 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/post"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="12dp"
-            android:background="#039BE5"
-            android:text="Post"
-            android:textColor="#000000"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kategori : " />
+
+            <EditText
+                android:id="@+id/edkategori_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint='Masukkan Dengan "," sebagai pemisah'
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#039BE5"
+                android:text="Post"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class barang implements Serializable {
-    private String id,nama,jenis,deskripsi,idpenjual,waktu_upload,waktu_selesai,waktu_mulai,lokasi,varian;
+    private String id,nama,jenis,deskripsi,idpenjual,waktu_upload,waktu_selesai,waktu_mulai,lokasi,varian,kategori;
     private int maksimal,harga;
 
     public barang() {
     }
 
-    public barang(String id, String nama, String jenis, String deskripsi, String idpenjual, String waktu_upload, String waktu_selesai, String waktu_mulai, String lokasi, String varian, int maksimal, int harga) {
+    public barang(String id, String nama, String jenis, String deskripsi, String idpenjual, String waktu_upload, String waktu_selesai, String waktu_mulai, String lokasi, String varian, String kategori, int maksimal, int harga) {
         this.id = id;
         this.nama = nama;
         this.jenis = jenis;
@@ -21,6 +21,7 @@ public class barang implements Serializable {
         this.waktu_mulai = waktu_mulai;
         this.lokasi = lokasi;
         this.varian = varian;
+        this.kategori = kategori;
         this.maksimal = maksimal;
         this.harga = harga;
     }
@@ -103,6 +104,14 @@ public class barang implements Serializable {
 
     public void setVarian(String varian) {
         this.varian = varian;
+    }
+
+    public String getKategori() {
+        return kategori;
+    }
+
+    public void setKategori(String kategori) {
+        this.kategori = kategori;
     }
 
     public int getMaksimal() {

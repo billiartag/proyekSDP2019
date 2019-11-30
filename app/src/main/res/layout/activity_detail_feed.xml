@@ -57,6 +57,7 @@
                     android:layout_marginTop="264dp"
                     android:fontFamily="Times New Roman"
                     android:text="TextView"
+                    android:textColor="#000000"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -68,6 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="300dp"
                     android:text="TextView"
+                    android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -75,20 +77,22 @@
 
                 <TextView
                     android:id="@+id/deskripsi"
-                    android:layout_width="344dp"
-                    android:layout_height="81dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
-                    android:paddingLeft="20dp"
                     android:paddingRight="10dp"
                     android:text="TextView"
+                    android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pemilik" />
+                    app:layout_constraintTop_toBottomOf="@+id/pemilik"
+                    app:layout_constraintVertical_bias="0.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout

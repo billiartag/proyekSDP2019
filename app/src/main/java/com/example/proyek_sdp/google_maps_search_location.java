@@ -59,6 +59,9 @@ public class google_maps_search_location extends FragmentActivity implements OnM
                 move.putExtra("lokasi",edverifikasi_search.getText().toString());
                 move.putExtra("time_dari",getIntent().getExtras().getString("time_dari"));
                 move.putExtra("time_ke",getIntent().getExtras().getString("time_ke"));
+                move.putExtra("kategori",getIntent().getExtras().getString("kategori"));
+                move.putExtra("deskripsi",getIntent().getExtras().getString("deskripsi"));
+                move.putExtra("harga",getIntent().getExtras().getString("harga"));
                 startActivity(move);
             }
         });

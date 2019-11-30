@@ -58,6 +58,9 @@ public class google_maps_current_location extends FragmentActivity implements On
                 move.putExtra("lokasi",edalamat_google_map.getText().toString());
                 move.putExtra("time_dari",getIntent().getExtras().getString("time_dari"));
                 move.putExtra("time_ke",getIntent().getExtras().getString("time_ke"));
+                move.putExtra("kategori",getIntent().getExtras().getString("kategori"));
+                move.putExtra("deskripsi",getIntent().getExtras().getString("deskripsi"));
+                move.putExtra("harga",getIntent().getExtras().getString("harga"));
                 startActivity(move);
             }
         });

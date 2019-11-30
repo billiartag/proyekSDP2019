@@ -64,6 +64,7 @@ public class myfeed_fragment extends Fragment {
                         data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
                         data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
                         data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
+                        data.setKategori(ds.child("kategori").getValue().toString());
                         kumpulanbarang.add(data);
                     }
                 }

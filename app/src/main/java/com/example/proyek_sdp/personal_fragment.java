@@ -179,7 +179,6 @@ public class personal_fragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent change=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
                 startActivityForResult(change, 1);
             }
         });
