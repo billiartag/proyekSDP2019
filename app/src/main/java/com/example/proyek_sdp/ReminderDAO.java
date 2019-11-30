@@ -13,10 +13,8 @@ public interface ReminderDAO {
 
     @Query("SELECT * FROM ReminderClass")
     List<ReminderClass> getAllReminder();
-
     @Insert
     void addNewReminder(ReminderClass obj);
-
     @Delete
     void deleteReminder(ReminderClass obj);
     @Update

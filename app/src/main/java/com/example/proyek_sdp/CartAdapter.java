@@ -2,6 +2,7 @@ package com.example.proyek_sdp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+
 import java.util.ArrayList;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
     private Context context;
-    private ArrayList<barang> list_barang;
+    private ArrayList<CartClass> list_barang;
 
-    public CartAdapter(Context context, ArrayList<barang> list_barang) {
+    public CartAdapter(Context context, ArrayList<CartClass> list_barang) {
         this.context = context;
         this.list_barang = list_barang;
     }
@@ -36,35 +41,65 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
-        holder.container_barang_cart.setBackgroundResource(android.R.drawable.alert_light_frame);
+        //get objek
+        CartClass cartSekarang = list_barang.get(position);
+        //isi ke view
+    //gambar barang
         //holder.img_barang_cart.setBackgroundResource(list_barang.get(position).getGambar());
-        holder.nama_barang.setText(list_barang.get(position).getNama());
-        //holder.harga_barang.setText("Rp "+list_barang.get(position).getHarga());
+        FirebaseStorage.getInstance().getReference().child("img_barang").child(cartSekarang.getId_barang_cart()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context).load(uri).into(holder.img_barang_cart);
+            }
+        });
+    //nama barang
+        holder.nama_barang.setText(cartSekarang.getNama_barang_cart());
+    //harga barang
+        holder.harga_barang.setText("Rp "+cartSekarang.getHarga_barang());
+    //barang wishlist
         holder.wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Ditambah Ke Wishlist", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, cartSekarang.getId_barang_cart()+"", Toast.LENGTH_SHORT).show();
             }
         });
+    //barang del cart
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                list_barang.remove(position);
-                notifyDataSetChanged();
+                ((cart)context).deleteEntryCart(cartSekarang);
+                Toast.makeText(context, "barang telah dihapus dari cart", Toast.LENGTH_SHORT).show();
             }
         });
+    //barang minus cart
         holder.min.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(Integer.parseInt(holder.total_barang.getText().toString())>1){
-                    holder.total_barang.setText(Integer.parseInt(holder.total_barang.getText().toString())-1+"");
+                    CartClass cartTemp = cartSekarang;
+                    cartTemp.setJumlah_barang(cartTemp.getJumlah_barang()-1);
+                    ((cart)context).updateEntryCart(cartTemp);
+                    holder.total_barang.setText(cartTemp.getJumlah_barang()+"");
+                }
+                else{
+                    //nilai kosong then hapus
+                    ((cart)context).deleteEntryCart(cartSekarang);
+                    Toast.makeText(context, "barang telah dihapus dari cart", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    //barang plus cart
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.total_barang.setText(Integer.parseInt(holder.total_barang.getText().toString())+1+"");
+                if(cartSekarang.getJumlah_barang()+1<=cartSekarang.getJumlah_maks_barang()){
+                    CartClass cartTemp = cartSekarang;
+                    cartTemp.setJumlah_barang(cartTemp.getJumlah_barang()+1);
+                    ((cart)context).updateEntryCart(cartTemp);
+                    holder.total_barang.setText(cartTemp.getJumlah_barang()+"");}
+                else{
+                    Toast.makeText(context, "Maaf, titipan barang sudah melebihi batas titipan", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -77,8 +77,7 @@ public class reminder extends AppCompatActivity {
     public void insertEntry(ReminderClass obj){
         new insertReminder().execute(obj);
     }
-    public void getData
-            (){
+    public void getData(){
         new getAllReminder().execute();
     }
     public void removeEntry(ReminderClass obj) {
