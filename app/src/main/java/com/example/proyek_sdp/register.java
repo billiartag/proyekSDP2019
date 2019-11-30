@@ -145,9 +145,16 @@ public class register extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
-                                            Toast.makeText(register.this, "Register berhasil", Toast.LENGTH_SHORT).show();
-                                            startActivity(new Intent(getApplicationContext(),home.class));
-                                            finish();
+                                            firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(register.this, new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if (task.isSuccessful()){
+                                                        Toast.makeText(register.this, "Register berhasil", Toast.LENGTH_SHORT).show();
+                                                        startActivity(new Intent(getApplicationContext(),home.class));
+                                                        finish();
+                                                    }
+                                                }
+                                            });
                                         }
                                     }
                                 });

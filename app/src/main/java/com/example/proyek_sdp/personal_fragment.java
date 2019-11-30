@@ -89,13 +89,14 @@ public class personal_fragment extends Fragment {
                             @Override
                             public void onSuccess(Uri uri) {
                                 if (getActivity()!=null){
+                                    profil_picture_user.setBackgroundResource(0);
                                     Glide.with(getActivity()).load(uri).into(profil_picture_user);
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                profil_picture_user.setBackgroundResource(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                                profil_picture_user.setBackgroundResource(R.drawable.default_profil);
                             }
                         });
                         FirebaseStorage.getInstance().getReference().child("foto_ktp").child(FirebaseAuth.getInstance().getCurrentUser().getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
