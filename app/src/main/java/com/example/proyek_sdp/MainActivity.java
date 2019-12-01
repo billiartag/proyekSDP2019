@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }.start();
                 }
-                else {
-                    Toast.makeText(MainActivity.this, "hi", Toast.LENGTH_SHORT).show();
-                }
             }
         };
         btncontinue.setOnClickListener(new View.OnClickListener() {
