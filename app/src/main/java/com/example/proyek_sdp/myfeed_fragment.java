@@ -43,6 +43,7 @@ public class myfeed_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_myfeed,container,false);;
         setHasOptionsMenu(true);
+        ((home) getActivity()).setActionBarTitle("TitipAku");
         rv_myfeed=myview.findViewById(R.id.rv_myfeed);
         databaseReference= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -95,9 +95,10 @@ public class Login extends AppCompatActivity {
                                                     finish();
                                                 }
                                                 if(berhasil_login==false){
-                                                    Toast.makeText(Login.this, "login gagal", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(Login.this, "Password salah", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
+
                                         });
                                     }
                                     else {

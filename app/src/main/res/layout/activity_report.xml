@@ -16,17 +16,16 @@
         android:textSize="24sp" />
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/img_profil_report"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/img8" />
+        android:layout_height="134dp" />
 
     <TextView
-        android:id="@+id/textView38"
+        android:id="@+id/nama_profil_report"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Nama : CosmozMagicJar" />
+        android:text="Nama : " />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +49,7 @@
                 android:textColor="@color/black" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/masalah_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -72,7 +71,7 @@
                 android:textColor="@color/black" />
 
             <EditText
-                android:id="@+id/editText4"
+                android:id="@+id/penjelasan_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

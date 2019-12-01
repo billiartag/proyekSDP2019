@@ -113,7 +113,7 @@ public class register extends AppCompatActivity {
                     baru.setPhone(phone.getText().toString());
                     baru.setBirthdate(birthday.getText().toString());
                     baru.setPassword(password.getText().toString());
-                    baru.setRating(1);
+                    baru.setRating(0);
                     baru.setStatus(1);
                     baru.setSaldo(0);
                     baru.setVerifikasi_ktp(0);

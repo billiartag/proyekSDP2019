@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,18 +15,29 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 public class detailprofil extends AppCompatActivity {
     ImageView profil_pict;
     TextView nama;
-    TextView rating;
+    TextView rating,follow_detail_profil;
     Button chat;
     ImageButton report;
+    boolean difollow=false;
+    DatabaseReference databaseReference_follow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +48,8 @@ public class detailprofil extends AppCompatActivity {
         nama=findViewById(R.id.username);
         profil_pict=findViewById(R.id.profil_pict);
         rating=findViewById(R.id.rating);
+        follow_detail_profil=findViewById(R.id.follow_detail_profil);
+        //start program
         user x= (user) getIntent().getExtras().getSerializable("user");
         nama.setText("Nama : "+x.getNama());
         rating.setText("Rating : "+x.getRating());
@@ -60,6 +74,70 @@ public class detailprofil extends AppCompatActivity {
                 startActivity(move);
             }
         });
+        //follow
+        databaseReference_follow= FirebaseDatabase.getInstance().getReference().child("FollowDatabase");
+        databaseReference_follow.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("following").getValue().toString().equals(x.getEmail()) && ds.child("id_user").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        follow_detail_profil.setText("Unfollow");
+                        follow_detail_profil.setTextColor(Color.parseColor("#E53935"));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        follow_detail_profil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(follow_detail_profil.getText().toString().equals("Follow")){
+                    String Key = databaseReference_follow.push().getKey();
+                    follow_class follow_user=new follow_class();
+                    follow_user.setId_user(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    follow_user.setId_follow(Key);
+                    follow_user.setFollowing(x.getEmail());
+                    databaseReference_follow.child(Key).setValue(follow_user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            follow_detail_profil.setText("Unfollow");
+                            follow_detail_profil.setTextColor(Color.parseColor("#E53935"));
+                            Toast.makeText(detailprofil.this, "Follow Berhasil!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else {
+                    databaseReference_follow.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if(ds.child("following").getValue().toString().equals(x.getEmail()) && ds.child("id_user").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                    databaseReference_follow.child(ds.getKey()).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            follow_detail_profil.setText("Follow");
+                                            follow_detail_profil.setTextColor(Color.parseColor("#00ACC1"));
+                                            Toast.makeText(detailprofil.this, "Unfollow Berhasil!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,10 +148,16 @@ public class detailprofil extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.close){
+            Intent move=new Intent(getApplicationContext(), home.class);
+            move.putExtra("profil","");
+            startActivity(move);
             finish();
         }
         else{
             Intent move=new Intent(getApplicationContext(),report.class);
+            Bundle b = new Bundle();
+            b.putSerializable("user", getIntent().getExtras().getSerializable("user"));
+            move.putExtras(b);
             startActivity(move);
         }
         return true;

@@ -55,13 +55,14 @@ public class personal_fragment extends Fragment {
     Button btn_edit_profil,btn_verifikasi_ktp;
     Bitmap passing_gambar;
     DatabaseReference databaseReference;
-    TextView status_verifikasi_ktp;
+    TextView status_verifikasi_ktp,followers_profil,following_profil;
     int saldo=0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_personal,container,false);
         setHasOptionsMenu(true);
+        ((home) getActivity()).setActionBarTitle("TitipAku");
         profil_picture_user=myview.findViewById(R.id.picture_profil_user);
         edname_profil=myview.findViewById(R.id.edname_profil);
         edemail_profil=myview.findViewById(R.id.edemail_profil);
@@ -71,12 +72,55 @@ public class personal_fragment extends Fragment {
         gambar_ktp_profil=myview.findViewById(R.id.gambar_ktp_profil);
         ednotelp_profil=myview.findViewById(R.id.edphone_profil);
         status_verifikasi_ktp=myview.findViewById(R.id.status_verifikasi_ktp);
-
+        followers_profil=myview.findViewById(R.id.followers_profil);
+        following_profil=myview.findViewById(R.id.following_profil);
+        //start program
         edemail_profil.setEnabled(false);
         edname_profil.setEnabled(false);
         ednotelp_profil.setEnabled(false);
         edtanggal_lahir_profil.setEnabled(false);
+        //tekan followers
+        followers_profil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent move=new Intent(getActivity(),list_all_follow.class);
+                move.putExtra("tipe_follow","0");
+                startActivity(move);
+            }
+        });
+        //tekan following
+        following_profil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent move=new Intent(getActivity(),list_all_follow.class);
+                move.putExtra("tipe_follow","1");
+                startActivity(move);
+            }
+        });
+        //ngambil data followers
+        FirebaseDatabase.getInstance().getReference().child("FollowDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int ctr_following=0;
+                int ctr_followers=0;
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id_user").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        ctr_following++;
+                    }
+                    if(ds.child("following").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        ctr_followers++;
+                    }
+                }
+                following_profil.setText(ctr_following+"\nFollowing");
+                followers_profil.setText(ctr_followers+"\nFollowers");
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        //ngambil data user
         databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

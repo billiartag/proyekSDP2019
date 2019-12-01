@@ -46,6 +46,9 @@ public class home extends AppCompatActivity {
         else if(getIntent().hasExtra("topup")){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new personal_fragment()).commit();
         }
+        else if(getIntent().hasExtra("profil")){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();
+        }
         else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();
         }

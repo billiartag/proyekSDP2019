@@ -88,7 +88,7 @@ public class detail_feed extends AppCompatActivity {
         tipe.setText(x.getJenis().toString());
         nama.setText(x.getNama());
         harga.setText("Harga Barang : Rp. "+x.getHarga());
-        deskripsi.setText("Deskripsi : "+x.getDeskripsi());
+        deskripsi.setText("Deskripsi : \n"+x.getDeskripsi());
         FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
