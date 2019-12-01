@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +44,8 @@ public class detail_feed extends AppCompatActivity {
     Button isi_wishlist;
     Button beli;
     Button nego;
+    RadioGroup radioGroup_varian_feed;
+    String hasil_radio_varian="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +64,9 @@ public class detail_feed extends AppCompatActivity {
         pemilik=findViewById(R.id.pemilik);
         durasi=findViewById(R.id.durasi);
         max=findViewById(R.id.max);
+        radioGroup_varian_feed=findViewById(R.id.radioGroup_varian_feed);
+
+        //start program
         barang x= (barang)getIntent().getExtras().getSerializable("barang");
         FirebaseStorage.getInstance().getReference().child("img_barang").child(x.getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -84,7 +93,36 @@ public class detail_feed extends AppCompatActivity {
 
             }
         });
+        //untuk ngatur warna radio buttonnya
+        String[] split_varian=x.getVarian().split(",");
+        for (int i=0;i<split_varian.length;i++){
+            RadioButton varian_baru=new RadioButton(getApplicationContext());
+            varian_baru.setText(split_varian[i]);
+            varian_baru.setTextColor(Color.BLACK);
+            int[][] states = new int[][] {
+                    new int[] { android.R.attr.state_enabled}, // enabled
+                    new int[] {-android.R.attr.state_enabled}, // disabled
+                    new int[] {-android.R.attr.state_checked}, // unchecked
+                    new int[] { android.R.attr.state_pressed}  // pressed
+            };
 
+            int[] colors = new int[] {
+                    Color.BLACK,
+                    Color.RED,
+                    Color.GREEN,
+                    Color.BLUE
+            };
+            ColorStateList list_color=new ColorStateList(states,colors);
+            varian_baru.setButtonTintList(list_color);
+            varian_baru.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    hasil_radio_varian=varian_baru.getText().toString();
+                    Toast.makeText(detail_feed.this, hasil_radio_varian, Toast.LENGTH_SHORT).show();
+                }
+            });
+            radioGroup_varian_feed.addView(varian_baru);
+        }
         durasi.setText("Durasi : "+x.getWaktu_selesai());
         max.setText("Max barang yang dapat dipesan : "+x.getMaksimal());
         if (tipe.getText().toString().equals("Flash Sale")){

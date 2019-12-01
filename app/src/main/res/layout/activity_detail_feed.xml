@@ -17,19 +17,19 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tipe"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="TextView"
-                    android:textAlignment="center"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tipe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="450dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
@@ -56,7 +56,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="264dp"
                     android:fontFamily="Times New Roman"
-                    android:text="TextView"
                     android:textColor="#000000"
                     android:textSize="24sp"
                     android:textStyle="bold"
@@ -68,7 +67,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="300dp"
-                    android:text="TextView"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -79,20 +77,59 @@
                     android:id="@+id/deskripsi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="92dp"
                     android:paddingRight="10dp"
-                    android:text="TextView"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pemilik"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/pemilik" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginEnd="288dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="Varian : "
+                    android:textColor="#000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pemilik" />
+
+                <HorizontalScrollView
+                    android:id="@+id/horizontalScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="9dp"
+                    app:layout_constraintBottom_toTopOf="@+id/deskripsi"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView30">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RadioGroup
+                            android:id="@+id/radioGroup_varian_feed"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="8dp"
+                            android:orientation="horizontal" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -107,7 +144,6 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="0.2"
                     android:background="#00FF0000"
-                    android:text="TextView"
                     android:textColor="#FF1744"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -126,7 +162,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:background="#004CAF50"
-                android:text="TextView"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -137,7 +172,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:background="#004CAF50"
-                android:text="TextView"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
