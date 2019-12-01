@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -22,13 +24,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.Serializable;
 
@@ -46,6 +55,8 @@ public class detail_feed extends AppCompatActivity {
     Button nego;
     RadioGroup radioGroup_varian_feed;
     String hasil_radio_varian="";
+    boolean sudahdifavorite=false;
+    DatabaseReference databaseReference_wishlist;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,26 +146,69 @@ public class detail_feed extends AppCompatActivity {
             tipe.setTextColor(Color.WHITE);
             beli.setText("Lakukan Pre Order");
         }
-       /* isi_wishlist.setOnClickListener(new View.OnClickListener() {
+        //wishlist
+        databaseReference_wishlist= FirebaseDatabase.getInstance().getReference().child("WishListDatabase");
+        databaseReference_wishlist.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Tambah ke WishList Berhasil ", Toast.LENGTH_SHORT).show();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id_barang").getValue().toString().equals(x.getId()) && ds.child("id_user").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        imghati.setImageResource(R.drawable.ic_hatimerah_black_24dp);
+                        sudahdifavorite = true;
+                    }
+                }
             }
-        });*/
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         imghati.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int sudahfavorite = 1;
-                boolean sudahada = false;
 
-                if(sudahfavorite == 1) {
-                //    sudahada = true;
-                    imghati.setImageResource(R.drawable.ic_hatimerah_black_24dp);
-                    Toast.makeText(getApplicationContext(), "Tambah ke WishList Berhasil ", Toast.LENGTH_SHORT).show();
-                }/*else if(sudahada == true) {
-                    Toast.makeText(getApplicationContext(), "Removed From WishList", Toast.LENGTH_SHORT).show();
-                    imghati.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                }*/
+                if(sudahdifavorite == false) {
+                    //isi wishlist ke database
+                    String Key = databaseReference_wishlist.push().getKey();
+                    WishList_class wish_baru=new WishList_class();
+                    wish_baru.setId_user(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    wish_baru.setId_wishlist(Key);
+                    wish_baru.setId_barang(x.getId());
+                    databaseReference_wishlist.child(Key).setValue(wish_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            imghati.setImageResource(R.drawable.ic_hatimerah_black_24dp);
+                            Toast.makeText(getApplicationContext(), "Berhasil Di Tambah Ke WishList!", Toast.LENGTH_SHORT).show();
+                            sudahdifavorite = true;
+                        }
+                    });
+                }else if(sudahdifavorite == true) {
+                    databaseReference_wishlist.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if(ds.child("id_barang").getValue().toString().equals(x.getId()) && ds.child("id_user").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                    databaseReference_wishlist.child(ds.getKey()).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            imghati.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                                            Toast.makeText(getApplicationContext(), "Berhasil Menghapus Barang Dari Wishlist!", Toast.LENGTH_SHORT).show();
+                                            sudahdifavorite=false;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
             }
         });
 

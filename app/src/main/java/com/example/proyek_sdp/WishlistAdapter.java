@@ -2,6 +2,7 @@ package com.example.proyek_sdp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -34,20 +39,25 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
 
     @Override
     public void onBindViewHolder(@NonNull WishlistViewHolder holder, int position) {
-//        holder.namabarang.setText(list_barang.get(position).getNama());
-//        holder.imgbarang.setBackgroundResource(list_barang.get(position).getGambar());
-//        holder.cari.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                barang x=list_barang.get(position);
-//                Bundle b = new Bundle();
-//                b.putSerializable("barang", x);
-//                Intent intent = new Intent(context, detail_feed.class);
-//                intent.putExtras(b);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                context.startActivity(intent);
-//            }
-//        });
+        holder.namabarang.setText(list_barang.get(position).getNama());
+        FirebaseStorage.getInstance().getReference().child("img_barang").child(list_barang.get(position).getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context).load(uri).into(holder.imgbarang);
+            }
+        });
+        holder.cari.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                barang x=list_barang.get(position);
+                Bundle b = new Bundle();
+                b.putSerializable("barang", x);
+                Intent intent = new Intent(context, detail_feed.class);
+                intent.putExtras(b);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

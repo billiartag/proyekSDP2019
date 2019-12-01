@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".report"></activity>
         <activity android:name=".cart" />
-        <activity android:name=".wishlist"></activity>
+        <activity android:name=".wishlist_activity"></activity>
         <activity android:name=".detailprofil" />
         <activity android:name=".detail_feed" />
         <activity android:name=".image_viewer" />
