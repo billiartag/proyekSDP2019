@@ -2,26 +2,30 @@ package com.example.proyek_sdp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+
 import java.util.ArrayList;
 
 public class AkuNegoAdapter extends RecyclerView.Adapter<AkuNegoAdapter.AkuNegoViewHolder> {
     private Context context;
-    private ArrayList<Nego> list_nego;
-    private ArrayList<barang> list_barang;
+    private ArrayList<barang_nego> list_nego;
 
-    public AkuNegoAdapter(Context context, ArrayList<Nego> list_nego, ArrayList<barang> list_barang) {
+    public AkuNegoAdapter(Context context, ArrayList<barang_nego> list_nego) {
         this.context = context;
         this.list_nego = list_nego;
-        this.list_barang = list_barang;
     }
 
     @NonNull
@@ -34,19 +38,28 @@ public class AkuNegoAdapter extends RecyclerView.Adapter<AkuNegoAdapter.AkuNegoV
 
     @Override
     public void onBindViewHolder(@NonNull AkuNegoViewHolder holder, int position) {
-        barang temp = null;
-        for (barang r:list_barang) {
-            //kalau idnya sama ambil jadi temp
+        barang barang_temp = list_nego.get(position).getBarang();
+        Nego nego_temp = list_nego.get(position).getNego();
+try {
+    FirebaseStorage.getInstance().getReference().child("img_barang").child(barang_temp.getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        @Override
+        public void onSuccess(Uri uri) {
+            Glide.with(context).load(uri).into(holder.gambarNego);
         }
-//        holder.namaBarang.setText("Nama: "temp.getNama()+"");
-//        holder.hargaAwal.setText(temp.getHarga()+"");
-        holder.hargaNego.setText("Aku nego: "+list_nego.get(position).getNominal_nego()+"");
-        holder.sisNego.setText("Sisa nego: "+list_nego.get(position).getSisa_nego()+"");
-        String status_nego = list_nego.get(position).getStatus_nego();
+    });
+}catch (Exception e){}
+
+        holder.namaBarang.setText("Nama: "+barang_temp.getNama()+"");
+        holder.hargaAwal.setText("Harga awal: "+barang_temp.getHarga()+"");
+        holder.varianNego.setText("Varian: "+nego_temp.getVarian()+"");
+
+        holder.hargaNego.setText("Aku nego: "+nego_temp.getNominal_nego()+"");
+        holder.sisNego.setText("Sisa nego: "+nego_temp.getSisa_nego()+"");
+        String status_nego = nego_temp.getStatus_nego();
         holder.statusNego.setText("Status: "+status_nego+"");
         if(status_nego.equalsIgnoreCase("tolak")){
             holder.statusNego.setTextColor(Color.RED);
-            if(list_nego.get(position).getSisa_nego()>0){
+            if(nego_temp.getSisa_nego()>0){
                 holder.btnNegoUlang.setVisibility(View.VISIBLE);}
             else{
                 holder.btnNegoUlang.setVisibility(View.GONE);
@@ -54,11 +67,14 @@ public class AkuNegoAdapter extends RecyclerView.Adapter<AkuNegoAdapter.AkuNegoV
         }
         else if(status_nego.equalsIgnoreCase("terima")){
             holder.statusNego.setTextColor(Color.BLUE);
+            holder.btnNegoUlang.setVisibility(View.VISIBLE);
+            holder.btnNegoUlang.setText("Lanjut beli");
+            holder.btnNegoUlang.setBackgroundColor(Color.GREEN);
         }
         holder.btnNegoUlang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            ((AkuNego)context).akuNego(list_nego.get(position).getId_nego(), list_nego.get(position).getSisa_nego());
+            ((AkuNego)context).akuNego(list_nego.get(position));
             }
         });
     }
@@ -75,6 +91,8 @@ public class AkuNegoAdapter extends RecyclerView.Adapter<AkuNegoAdapter.AkuNegoV
         TextView hargaNego;
         TextView sisNego;
         TextView statusNego;
+        TextView varianNego;
+        ImageView gambarNego;
         Button btnTolak, btnTerima,btnNegoUlang;
         public AkuNegoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -83,9 +101,11 @@ public class AkuNegoAdapter extends RecyclerView.Adapter<AkuNegoAdapter.AkuNegoV
             hargaNego= itemView.findViewById(R.id.textViewLayoutNegoHargaBaru);
             sisNego= itemView.findViewById(R.id.textViewLayoutNegoSisaNego);
             statusNego= itemView.findViewById(R.id.textViewLayoutNegoStatusNego);
+            varianNego= itemView.findViewById(R.id.textViewLayoutNegoVarian);
             btnTolak= itemView.findViewById(R.id.buttonLayoutNegoTolak);
             btnTerima= itemView.findViewById(R.id.buttonLayoutNegoTerima);
             btnNegoUlang= itemView.findViewById(R.id.buttonLayoutNegoUlang);
+            gambarNego = itemView.findViewById(R.id.imageViewLayoutNego);
             btnTerima.setVisibility(View.GONE);
             btnTolak.setVisibility(View.GONE);
         }

@@ -134,7 +134,7 @@ public class cart extends AppCompatActivity {
                     boolean isAdaSudah = false;
                     CartClass kalau_ada = null;
                     for (CartClass r:kumpulanbarang) {
-                        if(r.getId_barang_cart().equalsIgnoreCase(b.getId_barang_cart())){
+                        if(r.getId_barang_cart().equalsIgnoreCase(b.getId_barang_cart())&&r.getVarian_barang().equalsIgnoreCase(b.getVarian_barang())){
                             isAdaSudah=true;
                             kalau_ada = r;
                             break;
