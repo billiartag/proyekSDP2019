@@ -26,9 +26,13 @@ import java.util.ArrayList;
 
 public class home_fragment extends Fragment {
     ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
+    ArrayList<barang> kumpulanpreorder = new ArrayList<barang>();
     ArrayList<user> kumpulanuser = new ArrayList<user>();
+    ArrayList<voucher> kumpulanpromo = new ArrayList<voucher>();
     RecyclerView rv_topuser;
     RecyclerView rv_flashsale;
+    RecyclerView rv_list_promo;
+    RecyclerView rv_pre_order;
     DatabaseReference databaseReference;
     @Nullable
     @Override
@@ -37,6 +41,34 @@ public class home_fragment extends Fragment {
         setHasOptionsMenu(true);
         rv_topuser=myview.findViewById(R.id.rv_topuser);
         rv_flashsale=myview.findViewById(R.id.rv_flashsale);
+        rv_list_promo=myview.findViewById(R.id.rv_list_promo);
+        rv_pre_order=myview.findViewById(R.id.rv_preorder_follow);
+
+        //cetak promo
+        FirebaseDatabase.getInstance().getReference().child("Voucher").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    voucher x=new voucher();
+                    x.setNama_promo(ds.child("nama_promo").getValue().toString());
+                    x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
+                    x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
+                    x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
+                    x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
+                    x.setStatus_promo(ds.child("status_promo").getValue().toString());
+                    kumpulanpromo.add(x);
+                }
+                rv_list_promo.setHasFixedSize(true);
+                rv_list_promo.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                ListPromoAdapter adapter = new ListPromoAdapter(getActivity(), kumpulanpromo);
+                rv_list_promo.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //cetak icon top seller
         databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
@@ -83,46 +115,122 @@ public class home_fragment extends Fragment {
             }
         });
 
-
-        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+        //flash sale
+        FirebaseDatabase.getInstance().getReference().child("FollowDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString())){
-                        if(ds.child("jenis").getValue().toString().equals("Flash Sale")){
-                            barang data=new barang();
-                            data.setId(ds.child("id").getValue().toString());
-                            data.setDeskripsi(ds.child("deskripsi").getValue().toString());
-                            data.setIdpenjual(ds.child("idpenjual").getValue().toString());
-                            data.setJenis(ds.child("jenis").getValue().toString());
-                            data.setNama(ds.child("nama").getValue().toString());
-                            data.setLokasi(ds.child("lokasi").getValue().toString());
-                            data.setVarian(ds.child("varian").getValue().toString());
-                            data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
-                            data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
-                            data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
-                            data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
-                            data.setKategori(ds.child("kategori").getValue().toString());
-                            kumpulanbarang.add(data);
-                        }
+                    if(ds.child("id_user").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                                for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
+                                    if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds2.child("idpenjual").getValue().toString())){
+                                        if(ds2.child("jenis").getValue().toString().equals("Flash Sale") && ds2.child("idpenjual").getValue().toString().equals(ds.child("following").getValue().toString())){
+                                            barang data=new barang();
+                                            data.setId(ds2.child("id").getValue().toString());
+                                            data.setDeskripsi(ds2.child("deskripsi").getValue().toString());
+                                            data.setIdpenjual(ds2.child("idpenjual").getValue().toString());
+                                            data.setJenis(ds2.child("jenis").getValue().toString());
+                                            data.setNama(ds2.child("nama").getValue().toString());
+                                            data.setLokasi(ds2.child("lokasi").getValue().toString());
+                                            data.setVarian(ds2.child("varian").getValue().toString());
+                                            data.setMaksimal(Integer.parseInt(ds2.child("maksimal").getValue().toString()));
+                                            data.setWaktu_selesai(ds2.child("waktu_selesai").getValue().toString());
+                                            data.setWaktu_upload(ds2.child("waktu_upload").getValue().toString());
+                                            data.setHarga(Integer.parseInt(ds2.child("harga").getValue().toString()));
+                                            data.setKategori(ds2.child("kategori").getValue().toString());
+                                            kumpulanbarang.add(data);
+                                        }
+                                    }
+                                }
+                                //cetak barang flashsale
+                                rv_flashsale.setHasFixedSize(true);
+                                rv_flashsale.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                                TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanbarang);
+                                adapterflashsale.setOnItemClickListener(new OnItemClickListener() {
+                                    @Override
+                                    public void onClick(View view, int position) {
+                                        barang x = kumpulanbarang.get(position);
+                                        Bundle b = new Bundle();
+                                        b.putSerializable("barang", x);
+                                        Intent intent = new Intent(getActivity(), detail_feed.class);
+                                        intent.putExtras(b);
+                                        startActivity(intent);
+                                    }
+                                });
+                                rv_flashsale.setAdapter(adapterflashsale);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 }
-                //cetak barang flashsale
-                rv_flashsale.setHasFixedSize(true);
-                rv_flashsale.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
-                TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanbarang);
-                adapterflashsale.setOnItemClickListener(new OnItemClickListener() {
-                    @Override
-                    public void onClick(View view, int position) {
-                        barang x = kumpulanbarang.get(position);
-                        Bundle b = new Bundle();
-                        b.putSerializable("barang", x);
-                        Intent intent = new Intent(getActivity(), detail_feed.class);
-                        intent.putExtras(b);
-                        startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //cetak pre order
+        FirebaseDatabase.getInstance().getReference().child("FollowDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id_user").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                                for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
+                                    if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds2.child("idpenjual").getValue().toString())){
+                                        if(ds2.child("jenis").getValue().toString().equals("Pre Order") && ds2.child("idpenjual").getValue().toString().equals(ds.child("following").getValue().toString())){
+                                            barang data=new barang();
+                                            data.setId(ds2.child("id").getValue().toString());
+                                            data.setDeskripsi(ds2.child("deskripsi").getValue().toString());
+                                            data.setIdpenjual(ds2.child("idpenjual").getValue().toString());
+                                            data.setJenis(ds2.child("jenis").getValue().toString());
+                                            data.setNama(ds2.child("nama").getValue().toString());
+                                            data.setLokasi(ds2.child("lokasi").getValue().toString());
+                                            data.setVarian(ds2.child("varian").getValue().toString());
+                                            data.setMaksimal(Integer.parseInt(ds2.child("maksimal").getValue().toString()));
+                                            data.setWaktu_selesai(ds2.child("waktu_selesai").getValue().toString());
+                                            data.setWaktu_upload(ds2.child("waktu_upload").getValue().toString());
+                                            data.setHarga(Integer.parseInt(ds2.child("harga").getValue().toString()));
+                                            data.setKategori(ds2.child("kategori").getValue().toString());
+                                            kumpulanpreorder.add(data);
+                                        }
+                                    }
+                                }
+                                //cetak barang flashsale
+                                rv_pre_order.setHasFixedSize(true);
+                                rv_pre_order.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                                TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanpreorder);
+                                adapterflashsale.setOnItemClickListener(new OnItemClickListener() {
+                                    @Override
+                                    public void onClick(View view, int position) {
+                                        barang x = kumpulanpreorder.get(position);
+                                        Bundle b = new Bundle();
+                                        b.putSerializable("barang", x);
+                                        Intent intent = new Intent(getActivity(), detail_feed.class);
+                                        intent.putExtras(b);
+                                        startActivity(intent);
+                                    }
+                                });
+                                rv_pre_order.setAdapter(adapterflashsale);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
-                });
-                rv_flashsale.setAdapter(adapterflashsale);
+                }
             }
 
             @Override
