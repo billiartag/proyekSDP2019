@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,17 +75,9 @@ public class nego_user extends AppCompatActivity {
         Intent i = getIntent();
         if(i.getExtras()!=null){
             jenis_nego = i.getStringExtra("jenis_nego");
-    //nego baru -- dari page barang
-    //nego lama -- dari page profile
-            if(jenis_nego.equalsIgnoreCase("baru")){
-                barang_nego_sek = (barang) i.getSerializableExtra("barang");
-                varian_nego = i.getStringExtra("varian_nego");
-            }
-            else if(jenis_nego.equalsIgnoreCase("lama")){
-                barang_nego barangNego = i.getParcelableExtra("nego_lama");
-                barang_nego_sek = barangNego.getBarang();
-                varian_nego = barangNego.getBarang().getVarian();
-            }
+            barang_nego_sek = (barang) i.getSerializableExtra("barang");
+            varian_nego = i.getStringExtra("varian_nego");
+            id_nego = i.getStringExtra("idnego");
 
             //ambil dari db
             databaseReference_nego.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -105,27 +98,21 @@ public class nego_user extends AppCompatActivity {
                             sisa_nego = Integer.parseInt(row.child("sisa_nego").getValue().toString());
                             jenis_nego="lama";
                         }
-                        else{
-                            //kalau gaada..
-//                            jenis_nego="baru";
-                        }
                     }
                     sisaNego.setText("Sisa nego: "+sisa_nego);
-                    if(jenis_nego.equalsIgnoreCase("baru")){
-                    }
-                    else{ //karna sudah ada sebelummnya, maka tampilin statusnya
+                    if(jenis_nego.equalsIgnoreCase("lama")){
+                        //karna sudah ada sebelummnya, maka tampilin statusnya
+                        nego_baru=false;
                         if(status_nego_db.equalsIgnoreCase("pending")){
                             //pending
                             btnNego.setEnabled(false);
                             hargaBaru.setEnabled(false);
                             Toast.makeText(nego_user.this, "Silahkan tunggu balasan nego anda...", Toast.LENGTH_SHORT).show();
                         }
-                        else if(status_nego_db.equalsIgnoreCase("gagal")){
+                        else if(status_nego_db.equalsIgnoreCase("tolak")){
                             //dibatalin
                             if(sisa_nego>0){
                                 //masih bisa nego lagi
-                                jenis_nego="nego_lama";
-                                nego_baru=false;
                                 Toast.makeText(nego_user.this, "Nego sebelumnya ditolak, yuk negoin lagi!", Toast.LENGTH_SHORT).show();
                             }
                             else{
@@ -145,10 +132,8 @@ public class nego_user extends AppCompatActivity {
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                 }
             });
-
 
             //masukin detail disini
             namaBarang.setText(barang_nego_sek.getNama()+"");
@@ -180,7 +165,7 @@ public class nego_user extends AppCompatActivity {
                         Calendar waktu_sekarang  = new GregorianCalendar();
                         String waktu = waktu_sekarang.get(Calendar.DATE)+"-"+waktu_sekarang.get(Calendar.MONTH)+"-"+waktu_sekarang.get(Calendar.YEAR)+"-"+waktu_sekarang.get(Calendar.HOUR_OF_DAY)+"-"+waktu_sekarang.get(Calendar.MINUTE);
                         temp_nego.setWaktu_nego(waktu);
-                        temp_nego.setSisa_nego(sisa_nego);
+                        temp_nego.setSisa_nego(sisa_nego-1);
                         temp_nego.setId_seller(barang_nego_sek.getIdpenjual());
                         temp_nego.setId_user_nego(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                         //masukin ke db
@@ -200,15 +185,25 @@ public class nego_user extends AppCompatActivity {
                                             }
                                         });
                             }
-
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
                             }
                         });
                     }
-                    else{
-                        //nego yang diulangin.
+                    else{//nego yang lama
+                        //init db nego
+                        Toast.makeText(nego_user.this, "masuk", Toast.LENGTH_SHORT).show();
+                        databaseReference_nego.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                databaseReference_nego.child(id_nego).child("status_nego").setValue("pending");
+                                databaseReference_nego.child(id_nego).child("sisa_nego").setValue(sisa_nego-1);
+                                databaseReference_nego.child(id_nego).child("nominal_nego").setValue(Integer.parseInt(nilai_nego));
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
                     }
                     finish();
                 }
@@ -218,13 +213,11 @@ public class nego_user extends AppCompatActivity {
             }
         });
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.close){

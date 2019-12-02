@@ -74,7 +74,13 @@ try {
         holder.btnNegoUlang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            ((AkuNego)context).akuNego(list_nego.get(position));
+                if(status_nego.equalsIgnoreCase("terima")){
+                    ((AkuNego)context).akuBeli(list_nego.get(position));
+                }
+                else
+                {
+                    ((AkuNego)context).akuNego(list_nego.get(position));
+                }
             }
         });
     }

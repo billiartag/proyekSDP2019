@@ -1,6 +1,9 @@
 package com.example.proyek_sdp;
 
-public class Nego {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Nego implements Parcelable {
     String id_nego;
     String status_nego;
     String id_trans_nego;
@@ -22,6 +25,31 @@ public class Nego {
         this.waktu_nego = waktu_nego;
     }
 
+    protected Nego(Parcel in) {
+        id_nego = in.readString();
+        status_nego = in.readString();
+        id_trans_nego = in.readString();
+        nominal_nego = in.readInt();
+        sisa_nego = in.readInt();
+        waktu_nego = in.readString();
+        id_seller = in.readString();
+        id_user_nego = in.readString();
+        varian = in.readString();
+        id_barang_nego = in.readString();
+    }
+
+    public static final Creator<Nego> CREATOR = new Creator<Nego>() {
+        @Override
+        public Nego createFromParcel(Parcel in) {
+            return new Nego(in);
+        }
+
+        @Override
+        public Nego[] newArray(int size) {
+            return new Nego[size];
+        }
+    };
+
     public String getId_nego() {return id_nego;}
     public void setId_nego(String id_nego) {this.id_nego = id_nego;}
     public String getStatus_nego() {return status_nego;}
@@ -42,5 +70,24 @@ public class Nego {
     public void setVarian(String varian) {this.varian = varian;}
     public String getId_barang_nego() {return id_barang_nego;}
     public void setId_barang_nego(String id_barang_nego) {this.id_barang_nego = id_barang_nego;}
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id_nego);
+        parcel.writeString(status_nego);
+        parcel.writeString(id_trans_nego);
+        parcel.writeInt(nominal_nego);
+        parcel.writeInt(sisa_nego);
+        parcel.writeString(waktu_nego);
+        parcel.writeString(id_seller);
+        parcel.writeString(id_user_nego);
+        parcel.writeString(varian);
+        parcel.writeString(id_barang_nego);
+    }
 }
 

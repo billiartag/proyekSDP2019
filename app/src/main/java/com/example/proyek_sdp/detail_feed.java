@@ -239,8 +239,8 @@ public class detail_feed extends AppCompatActivity {
                 if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1) {
                     Intent i = new Intent(detail_feed.this, nego_user.class);
                     //isi param lempar disini
-                    i.putExtra("barang", (Serializable) x);
                     i.putExtra("jenis_nego", "baru");
+                    i.putExtra("barang", x);
                     i.putExtra("varian_nego", rb.getText().toString());//masukkin pilihan varian disini
                     startActivity(i);
                 }

@@ -1,31 +1,23 @@
 package com.example.proyek_sdp;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.io.Serializable;
 import java.util.ArrayList;
-
 public class AkuNego extends AppCompatActivity {
-
     RecyclerView rv_akunego;
     ArrayList<barang> list_barang;
     ArrayList<Nego> list_nego;
@@ -72,22 +64,29 @@ public class AkuNego extends AppCompatActivity {
                         temp_nego.setWaktu_nego(row.child("waktu_nego").getValue().toString());
                         list_nego.add(temp_nego);
 
-                        Toast.makeText(AkuNego.this, temp_nego.getId_barang_nego()+" yg ada", Toast.LENGTH_SHORT).show();
                         //cari barang yang memenuhi syarat
                         databaseReference_barangnego.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot ds: dataSnapshot.getChildren()){
                                     String id_barang_list = ds.child("id").getValue().toString();
-//                                    Log.d("entry", id_barang_list+"=="+temp_nego.getId_barang_nego()+"?"+id_barang_list.equalsIgnoreCase(temp_nego.getId_barang_nego()));
                                     if(id_barang_list.equalsIgnoreCase(temp_nego.getId_barang_nego())){
                                         //barang yang sesuai
                                         barang temp_barang = new barang();
                                         temp_barang.setId(ds.child("id").getValue().toString());
                                         temp_barang.setNama(ds.child("nama").getValue().toString());
+                                        temp_barang.setDeskripsi(ds.child("deskripsi").getValue().toString());
+                                        temp_barang.setIdpenjual(ds.child("idpenjual").getValue().toString());
+                                        temp_barang.setJenis(ds.child("jenis").getValue().toString());
+                                        temp_barang.setKategori(ds.child("kategori").getValue().toString());
+                                        temp_barang.setLokasi(ds.child("lokasi").getValue().toString());
+                                        temp_barang.setVarian(ds.child("varian").getValue().toString());
+                                        temp_barang.setWaktu_mulai(ds.child("waktu_mulai").getValue().toString());
+                                        temp_barang.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
+                                        temp_barang.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
                                         temp_barang.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
+                                        temp_barang.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
                                         list_barang.add(temp_barang);
-                                        Log.d("yang sama", temp_nego.getId_barang_nego()+"&&"+temp_barang.getNama());
                                         barang_nego join_nego = new barang_nego(temp_barang,temp_nego);
                                         //masukkin ke list
                                         list_join_nego.add(join_nego);
@@ -105,20 +104,25 @@ public class AkuNego extends AppCompatActivity {
                         });
                     }
                 }
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
+    }
+    public void akuBeli(barang_nego barang_dibeli){
+        //trigger ke beli disini
+        Intent i ;
     }
     public void akuNego(barang_nego obj_pass){
         //buat intent nego
         finish();
         Intent i = new Intent(AkuNego.this,nego_user.class);
-        i.putExtra("jenis_nego","lama");
-        i.putExtra("nego_lama", (Parcelable) obj_pass);
+        i.putExtra("jenis_nego", "lama");
+        i.putExtra("barang", obj_pass.getBarang());
+        i.putExtra("nego", obj_pass.getNego());
+        i.putExtra("idnego", obj_pass.getNego().getId_nego());
+        i.putExtra("varian_nego", obj_pass.getNego().getVarian());//masukkin pilihan varian disini
         startActivity(i);
     }
     @Override
@@ -126,7 +130,6 @@ public class AkuNego extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.close){

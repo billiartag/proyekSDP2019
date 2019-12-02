@@ -1,6 +1,9 @@
 package com.example.proyek_sdp;
 
-public class barang_nego {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class barang_nego implements Parcelable {
     private barang barang;
     private Nego nego;
 
@@ -9,6 +12,21 @@ public class barang_nego {
         this.barang = barang;
         this.nego = nego;
     }
+
+    protected barang_nego(Parcel in) {
+    }
+
+    public static final Creator<barang_nego> CREATOR = new Creator<barang_nego>() {
+        @Override
+        public barang_nego createFromParcel(Parcel in) {
+            return new barang_nego(in);
+        }
+
+        @Override
+        public barang_nego[] newArray(int size) {
+            return new barang_nego[size];
+        }
+    };
 
     public com.example.proyek_sdp.barang getBarang() {
         return barang;
@@ -24,5 +42,14 @@ public class barang_nego {
 
     public void setNego(Nego nego) {
         this.nego = nego;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
     }
 }
