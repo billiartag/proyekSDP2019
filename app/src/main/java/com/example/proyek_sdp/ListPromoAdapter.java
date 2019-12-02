@@ -14,10 +14,14 @@ import java.util.ArrayList;
 public class ListPromoAdapter extends RecyclerView.Adapter<ListPromoAdapter.ListPromoViewHolder> {
     Context context;
     ArrayList<voucher>list_voucher=new ArrayList<voucher>();
+    private OnItemClickListener onItemClickListener;
 
     public ListPromoAdapter(Context context, ArrayList<voucher> list_voucher) {
         this.context = context;
         this.list_voucher = list_voucher;
+    }
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -30,7 +34,7 @@ public class ListPromoAdapter extends RecyclerView.Adapter<ListPromoAdapter.List
 
     @Override
     public void onBindViewHolder(@NonNull ListPromoViewHolder holder, int position) {
-        holder.nama_voucher.setText("Nama : "+list_voucher.get(position).getNama_promo());
+        holder.nama_voucher.setText("Promo : "+list_voucher.get(position).getNama_promo());
         holder.waktu_voucher.setText("Waktu : "+list_voucher.get(position).getMulai_promo() +" - "+list_voucher.get(position).getSelesai_promo());
         holder.diskon_voucher.setText("Diskon : "+list_voucher.get(position).getDiskon_promo());
         holder.deskripsi_voucher.setText("Deskripsi : "+list_voucher.get(position).getDeskripsi_promo());
@@ -49,6 +53,14 @@ public class ListPromoAdapter extends RecyclerView.Adapter<ListPromoAdapter.List
             waktu_voucher=itemView.findViewById(R.id.waktu_voucher);
             diskon_voucher=itemView.findViewById(R.id.diskon_voucher);
             deskripsi_voucher=itemView.findViewById(R.id.deskripsi_voucher);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(onItemClickListener!=null){
+                        onItemClickListener.onClick(itemView, getAdapterPosition());
+                    }
+                }
+            });
         }
     }
 }

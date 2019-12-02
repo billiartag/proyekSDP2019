@@ -41,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class detail_feed extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class detail_feed extends AppCompatActivity {
     TextView pemilik;
     TextView durasi;
     TextView max;
-    Button isi_wishlist;
+    TextView tvberatbarang_detailfeed;
     Button beli;
     Button nego;
     RadioGroup radioGroup_varian_feed;
@@ -78,8 +79,11 @@ public class detail_feed extends AppCompatActivity {
         durasi=findViewById(R.id.durasi);
         max=findViewById(R.id.max);
         radioGroup_varian_feed=findViewById(R.id.radioGroup_varian_feed);
+        tvberatbarang_detailfeed=findViewById(R.id.tvberatbarang_detailfeed);
+
 
         //start program
+        //isi data
         barang x= (barang)getIntent().getExtras().getSerializable("barang");
         FirebaseStorage.getInstance().getReference().child("img_barang").child(x.getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -91,6 +95,7 @@ public class detail_feed extends AppCompatActivity {
         nama.setText(x.getNama());
         harga.setText("Harga Barang : Rp. "+x.getHarga());
         deskripsi.setText("Deskripsi : \n"+x.getDeskripsi());
+        tvberatbarang_detailfeed.setText("Berat Barang : "+x.getBerat()+" Gram");
         FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -231,6 +236,9 @@ public class detail_feed extends AppCompatActivity {
                     else if (tipe.getText().toString().equals("Pre Order")){
                         Toast.makeText(getApplicationContext(), "Pre Order Berhasil!", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Anda Harus Memilih Varian Terlebih Dahulu!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -17,7 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -60,11 +68,74 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.harga_barang.setText("Rp "+cartSekarang.getHarga_barang());
     //varian barang
         holder.varian_barang.setText("Varian: "+cartSekarang.getVarian_barang());
+        //wishlist
+        holder.sudahdifavorite = false;
+        DatabaseReference databaseReference_wishlist= FirebaseDatabase.getInstance().getReference().child("WishListDatabase");
+        databaseReference_wishlist.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id_barang").getValue().toString().equals(cartSekarang.getId_barang_cart()) && ds.child("id_user").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        holder.wishlist.setImageResource(R.drawable.ic_hatimerah_black_24dp);
+                        holder.sudahdifavorite = true;
+                    }
+                }
+                if(holder.sudahdifavorite==false){
+                    holder.wishlist.setImageResource(R.drawable.ic_favorite_cart_24dp);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     //barang wishlist
         holder.wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, cartSekarang.getId_barang_cart()+"", Toast.LENGTH_SHORT).show();
+                if(holder.sudahdifavorite){
+                    databaseReference_wishlist.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if(ds.child("id_barang").getValue().toString().equals(cartSekarang.getId_barang_cart()) && ds.child("id_user").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                    databaseReference_wishlist.child(ds.getKey()).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            holder.wishlist.setImageResource(R.drawable.ic_favorite_cart_24dp);
+                                            holder.sudahdifavorite = false;
+                                            Toast.makeText(context, "Berhasil Dihapus dari WishList!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+                else {
+                    String Key = databaseReference_wishlist.push().getKey();
+                    WishList_class wish_baru=new WishList_class();
+                    wish_baru.setId_user(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    wish_baru.setId_wishlist(Key);
+                    wish_baru.setId_barang(cartSekarang.getId_barang_cart());
+                    databaseReference_wishlist.child(Key).setValue(wish_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            holder.wishlist.setImageResource(R.drawable.ic_hatimerah_black_24dp);
+                            holder.sudahdifavorite = true;
+                            Toast.makeText(context, "Berhasil Di Tambah Ke WishList!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                notifyDataSetChanged();
             }
         });
     //barang del cart
@@ -119,6 +190,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         TextView nama_barang,harga_barang,varian_barang;
         ImageButton wishlist,delete,min,plus;
         EditText total_barang;
+        boolean sudahdifavorite;
         public CartViewHolder(@NonNull View itemView) {
             super(itemView);
             img_barang_cart=itemView.findViewById(R.id.img_barang_cart);

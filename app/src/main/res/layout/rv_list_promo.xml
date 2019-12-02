@@ -26,7 +26,8 @@
                 android:layout_weight="0"
                 android:text="Nama :"
                 android:textColor="#000000"
-                android:textSize="8sp" />
+                android:textSize="10sp"
+                android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/waktu_voucher"
@@ -35,7 +36,8 @@
                 android:layout_weight="0"
                 android:text="Waktu : "
                 android:textColor="#000000"
-                android:textSize="8sp" />
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/diskon_voucher"
@@ -44,7 +46,8 @@
                 android:layout_weight="0"
                 android:text="Diskon : "
                 android:textColor="#000000"
-                android:textSize="8sp" />
+                android:textSize="10sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/deskripsi_voucher"
@@ -53,7 +56,8 @@
                 android:layout_weight="0"
                 android:text="Deskripsi : "
                 android:textColor="#000000"
-                android:textSize="8sp" />
+                android:textSize="10sp"
+                android:textStyle="italic" />
         </LinearLayout>
 
         <ImageView

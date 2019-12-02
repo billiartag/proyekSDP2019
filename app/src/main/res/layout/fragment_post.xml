@@ -47,7 +47,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Judul:" />
+                android:text="Judul:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/judul_post"
@@ -56,7 +58,8 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="Masukkan Judul"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textStyle="italic" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,7 +72,9 @@
                 android:id="@+id/textView26"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Jenis:" />
+                android:text="Jenis:"
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <Spinner
                 android:id="@+id/jenis_post"
@@ -89,7 +94,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Lokasi : " />
+                android:text="Lokasi : "
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -104,7 +111,8 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="Search lokasi -->"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textStyle="italic" />
 
                 <Button
                     android:id="@+id/btn_lokasi_post"
@@ -128,7 +136,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Varian : " />
+                android:text="Varian : "
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/varian_post"
@@ -137,7 +147,8 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint='Masukkan Dengan " , " Sebagai Pemisah'
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textStyle="italic" />
         </LinearLayout>
 
         <LinearLayout
@@ -151,7 +162,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Max Pesan :" />
+                android:text="Max Pesan :"
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/max_post"
@@ -160,7 +173,8 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="Masukkan Jumlah Maksimal Pesanan"
-                android:inputType="number" />
+                android:inputType="number"
+                android:textStyle="italic" />
 
         </LinearLayout>
 
@@ -175,7 +189,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Range Time : " />
+                android:text="Range Time : "
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -189,7 +205,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:hint="Pilih Awal Tanggal" />
+                    android:hint="Pilih Awal Tanggal"
+                    android:textStyle="italic" />
 
                 <TextView
                     android:id="@+id/textView12"
@@ -206,7 +223,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:hint="Pilih Akhir Tanggal" />
+                    android:hint="Pilih Akhir Tanggal"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
@@ -221,7 +239,9 @@
                 android:id="@+id/textView6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Deskripsi : " />
+                android:text="Deskripsi : "
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/eddeskripsi_post"
@@ -230,7 +250,8 @@
                 android:ems="10"
                 android:gravity="start|top"
                 android:hint="Masukkan deskripsi"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:textStyle="italic" />
 
         </LinearLayout>
 
@@ -245,13 +266,16 @@
                 android:id="@+id/tv_harga_post"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Harga : " />
+                android:text="Harga : "
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/ed_harga_post"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:hint="Masukkan Harga"
                 android:inputType="number" />
 
         </LinearLayout>
@@ -266,7 +290,9 @@
                 android:id="@+id/textView18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kategori : " />
+                android:text="Kategori : "
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/edkategori_post"
@@ -274,7 +300,8 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint='Masukkan Dengan "," sebagai pemisah'
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textStyle="italic" />
 
         </LinearLayout>
 
@@ -287,15 +314,18 @@
                 android:id="@+id/textView36"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Berat Barang : " />
+                android:text="Berat Barang : "
+                android:textColor="#000000"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/edberatbarang_post"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Masukkan Berat Barang"
-                android:inputType="number" />
+                android:hint="Masukkan Berat Barang (Gram)"
+                android:inputType="number"
+                android:textStyle="italic" />
 
             <Button
                 android:id="@+id/post"

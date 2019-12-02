@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,13 +30,16 @@ import java.util.ArrayList;
 public class cart extends AppCompatActivity {
     ArrayList<CartClass> kumpulanbarang = new ArrayList<CartClass>();
     Button bayar;
-    TextView total_harga;
+    TextView total_harga,promo,diskon;
     RecyclerView rv_cart;
+    RecyclerView rv_promo_cart;
     CartClass barang_bundle;
-
     CartAdapter adapter;
     CartDB db;
     Boolean sudahSelesaiInsert;
+    int totalasli=-1;
+    int tekanpromo=-1;
+    ArrayList<voucher>list_voucher=new ArrayList<voucher>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +47,53 @@ public class cart extends AppCompatActivity {
         bayar = findViewById(R.id.bayar_cart);
         total_harga = findViewById(R.id.harga_barang_cart);
         rv_cart = findViewById(R.id.rv_cart);
+        rv_promo_cart = findViewById(R.id.rv_promo_cart);
+        promo = findViewById(R.id.nama_promo_cart);
+        diskon = findViewById(R.id.jumlah_diskon_cart);
+
+        //start program
+        //cetak promo
+        FirebaseDatabase.getInstance().getReference().child("Voucher").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("status_promo").getValue().toString().equals("1")){
+                        voucher x=new voucher();
+                        x.setNama_promo(ds.child("nama_promo").getValue().toString());
+                        x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
+                        x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
+                        x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
+                        x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
+                        x.setStatus_promo(ds.child("status_promo").getValue().toString());
+                        list_voucher.add(x);
+                    }
+                }
+                rv_promo_cart.setHasFixedSize(true);
+                rv_promo_cart.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+                ListPromoAdapter adapter = new ListPromoAdapter(getApplicationContext(), list_voucher);
+                rv_promo_cart.setAdapter(adapter);
+                adapter.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        promo.setText("Promo : "+list_voucher.get(position).getNama_promo());
+                        diskon.setText("Diskon : "+list_voucher.get(position).getDiskon_promo()+"%");
+                        total_harga.setText("Rp "+(totalasli-(totalasli*(Integer.parseInt(list_voucher.get(position).getDiskon_promo()))/100)));
+                        tekanpromo=position;
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //buat rv untuk cart
         rv_cart.setHasFixedSize(true);
         rv_cart.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false));
         adapter = new CartAdapter(this, kumpulanbarang);
         rv_cart.setAdapter(adapter);
-
         db = Room.databaseBuilder(this, CartDB.class, "db_sdp").build();
 
         sudahSelesaiInsert = false;
@@ -162,7 +208,13 @@ public class cart extends AppCompatActivity {
             for (CartClass x : kumpulanbarang) {
                 total += (x.getHarga_barang()*x.getJumlah_barang());
             }
-            total_harga.setText("Rp " + total);
+            totalasli=total;
+            if(tekanpromo!=-1){
+                total_harga.setText("Rp "+(totalasli-(totalasli*(Integer.parseInt(list_voucher.get(tekanpromo).getDiskon_promo()))/100)));
+            }
+            else {
+                total_harga.setText("Rp " + total);
+            }
 
         }
     }
