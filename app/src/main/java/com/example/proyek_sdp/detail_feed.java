@@ -217,27 +217,35 @@ public class detail_feed extends AppCompatActivity {
         beli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (tipe.getText().toString().equals("Flash Sale")){
-                Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
-                //intent ke cart
-                    finish();
-                    Intent i = new Intent(detail_feed.this, cart.class);
-
-                    CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal());
-                    i.putExtra("barang", temp);
-                    startActivity(i);
-            }
-            else if (tipe.getText().toString().equals("Pre Order")){
-                Toast.makeText(getApplicationContext(), "Pre Order Berhasil!", Toast.LENGTH_SHORT).show();
-            }
+                RadioButton rb =(RadioButton)findViewById(radioGroup_varian_feed.getCheckedRadioButtonId());
+                if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1){
+                    if (tipe.getText().toString().equals("Flash Sale")){
+                        Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
+                        //intent ke cart
+                        finish();
+                        Intent i = new Intent(detail_feed.this, cart.class);
+                        CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal(),rb.getText().toString());
+                        i.putExtra("barang", temp);
+                        startActivity(i);
+                    }
+                    else if (tipe.getText().toString().equals("Pre Order")){
+                        Toast.makeText(getApplicationContext(), "Pre Order Berhasil!", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
         nego.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent (detail_feed.this,nego_user.class);
-                //isi param lempar disini
-                startActivity(i);
+                RadioButton rb =(RadioButton)findViewById(radioGroup_varian_feed.getCheckedRadioButtonId());
+                if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1) {
+                    Intent i = new Intent(detail_feed.this, nego_user.class);
+                    //isi param lempar disini
+                    i.putExtra("jenis_nego", "baru");
+                    i.putExtra("barang", x);
+                    i.putExtra("varian_nego", rb.getText().toString());//masukkin pilihan varian disini
+                    startActivity(i);
+                }
             }
         });
         CountDownTimer timer=new CountDownTimer(999999999, 1000) {

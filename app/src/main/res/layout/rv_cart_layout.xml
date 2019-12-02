@@ -40,6 +40,12 @@
             android:textColor="#F4511E"
             android:textColorLink="#00000000" />
 
+        <TextView
+            android:id="@+id/varian_barang_cart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Varian: putih" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -29,8 +29,10 @@ public class CartClass implements Parcelable {
     private int jumlah_maks_barang;
     @ColumnInfo(name = "email_user")
     private String email_user;
+    @ColumnInfo(name = "varian_barang")
+    private String varian_barang;
 
-    public CartClass(String id_barang_cart, String nama_barang_cart, String waktu_selesai_cart, int harga_barang, int jumlah_barang, int jumlah_maks_barang) {
+    public CartClass(String id_barang_cart, String nama_barang_cart, String waktu_selesai_cart, int harga_barang, int jumlah_barang, int jumlah_maks_barang,String varian_barang) {
         this.id_barang_cart = id_barang_cart;
         this.nama_barang_cart = nama_barang_cart;
         this.waktu_selesai_cart = waktu_selesai_cart;
@@ -38,6 +40,7 @@ public class CartClass implements Parcelable {
         this.jumlah_barang = jumlah_barang;
         this.jumlah_maks_barang = jumlah_maks_barang;
         this.email_user = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        this.varian_barang=varian_barang;
     }
 
     protected CartClass(Parcel in) {
@@ -49,6 +52,7 @@ public class CartClass implements Parcelable {
         jumlah_barang = in.readInt();
         jumlah_maks_barang = in.readInt();
         email_user = in.readString();
+        varian_barang = in.readString();
     }
 
     public static final Creator<CartClass> CREATOR = new Creator<CartClass>() {
@@ -63,21 +67,12 @@ public class CartClass implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getVarian_barang() {
+        return varian_barang;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id_cart);
-        parcel.writeString(id_barang_cart);
-        parcel.writeString(nama_barang_cart);
-        parcel.writeString(waktu_selesai_cart);
-        parcel.writeInt(harga_barang);
-        parcel.writeInt(jumlah_barang);
-        parcel.writeInt(jumlah_maks_barang);
-        parcel.writeString(email_user);
+    public void setVarian_barang(String varian_barang) {
+        this.varian_barang = varian_barang;
     }
 
     public int getId_cart() {
@@ -142,5 +137,23 @@ public class CartClass implements Parcelable {
 
     public void setEmail_user(String email_user) {
         this.email_user = email_user;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id_cart);
+        parcel.writeString(id_barang_cart);
+        parcel.writeString(nama_barang_cart);
+        parcel.writeString(waktu_selesai_cart);
+        parcel.writeInt(harga_barang);
+        parcel.writeInt(jumlah_barang);
+        parcel.writeInt(jumlah_maks_barang);
+        parcel.writeString(email_user);
+        parcel.writeString(varian_barang);
     }
 }

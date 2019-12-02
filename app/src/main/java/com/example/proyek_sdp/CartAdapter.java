@@ -58,6 +58,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.nama_barang.setText(cartSekarang.getNama_barang_cart());
     //harga barang
         holder.harga_barang.setText("Rp "+cartSekarang.getHarga_barang());
+    //varian barang
+        holder.varian_barang.setText("Varian: "+cartSekarang.getVarian_barang());
     //barang wishlist
         holder.wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +116,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public class CartViewHolder extends RecyclerView.ViewHolder {
         LinearLayout container_barang_cart;
         ImageView img_barang_cart;
-        TextView nama_barang,harga_barang;
+        TextView nama_barang,harga_barang,varian_barang;
         ImageButton wishlist,delete,min,plus;
         EditText total_barang;
         public CartViewHolder(@NonNull View itemView) {
@@ -128,6 +130,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             plus=itemView.findViewById(R.id.btn_plus_cart);
             total_barang=itemView.findViewById(R.id.jumlah_barang_cart);
             container_barang_cart=itemView.findViewById(R.id.container_barang_cart);
+            varian_barang = itemView.findViewById(R.id.varian_barang_cart);
         }
     }
 }
