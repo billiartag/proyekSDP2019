@@ -52,7 +52,7 @@ public class myfeed_fragment extends Fragment {
                 long count=dataSnapshot.getChildrenCount();
                 boolean berhasil_register=true;
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString())){
+                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString()) && ds.child("status").getValue().toString().equals("1")){
                         barang data=new barang();
                         data.setId(ds.child("id").getValue().toString());
                         data.setDeskripsi(ds.child("deskripsi").getValue().toString());
@@ -62,10 +62,13 @@ public class myfeed_fragment extends Fragment {
                         data.setLokasi(ds.child("lokasi").getValue().toString());
                         data.setVarian(ds.child("varian").getValue().toString());
                         data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
+                        data.setWaktu_mulai(ds.child("waktu_mulai").getValue().toString());
                         data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
                         data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
                         data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
                         data.setKategori(ds.child("kategori").getValue().toString());
+                        data.setBerat(Integer.parseInt(ds.child("berat").getValue().toString()));
+                        data.setStatus(Integer.parseInt(ds.child("berat").getValue().toString()));
                         kumpulanbarang.add(data);
                     }
                 }

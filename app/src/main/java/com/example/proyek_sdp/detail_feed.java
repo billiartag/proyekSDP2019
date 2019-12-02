@@ -12,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 public class detail_feed extends AppCompatActivity {
     ImageView img,imghati;
@@ -238,6 +240,38 @@ public class detail_feed extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        CountDownTimer timer=new CountDownTimer(999999999, 1000) {
+            @Override
+            public void onTick(long l) {
+                String waktu=x.getWaktu_selesai();
+                String[] waktu_split=waktu.split(":");
+                if(waktu_split.length>1){
+                    int jam_selesai=Integer.parseInt(waktu_split[0]);
+                    int menit_selesai=Integer.parseInt(waktu_split[1]);
+                    int detik_selesai=Integer.parseInt(waktu_split[2]);
+                    int total_waktu_selesai=(jam_selesai*3600) + (menit_selesai*60) + detik_selesai;
+                    Calendar now = Calendar.getInstance();
+                    int jam_mulai=now.get(Calendar.HOUR_OF_DAY);
+                    int menit_mulai=now.get(Calendar.MINUTE);
+                    int detik_mulai=now.get(Calendar.SECOND);
+                    int total_waktu_mulai=(jam_mulai*3600) + (menit_mulai*60) + detik_mulai;
+                    if(total_waktu_selesai-total_waktu_mulai>0){
+                        durasi.setText("Sisa Waktu : "+formatSeconds(total_waktu_selesai-total_waktu_mulai));
+                    }
+                    else {
+                        durasi.setText("expired");
+                    }
+                }
+                else {
+                    durasi.setText("Mulai : "+x.getWaktu_mulai()+" - "+x.getWaktu_selesai());
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+            }
+        }.start();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -251,5 +285,27 @@ public class detail_feed extends AppCompatActivity {
             finish();
         }
         return true;
+    }
+    public static String formatSeconds(int timeInSeconds)
+    {
+        int hours = timeInSeconds / 3600;
+        int secondsLeft = timeInSeconds - hours * 3600;
+        int minutes = secondsLeft / 60;
+        int seconds = secondsLeft - minutes * 60;
+
+        String formattedTime = "";
+        if (hours < 10)
+            formattedTime += "0";
+        formattedTime += hours + ":";
+
+        if (minutes < 10)
+            formattedTime += "0";
+        formattedTime += minutes + ":";
+
+        if (seconds < 10)
+            formattedTime += "0";
+        formattedTime += seconds ;
+
+        return formattedTime;
     }
 }

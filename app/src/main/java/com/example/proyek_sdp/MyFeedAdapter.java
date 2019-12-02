@@ -88,32 +88,15 @@ public class MyFeedAdapter extends RecyclerView.Adapter<MyFeedAdapter.MyFeedView
             @Override
             public void onClick(View view) {
                 String id_barang=list_barang.get(position).getId();
+                barang data=list_barang.get(position);
                 list_barang.remove(position);
                 notifyDataSetChanged();
                 Toast.makeText(context, "Post Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        long count=dataSnapshot.getChildrenCount();
-                        boolean berhasil_register=true;
-                        for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString())){
-                                FirebaseStorage.getInstance().getReference().child("img_barang").child(id_barang).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(id_barang).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                data.setStatus(0);
+                FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(id_barang).setValue(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
                     }
                 });
             }

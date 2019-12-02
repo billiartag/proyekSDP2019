@@ -61,6 +61,7 @@ public class google_maps_current_location extends FragmentActivity implements On
                 move.putExtra("kategori",getIntent().getExtras().getString("kategori"));
                 move.putExtra("deskripsi",getIntent().getExtras().getString("deskripsi"));
                 move.putExtra("harga",getIntent().getExtras().getString("harga"));
+                move.putExtra("berat",getIntent().getExtras().getString("berat"));
                 startActivity(move);
             }
         });

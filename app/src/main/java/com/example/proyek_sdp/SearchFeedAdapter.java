@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.SearchFeedViewHolder> implements Filterable {
     private Context context;
@@ -152,6 +154,42 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
                 context.startActivity(intent);
             }
         });
+        if (holder.timer != null) {
+            holder.timer.cancel();
+        }
+        holder.timer = new CountDownTimer(999999999, 1000) {
+
+            @Override
+            public void onTick(long l) {
+                String waktu=list_barang.get(position).getWaktu_selesai();
+                String[] waktu_split=waktu.split(":");
+                if(waktu_split.length>1){
+                    int jam_selesai=Integer.parseInt(waktu_split[0]);
+                    int menit_selesai=Integer.parseInt(waktu_split[1]);
+                    int detik_selesai=Integer.parseInt(waktu_split[2]);
+                    int total_waktu_selesai=(jam_selesai*3600) + (menit_selesai*60) + detik_selesai;
+                    Calendar now = Calendar.getInstance();
+                    int jam_mulai=now.get(Calendar.HOUR_OF_DAY);
+                    int menit_mulai=now.get(Calendar.MINUTE);
+                    int detik_mulai=now.get(Calendar.SECOND);
+                    int total_waktu_mulai=(jam_mulai*3600) + (menit_mulai*60) + detik_mulai;
+                    if(total_waktu_selesai-total_waktu_mulai>0){
+                        holder.tvtimer_search.setText("Sisa Waktu : \n"+formatSeconds(total_waktu_selesai-total_waktu_mulai));
+                    }
+                    else {
+                        holder.tvtimer_search.setText("expired");
+                    }
+                }
+                else {
+                    holder.tvtimer_search.setText("Mulai : \n"+list_barang.get(position).getWaktu_mulai()+"\n Sampai \n"+list_barang.get(position).getWaktu_selesai());
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+            }
+        }.start();
     }
 
     @Override
@@ -242,7 +280,8 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
 
     public class SearchFeedViewHolder extends RecyclerView.ViewHolder {
         LinearLayout container_search_feed;
-        TextView detailbarang,tipe,harga;
+        TextView detailbarang,tipe,harga,tvtimer_search;
+        CountDownTimer timer;
         ImageView img;
         public SearchFeedViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -250,7 +289,30 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
             tipe = itemView.findViewById(R.id.tipe);
             img = itemView.findViewById(R.id.gambar_barang);
             harga = itemView.findViewById(R.id.harga);
+            tvtimer_search = itemView.findViewById(R.id.tvtimer_search);
             container_search_feed=itemView.findViewById(R.id.container_search_feed);
         }
+    }
+    public static String formatSeconds(int timeInSeconds)
+    {
+        int hours = timeInSeconds / 3600;
+        int secondsLeft = timeInSeconds - hours * 3600;
+        int minutes = secondsLeft / 60;
+        int seconds = secondsLeft - minutes * 60;
+
+        String formattedTime = "";
+        if (hours < 10)
+            formattedTime += "0";
+        formattedTime += hours + ":";
+
+        if (minutes < 10)
+            formattedTime += "0";
+        formattedTime += minutes + ":";
+
+        if (seconds < 10)
+            formattedTime += "0";
+        formattedTime += seconds ;
+
+        return formattedTime;
     }
 }

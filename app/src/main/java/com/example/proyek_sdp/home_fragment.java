@@ -49,14 +49,16 @@ public class home_fragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    voucher x=new voucher();
-                    x.setNama_promo(ds.child("nama_promo").getValue().toString());
-                    x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
-                    x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
-                    x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
-                    x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
-                    x.setStatus_promo(ds.child("status_promo").getValue().toString());
-                    kumpulanpromo.add(x);
+                    if(ds.child("status_promo").getValue().toString().equals("1")){
+                        voucher x=new voucher();
+                        x.setNama_promo(ds.child("nama_promo").getValue().toString());
+                        x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
+                        x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
+                        x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
+                        x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
+                        x.setStatus_promo(ds.child("status_promo").getValue().toString());
+                        kumpulanpromo.add(x);
+                    }
                 }
                 rv_list_promo.setHasFixedSize(true);
                 rv_list_promo.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
@@ -126,7 +128,7 @@ public class home_fragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                                 for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
                                     if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds2.child("idpenjual").getValue().toString())){
-                                        if(ds2.child("jenis").getValue().toString().equals("Flash Sale") && ds2.child("idpenjual").getValue().toString().equals(ds.child("following").getValue().toString())){
+                                        if(ds2.child("jenis").getValue().toString().equals("Flash Sale") && ds2.child("idpenjual").getValue().toString().equals(ds.child("following").getValue().toString()) && ds2.child("status").getValue().toString().equals("1")){
                                             barang data=new barang();
                                             data.setId(ds2.child("id").getValue().toString());
                                             data.setDeskripsi(ds2.child("deskripsi").getValue().toString());
@@ -137,9 +139,12 @@ public class home_fragment extends Fragment {
                                             data.setVarian(ds2.child("varian").getValue().toString());
                                             data.setMaksimal(Integer.parseInt(ds2.child("maksimal").getValue().toString()));
                                             data.setWaktu_selesai(ds2.child("waktu_selesai").getValue().toString());
+                                            data.setWaktu_mulai(ds2.child("waktu_mulai").getValue().toString());
                                             data.setWaktu_upload(ds2.child("waktu_upload").getValue().toString());
                                             data.setHarga(Integer.parseInt(ds2.child("harga").getValue().toString()));
                                             data.setKategori(ds2.child("kategori").getValue().toString());
+                                            data.setBerat(Integer.parseInt(ds2.child("berat").getValue().toString()));
+                                            data.setStatus(Integer.parseInt(ds2.child("status").getValue().toString()));
                                             kumpulanbarang.add(data);
                                         }
                                     }
@@ -188,7 +193,7 @@ public class home_fragment extends Fragment {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                                 for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
                                     if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds2.child("idpenjual").getValue().toString())){
-                                        if(ds2.child("jenis").getValue().toString().equals("Pre Order") && ds2.child("idpenjual").getValue().toString().equals(ds.child("following").getValue().toString())){
+                                        if(ds2.child("jenis").getValue().toString().equals("Pre Order") && ds2.child("idpenjual").getValue().toString().equals(ds.child("following").getValue().toString()) && ds2.child("status").getValue().toString().equals("1")){
                                             barang data=new barang();
                                             data.setId(ds2.child("id").getValue().toString());
                                             data.setDeskripsi(ds2.child("deskripsi").getValue().toString());
@@ -198,10 +203,13 @@ public class home_fragment extends Fragment {
                                             data.setLokasi(ds2.child("lokasi").getValue().toString());
                                             data.setVarian(ds2.child("varian").getValue().toString());
                                             data.setMaksimal(Integer.parseInt(ds2.child("maksimal").getValue().toString()));
+                                            data.setWaktu_mulai(ds2.child("waktu_mulai").getValue().toString());
                                             data.setWaktu_selesai(ds2.child("waktu_selesai").getValue().toString());
                                             data.setWaktu_upload(ds2.child("waktu_upload").getValue().toString());
                                             data.setHarga(Integer.parseInt(ds2.child("harga").getValue().toString()));
                                             data.setKategori(ds2.child("kategori").getValue().toString());
+                                            data.setBerat(Integer.parseInt(ds2.child("berat").getValue().toString()));
+                                            data.setStatus(Integer.parseInt(ds2.child("status").getValue().toString()));
                                             kumpulanpreorder.add(data);
                                         }
                                     }

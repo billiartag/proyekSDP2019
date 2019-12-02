@@ -55,6 +55,7 @@ public class post_fragment extends Fragment {
     EditText deskripsi;
     EditText harga;
     EditText edkategori_post;
+    EditText edberatbarang_post;
     Uri selected_image=null;
     DatabaseReference databaseReference;
     DatabaseReference databaseReference_barang;
@@ -83,10 +84,10 @@ public class post_fragment extends Fragment {
         deskripsi=myview.findViewById(R.id.eddeskripsi_post);
         harga=myview.findViewById(R.id.ed_harga_post);
         edkategori_post=myview.findViewById(R.id.edkategori_post);
-
         lokasi_post=myview.findViewById(R.id.btn_lokasi_post);
+        edberatbarang_post=myview.findViewById(R.id.edberatbarang_post);
+        //start program
         lokasi.setFocusable(false);
-        //program
         ArrayAdapter<String> adap=new ArrayAdapter<String>(getContext(),R.layout.custom_spinner,isidata);
         jenis.setAdapter(adap);
         if(!((home)getActivity()).lokasi.equals("")){
@@ -99,6 +100,7 @@ public class post_fragment extends Fragment {
             deskripsi.setText(((home)getActivity()).deskripsi);
             harga.setText(((home)getActivity()).harga);
             edkategori_post.setText(((home)getActivity()).kategori);
+            edberatbarang_post.setText(((home)getActivity()).berat);
             if(((home)getActivity()).jenis.equals("Pre Order")){
                 jenis.setSelection(1);
             }
@@ -120,6 +122,7 @@ public class post_fragment extends Fragment {
                     move.putExtra("deskripsi",deskripsi.getText().toString());
                     move.putExtra("harga",harga.getText().toString());
                     move.putExtra("kategori",edkategori_post.getText().toString());
+                    move.putExtra("berat",edberatbarang_post.getText().toString());
                     startActivity(move);
                 }
                 else {
@@ -133,6 +136,7 @@ public class post_fragment extends Fragment {
                     move.putExtra("deskripsi",deskripsi.getText().toString());
                     move.putExtra("harga",harga.getText().toString());
                     move.putExtra("kategori",edkategori_post.getText().toString());
+                    move.putExtra("berat",edberatbarang_post.getText().toString());
                     startActivity(move);
                 }
             }
@@ -150,6 +154,7 @@ public class post_fragment extends Fragment {
                         time_ke.setText("");
                         harga.setText("");
                         edkategori_post.setText("");;
+                        edberatbarang_post.setText("");
                         deskripsi.setText("");
                     }
                     if(((home)getActivity()).time_ke.equals("")){
@@ -177,6 +182,7 @@ public class post_fragment extends Fragment {
                     ((home)getActivity()).deskripsi="";
                     ((home)getActivity()).kategori="";
                     ((home)getActivity()).harga="";
+                    ((home)getActivity()).berat="";
                 }
                 else {
 
@@ -185,10 +191,11 @@ public class post_fragment extends Fragment {
                         lokasi.setText("");
                         Varian.setText("");
                         max.setText("");
-                        time_dari.setText("");;
+                        time_dari.setText("");
                         time_ke.setText("");
                         harga.setText("");
-                        edkategori_post.setText("");;
+                        edberatbarang_post.setText("");
+                        edkategori_post.setText("");
                         deskripsi.setText("");
                     }
                     Calendar now = Calendar.getInstance();
@@ -213,6 +220,7 @@ public class post_fragment extends Fragment {
                     ((home)getActivity()).deskripsi="";
                     ((home)getActivity()).kategori="";
                     ((home)getActivity()).harga="";
+                    ((home)getActivity()).berat="";
                 }
             }
 
@@ -309,6 +317,10 @@ public class post_fragment extends Fragment {
                     deskripsi.setError("deskripsi kosong !");
                     berhasil=false;
                 }
+                if (edberatbarang_post.getText().toString().trim().equals("")){
+                    edberatbarang_post.setError("Berat kosong !");
+                    berhasil=false;
+                }
                 if(berhasil){
                     barang barang_baru=new barang();
                     barang_baru.setDeskripsi(deskripsi.getText().toString());
@@ -322,14 +334,11 @@ public class post_fragment extends Fragment {
                     barang_baru.setWaktu_mulai(time_dari.getText().toString());
                     barang_baru.setHarga(Integer.parseInt(harga.getText().toString()));
                     barang_baru.setKategori(edkategori_post.getText().toString());
+                    barang_baru.setBerat(Integer.parseInt(edberatbarang_post.getText().toString()));
+                    barang_baru.setStatus(1);
 
                     Calendar now = Calendar.getInstance();
-                    if(jenis.getSelectedItem().toString().equals("Flash Sale")){
-                        barang_baru.setWaktu_upload(time_dari.getText().toString());
-                    }
-                    else {
-                        barang_baru.setWaktu_upload(now.get(Calendar.DAY_OF_MONTH)+":"+now.get(Calendar.MONTH)+":"+now.get(Calendar.YEAR));
-                    }
+                    barang_baru.setWaktu_upload(now.get(Calendar.DAY_OF_MONTH)+"/"+now.get(Calendar.MONTH)+"/"+now.get(Calendar.YEAR));
 
                     if (selected_image!=null){
                         databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDatabase");

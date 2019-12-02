@@ -24,6 +24,7 @@ public class home extends AppCompatActivity {
     String deskripsi="";
     String harga="";
     String kategori="";
+    String berat="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,7 @@ public class home extends AppCompatActivity {
             deskripsi=getIntent().getExtras().getString("deskripsi");
             harga=getIntent().getExtras().getString("harga");
             kategori=getIntent().getExtras().getString("kategori");
+            berat=getIntent().getExtras().getString("berat");
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new post_fragment()).commit();
         }
         else if(getIntent().hasExtra("topup")){

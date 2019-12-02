@@ -5,12 +5,12 @@ import java.util.Date;
 
 public class barang implements Serializable {
     private String id,nama,jenis,deskripsi,idpenjual,waktu_upload,waktu_selesai,waktu_mulai,lokasi,varian,kategori;
-    private int maksimal,harga;
+    private int maksimal,harga,berat,status;
 
     public barang() {
     }
 
-    public barang(String id, String nama, String jenis, String deskripsi, String idpenjual, String waktu_upload, String waktu_selesai, String waktu_mulai, String lokasi, String varian, String kategori, int maksimal, int harga) {
+    public barang(String id, String nama, String jenis, String deskripsi, String idpenjual, String waktu_upload, String waktu_selesai, String waktu_mulai, String lokasi, String varian, String kategori, int maksimal, int harga, int berat, int status) {
         this.id = id;
         this.nama = nama;
         this.jenis = jenis;
@@ -24,6 +24,8 @@ public class barang implements Serializable {
         this.kategori = kategori;
         this.maksimal = maksimal;
         this.harga = harga;
+        this.berat = berat;
+        this.status = status;
     }
 
     public String getId() {
@@ -128,6 +130,22 @@ public class barang implements Serializable {
 
     public void setHarga(int harga) {
         this.harga = harga;
+    }
+
+    public int getBerat() {
+        return berat;
+    }
+
+    public void setBerat(int berat) {
+        this.berat = berat;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override

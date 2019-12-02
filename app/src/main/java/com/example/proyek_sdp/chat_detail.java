@@ -68,7 +68,20 @@ public class chat_detail extends AppCompatActivity {
         }
         if (getIntent().hasExtra("iduser")){
             String x=getIntent().getExtras().getString("iduser");
-            ab.setTitle(x);
+            FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                        if(ds.child("email").getValue().toString().equals(x)){
+                            ab.setTitle(ds.child("nama").getValue().toString());
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
             id_penerima=x;
         }
         //load awal

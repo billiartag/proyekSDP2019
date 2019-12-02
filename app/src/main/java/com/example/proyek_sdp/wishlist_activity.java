@@ -46,7 +46,7 @@ public class wishlist_activity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                                 long count=dataSnapshot2.getChildrenCount();
                                 for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
-                                    if(ds2.child("id").getValue().equals(ds.child("id_barang").getValue().toString())){
+                                    if(ds2.child("id").getValue().equals(ds.child("id_barang").getValue().toString()) && ds2.child("status").getValue().toString().equals("1")){
                                         barang wish_user=new barang();
                                         wish_user.setId(ds2.child("id").getValue().toString());
                                         wish_user.setWaktu_upload(ds2.child("waktu_upload").getValue().toString());
@@ -61,6 +61,8 @@ public class wishlist_activity extends AppCompatActivity {
                                         wish_user.setKategori(ds2.child("kategori").getValue().toString());
                                         wish_user.setHarga(Integer.parseInt(ds2.child("harga").getValue().toString()));
                                         wish_user.setJenis(ds2.child("jenis").getValue().toString());
+                                        wish_user.setBerat(Integer.parseInt(ds2.child("berat").getValue().toString()));
+                                        wish_user.setStatus(Integer.parseInt(ds2.child("status").getValue().toString()));
                                         kumpulanbarang.add(wish_user);
                                     }
                                 }
