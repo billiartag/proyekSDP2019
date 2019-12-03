@@ -193,17 +193,9 @@ public class nego_user extends AppCompatActivity {
                     else{//nego yang lama
                         //init db nego
                         Toast.makeText(nego_user.this, "masuk", Toast.LENGTH_SHORT).show();
-                        databaseReference_nego.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                databaseReference_nego.child(id_nego).child("status_nego").setValue("pending");
-                                databaseReference_nego.child(id_nego).child("sisa_nego").setValue(sisa_nego-1);
-                                databaseReference_nego.child(id_nego).child("nominal_nego").setValue(Integer.parseInt(nilai_nego));
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                            }
-                        });
+                        databaseReference_nego.child(id_nego).child("status_nego").setValue("pending");
+                        databaseReference_nego.child(id_nego).child("sisa_nego").setValue(sisa_nego-1);
+                        databaseReference_nego.child(id_nego).child("nominal_nego").setValue(Integer.parseInt(nilai_nego));
                     }
                     finish();
                 }
