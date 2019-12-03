@@ -52,7 +52,12 @@ public class detailprofil extends AppCompatActivity {
         //start program
         user x= (user) getIntent().getExtras().getSerializable("user");
         nama.setText("Nama : "+x.getNama());
-        rating.setText("Rating : "+x.getRating());
+        if(x.getRating()+"".length()>2){
+            rating.setText("Rating : "+String.valueOf(x.getRating()).substring(0,3));
+        }
+        else {
+            rating.setText("Rating : "+x.getRating());
+        }
         FirebaseStorage.getInstance().getReference().child("profil_picture").child(x.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {

@@ -5,10 +5,10 @@ import java.io.Serializable;
 public class user implements Serializable{
     private String id,nama,password,email,birthdate,phone;
     private int saldo,profil_picture,status,verifikasi_ktp;
-    private float rating;
+    private double rating;
     public user(){ }
 
-    public user(String id, String nama, String password, String email, String birthdate, String phone, int saldo, int profil_picture, int status, int verifikasi_ktp, float rating) {
+    public user(String id, String nama, String password, String email, String birthdate, String phone, int saldo, int profil_picture, int status, int verifikasi_ktp, double rating) {
         this.id = id;
         this.nama = nama;
         this.password = password;
@@ -102,7 +102,7 @@ public class user implements Serializable{
         this.verifikasi_ktp = verifikasi_ktp;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
