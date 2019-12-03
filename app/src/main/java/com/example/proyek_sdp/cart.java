@@ -58,6 +58,8 @@ public class cart extends AppCompatActivity {
         rv_promo_cart = findViewById(R.id.rv_promo_cart);
         promo = findViewById(R.id.nama_promo_cart);
         diskon = findViewById(R.id.jumlah_diskon_cart);
+        edlokasi_cart = findViewById(R.id.edlokasi_cart);
+        btnlokasi_cart = findViewById(R.id.btnlokasi_cart);
 
         //start program
         if(getIntent().hasExtra("lokasi_cart")){
@@ -115,30 +117,64 @@ public class cart extends AppCompatActivity {
         bayar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
-                for(int i=0;i<kumpulanbarang.size();i++){
-                    String Key = databaseReference_transaksi.push().getKey();
-                    transaksi_class trans_baru=new transaksi_class();
-                    trans_baru.setId_barang_trans(kumpulanbarang.get(i).getId_barang_cart());
-                    trans_baru.setAlamat_pengiriman_trans("");
-                    trans_baru.setId_promo(list_voucher.get(tekanpromo).getNama_promo());
-                    trans_baru.setId_seller_trans(kumpulanbarang.get(i).getEmail_user());
-                    trans_baru.setId_user_trans(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                    trans_baru.setJumlah_barang_trans(kumpulanbarang.get(i).getJumlah_barang());
-                    trans_baru.setKeterangan_trans("Beli Dari Cart");
-                    trans_baru.setStatus_trans("pending");
-                    trans_baru.setTotal_trans(totalinsert+"");
-                    trans_baru.setVarian_pilihan(kumpulanbarang.get(i).getVarian_barang());
-                    Calendar now = Calendar.getInstance();
-                    trans_baru.setWaktu_trans(now.get(Calendar.DAY_OF_MONTH)+"/"+now.get(Calendar.MONTH)+"/"+now.get(Calendar.YEAR));
-                    databaseReference_transaksi.child(Key).setValue(trans_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+                if(kumpulanbarang.size()>0){
+                    if(!edlokasi_cart.getText().toString().trim().equals("")){
+                        DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+                        DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
+                        for(int i=0;i<kumpulanbarang.size();i++){
+                            final int index=i;
+                            CartClass x=kumpulanbarang.get(index);
+                            deleteEntryCart(x);
+                            databaseReference_barang.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                        if(ds.child("id").getValue().toString().equals(x.getId_barang_cart())){
+                                            String Key = databaseReference_transaksi.push().getKey();
+                                            transaksi_class trans_baru=new transaksi_class();
+                                            trans_baru.setId_barang_trans(x.getId_barang_cart());
+                                            trans_baru.setAlamat_pengiriman_trans(edlokasi_cart.getText().toString());
+                                            if(tekanpromo!=-1){
+                                                trans_baru.setId_promo(list_voucher.get(tekanpromo).getNama_promo());
+                                            }
+                                            else {
+                                                trans_baru.setId_promo("-");
+                                            }
+                                            trans_baru.setId_seller_trans(ds.child("idpenjual").getValue().toString());
+                                            trans_baru.setId_user_trans(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                            trans_baru.setJumlah_barang_trans(x.getJumlah_barang());
+                                            trans_baru.setKeterangan_trans("Beli Dari Cart");
+                                            trans_baru.setStatus_trans("pending");
+                                            trans_baru.setTotal_trans(x.getHarga_barang()+"");
+                                            trans_baru.setVarian_pilihan(x.getVarian_barang());
+                                            trans_baru.setId_transaksi(Key);
+                                            Calendar now = Calendar.getInstance();
+                                            trans_baru.setWaktu_trans(now.get(Calendar.DAY_OF_MONTH)+"/"+now.get(Calendar.MONTH)+"/"+now.get(Calendar.YEAR));
+                                            databaseReference_transaksi.child(Key).setValue(trans_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
 
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         }
-                    });
+                        Toast.makeText(cart.this, "pembayaran berhasil,..silahkan tunggu konfirmasi Jasa Titip...!", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(cart.this, "Anda Belum Mengisi Lokasi Pengiriman!", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                Toast.makeText(cart.this, "pembayaran berhasil,..silahkan tunggu konfirmasi Jasa Titip...!", Toast.LENGTH_SHORT).show();
+                else {
+                    Toast.makeText(cart.this, "Tidak Ada Barang Yang Mau Dibayar!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         //tekan button lokasi

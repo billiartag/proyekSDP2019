@@ -224,18 +224,13 @@ public class detail_feed extends AppCompatActivity {
             public void onClick(View view) {
                 RadioButton rb =(RadioButton)findViewById(radioGroup_varian_feed.getCheckedRadioButtonId());
                 if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1){
-                    if (tipe.getText().toString().equals("Flash Sale")){
-                        Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
-                        //intent ke cart
-                        finish();
-                        Intent i = new Intent(detail_feed.this, cart.class);
-                        CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal(),rb.getText().toString());
-                        i.putExtra("barang", temp);
-                        startActivity(i);
-                    }
-                    else if (tipe.getText().toString().equals("Pre Order")){
-                        Toast.makeText(getApplicationContext(), "Pre Order Berhasil!", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
+                    //intent ke cart
+                    finish();
+                    Intent i = new Intent(detail_feed.this, cart.class);
+                    CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal(),rb.getText().toString());
+                    i.putExtra("barang", temp);
+                    startActivity(i);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Anda Harus Memilih Varian Terlebih Dahulu!", Toast.LENGTH_SHORT).show();
