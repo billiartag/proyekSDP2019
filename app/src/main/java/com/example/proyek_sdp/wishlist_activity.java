@@ -86,7 +86,7 @@ public class wishlist_activity extends AppCompatActivity {
         });
 
         ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
+        ab.setTitle("WishList");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

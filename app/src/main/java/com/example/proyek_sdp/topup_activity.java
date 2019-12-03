@@ -47,7 +47,7 @@ public class topup_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topup_activity);
         ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
+        ab.setTitle("Top-Up");
         list_nominal=findViewById(R.id.list_nominal);
         topup=findViewById(R.id.Top_up);
         tvsaldo_topup_activity=findViewById(R.id.tvsaldo_topup_activity);

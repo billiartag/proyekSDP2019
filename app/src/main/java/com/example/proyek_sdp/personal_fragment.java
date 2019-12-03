@@ -62,7 +62,7 @@ public class personal_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_personal,container,false);
         setHasOptionsMenu(true);
-        ((home) getActivity()).setActionBarTitle("TitipAku");
+        ((home) getActivity()).setActionBarTitle("Profil");
         profil_picture_user=myview.findViewById(R.id.picture_profil_user);
         edname_profil=myview.findViewById(R.id.edname_profil);
         edemail_profil=myview.findViewById(R.id.edemail_profil);

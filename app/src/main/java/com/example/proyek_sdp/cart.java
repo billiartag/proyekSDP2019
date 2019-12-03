@@ -221,7 +221,7 @@ public class cart extends AppCompatActivity {
                                 }
                             });
                         }
-                        Toast.makeText(cart.this, totalinsert+"", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(cart.this, "Berhasil Melakukan Pembayaran!", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         Toast.makeText(cart.this, "Anda Belum Mengisi Lokasi Pengiriman!", Toast.LENGTH_SHORT).show();
@@ -360,7 +360,6 @@ public class cart extends AppCompatActivity {
                 total_harga.setText("Rp " + total);
                 totalinsert=total;
             }
-            Toast.makeText(cart.this, totalinsert+"", Toast.LENGTH_SHORT).show();
         }
     }
     private class deleteCart extends AsyncTask<CartClass,Void,Void>{

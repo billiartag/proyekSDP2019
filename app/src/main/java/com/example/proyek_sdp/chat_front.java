@@ -46,7 +46,7 @@ public class chat_front extends AppCompatActivity {
         setContentView(R.layout.activity_chat_front);
         rv_chat_front = findViewById(R.id.rv_chat_front);
         ActionBar ab=getSupportActionBar();
-        ab.setTitle("TitipAku");
+        ab.setTitle("Chat");
         FirebaseDatabase.getInstance().getReference().child("ChatDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

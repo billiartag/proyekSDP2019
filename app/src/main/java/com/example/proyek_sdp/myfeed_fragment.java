@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +44,7 @@ public class myfeed_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_myfeed,container,false);;
         setHasOptionsMenu(true);
-        ((home) getActivity()).setActionBarTitle("TitipAku");
+        ((home) getActivity()).setActionBarTitle("Feed");
         rv_myfeed=myview.findViewById(R.id.rv_myfeed);
         databaseReference= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -76,6 +77,9 @@ public class myfeed_fragment extends Fragment {
                 rv_myfeed.setHasFixedSize(true);
                 rv_myfeed.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
                 rv_myfeed.setAdapter(adapter);
+                if(kumpulanbarang.size()==0){
+                    Toast.makeText(getActivity(), "Anda Tidak Memiliki Post!", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override

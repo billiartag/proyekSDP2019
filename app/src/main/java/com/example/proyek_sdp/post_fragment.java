@@ -70,7 +70,7 @@ public class post_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_post,container,false);
         setHasOptionsMenu(true);
-        ((home) getActivity()).setActionBarTitle("TitipAku");
+        ((home) getActivity()).setActionBarTitle("Post");
         gambarpost=myview.findViewById(R.id.fotopost);
         judul=myview.findViewById(R.id.judul_post);
         lokasi=myview.findViewById(R.id.lokasi_post);

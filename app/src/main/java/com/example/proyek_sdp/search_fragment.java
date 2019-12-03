@@ -47,7 +47,7 @@ public class search_fragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        ((home) getActivity()).setActionBarTitle("TitipAku");
+        ((home) getActivity()).setActionBarTitle("Search");
         View myview=inflater.inflate(R.layout.fragment_search,container,false);
         rv_search_feed = myview.findViewById(R.id.rv_search_feed);
         checkBox_negara_search = myview.findViewById(R.id.checkBox_negara_search);
