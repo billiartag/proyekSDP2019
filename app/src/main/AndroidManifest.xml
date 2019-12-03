@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/logo_icon_app_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".list_all_follow"></activity>
+        <activity android:name=".payment_nego"></activity>
+        <activity android:name=".list_all_follow" />
         <activity android:name=".DiNego" />
         <activity android:name=".AkuNego" />
         <activity android:name=".nego_seller" />

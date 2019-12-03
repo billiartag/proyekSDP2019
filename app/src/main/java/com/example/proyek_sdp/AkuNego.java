@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -112,7 +113,13 @@ public class AkuNego extends AppCompatActivity {
     }
     public void akuBeli(barang_nego barang_dibeli){
         //trigger ke beli disini
-        Intent i ;
+        finish();
+        Intent i = new Intent(AkuNego.this, payment_nego.class);
+        i.putExtra("barang_nego", barang_dibeli);
+        i.putExtra("brg",  barang_dibeli.getBarang());
+        i.putExtra("nego", barang_dibeli.getNego());
+
+        startActivity(i);
     }
     public void akuNego(barang_nego obj_pass){
         //buat intent nego
