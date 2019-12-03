@@ -16,16 +16,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class cart extends AppCompatActivity {
     ArrayList<CartClass> kumpulanbarang = new ArrayList<CartClass>();
@@ -37,7 +42,10 @@ public class cart extends AppCompatActivity {
     CartAdapter adapter;
     CartDB db;
     Boolean sudahSelesaiInsert;
+    EditText edlokasi_cart;
+    Button btnlokasi_cart;
     int totalasli=-1;
+    int totalinsert=-1;
     int tekanpromo=-1;
     ArrayList<voucher>list_voucher=new ArrayList<voucher>();
     @Override
@@ -52,6 +60,9 @@ public class cart extends AppCompatActivity {
         diskon = findViewById(R.id.jumlah_diskon_cart);
 
         //start program
+        if(getIntent().hasExtra("lokasi_cart")){
+            edlokasi_cart.setText(getIntent().getExtras().getString("lokasi_cart"));
+        }
         //cetak promo
         FirebaseDatabase.getInstance().getReference().child("Voucher").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -78,6 +89,7 @@ public class cart extends AppCompatActivity {
                         promo.setText("Promo : "+list_voucher.get(position).getNama_promo());
                         diskon.setText("Diskon : "+list_voucher.get(position).getDiskon_promo()+"%");
                         total_harga.setText("Rp "+(totalasli-(totalasli*(Integer.parseInt(list_voucher.get(position).getDiskon_promo()))/100)));
+                        totalinsert=totalasli-(totalasli*(Integer.parseInt(list_voucher.get(position).getDiskon_promo()))/100);
                         tekanpromo=position;
                     }
                 });
@@ -99,6 +111,46 @@ public class cart extends AppCompatActivity {
         sudahSelesaiInsert = false;
         //ambil data semua dari room
         getData();
+        //tekan button bayar
+        bayar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+                for(int i=0;i<kumpulanbarang.size();i++){
+                    String Key = databaseReference_transaksi.push().getKey();
+                    transaksi_class trans_baru=new transaksi_class();
+                    trans_baru.setId_barang_trans(kumpulanbarang.get(i).getId_barang_cart());
+                    trans_baru.setAlamat_pengiriman_trans("");
+                    trans_baru.setId_promo(list_voucher.get(tekanpromo).getNama_promo());
+                    trans_baru.setId_seller_trans(kumpulanbarang.get(i).getEmail_user());
+                    trans_baru.setId_user_trans(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    trans_baru.setJumlah_barang_trans(kumpulanbarang.get(i).getJumlah_barang());
+                    trans_baru.setKeterangan_trans("Beli Dari Cart");
+                    trans_baru.setStatus_trans("pending");
+                    trans_baru.setTotal_trans(totalinsert+"");
+                    trans_baru.setVarian_pilihan(kumpulanbarang.get(i).getVarian_barang());
+                    Calendar now = Calendar.getInstance();
+                    trans_baru.setWaktu_trans(now.get(Calendar.DAY_OF_MONTH)+"/"+now.get(Calendar.MONTH)+"/"+now.get(Calendar.YEAR));
+                    databaseReference_transaksi.child(Key).setValue(trans_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                        }
+                    });
+                }
+                Toast.makeText(cart.this, "pembayaran berhasil,..silahkan tunggu konfirmasi Jasa Titip...!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //tekan button lokasi
+        edlokasi_cart.setFocusable(false);
+        btnlokasi_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent move=new Intent(getApplicationContext(), google_maps_current_location.class);
+                move.putExtra("cart","");
+                startActivity(move);
+            }
+        });
         ActionBar ab = getSupportActionBar();
         ab.setTitle("Cart");
     }
@@ -211,9 +263,11 @@ public class cart extends AppCompatActivity {
             totalasli=total;
             if(tekanpromo!=-1){
                 total_harga.setText("Rp "+(totalasli-(totalasli*(Integer.parseInt(list_voucher.get(tekanpromo).getDiskon_promo()))/100)));
+                totalinsert=totalasli-(totalasli*(Integer.parseInt(list_voucher.get(tekanpromo).getDiskon_promo()))/100);
             }
             else {
                 total_harga.setText("Rp " + total);
+                totalinsert=total;
             }
 
         }

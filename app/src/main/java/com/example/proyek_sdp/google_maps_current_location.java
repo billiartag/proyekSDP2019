@@ -50,19 +50,26 @@ public class google_maps_current_location extends FragmentActivity implements On
         verifikasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent move=new Intent(getApplicationContext(), home.class);
-                move.putExtra("judul",getIntent().getExtras().getString("judul"));
-                move.putExtra("jenis",getIntent().getExtras().getString("jenis"));
-                move.putExtra("varian",getIntent().getExtras().getString("varian"));
-                move.putExtra("max",getIntent().getExtras().getString("max"));
-                move.putExtra("lokasi",edalamat_google_map.getText().toString());
-                move.putExtra("time_dari",getIntent().getExtras().getString("time_dari"));
-                move.putExtra("time_ke",getIntent().getExtras().getString("time_ke"));
-                move.putExtra("kategori",getIntent().getExtras().getString("kategori"));
-                move.putExtra("deskripsi",getIntent().getExtras().getString("deskripsi"));
-                move.putExtra("harga",getIntent().getExtras().getString("harga"));
-                move.putExtra("berat",getIntent().getExtras().getString("berat"));
-                startActivity(move);
+                if(getIntent().hasExtra("cart")){
+                    Intent move=new Intent(getApplicationContext(), cart.class);
+                    move.putExtra("lokasi_cart",edalamat_google_map.getText().toString());
+                    startActivity(move);
+                }
+                else {
+                    Intent move=new Intent(getApplicationContext(), home.class);
+                    move.putExtra("judul",getIntent().getExtras().getString("judul"));
+                    move.putExtra("jenis",getIntent().getExtras().getString("jenis"));
+                    move.putExtra("varian",getIntent().getExtras().getString("varian"));
+                    move.putExtra("max",getIntent().getExtras().getString("max"));
+                    move.putExtra("lokasi",edalamat_google_map.getText().toString());
+                    move.putExtra("time_dari",getIntent().getExtras().getString("time_dari"));
+                    move.putExtra("time_ke",getIntent().getExtras().getString("time_ke"));
+                    move.putExtra("kategori",getIntent().getExtras().getString("kategori"));
+                    move.putExtra("deskripsi",getIntent().getExtras().getString("deskripsi"));
+                    move.putExtra("harga",getIntent().getExtras().getString("harga"));
+                    move.putExtra("berat",getIntent().getExtras().getString("berat"));
+                    startActivity(move);
+                }
             }
         });
     }

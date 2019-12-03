@@ -17,7 +17,7 @@
 
     <LinearLayout
         android:layout_width="354dp"
-        android:layout_height="97dp"
+        android:layout_height="163dp"
         android:layout_margin="5dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -64,6 +64,30 @@
                 android:textColor="#000000"
                 android:textSize="14sp"
                 android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edlokasi_cart"
+                    android:layout_width="144dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+                <Button
+                    android:id="@+id/btnlokasi_cart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="29dp"
+                    android:layout_weight="1"
+                    android:background="#1565c0"
+                    android:text="Lokasi"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <Button
@@ -74,11 +98,13 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="Bayar" />
+            android:background="#3D3636"
+            android:text="Bayar"
+            android:textColor="#FFB300" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_cart"
         android:layout_width="match_parent"
-        android:layout_height="335dp" />
+        android:layout_height="275dp" />
 </LinearLayout>
