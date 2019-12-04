@@ -16,13 +16,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,45 +47,7 @@ public class history_pembeli extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_pembeli_layout);
         lvHistory = findViewById(R.id.listHistoryPembeliFront);
-        //listBarang.add(new barangHistory("sepeda1",0,"edwin","Jakartah","31 Februari 2021"));
-        DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
-        databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long count=dataSnapshot.getChildrenCount();
-                for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("id_user_trans").getValue().toString())){
-                        transaksi_class trans=new transaksi_class();
-                        trans.setId_transaksi(ds.child("id_transaksi").getValue().toString());
-                        trans.setWaktu_trans(ds.child("waktu_trans").getValue().toString());
-                        trans.setVarian_pilihan(ds.child("varian_pilihan").getValue().toString());
-                        trans.setTotal_trans(ds.child("total_trans").getValue().toString());
-                        trans.setStatus_trans(ds.child("status_trans").getValue().toString());
-                        trans.setKeterangan_trans(ds.child("keterangan_trans").getValue().toString());
-                        trans.setJumlah_barang_trans(Integer.parseInt(ds.child("jumlah_barang_trans").getValue().toString()));
-                        trans.setId_user_trans(ds.child("id_user_trans").getValue().toString());
-                        trans.setId_seller_trans(ds.child("id_seller_trans").getValue().toString());
-                        trans.setId_promo(ds.child("id_promo").getValue().toString());
-                        trans.setId_barang_trans(ds.child("id_barang_trans").getValue().toString());
-                        trans.setAlamat_pengiriman_trans(ds.child("alamat_pengiriman_trans").getValue().toString());
-                        listtransaksi.add(trans);
-                    }
-                }
-                adapter adap = new adapter(getApplicationContext(),listtransaksi);
-                lvHistory.setAdapter(adap);
-                lvHistory.setDividerHeight(10);
-                if(listtransaksi.size()==0){
-                    Toast.makeText(history_pembeli.this, "Anda Tidak Memiliki History Pembelian!", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
+        refresh();
         ActionBar ab=getSupportActionBar();
         ab.setTitle("Aku titip");
     }
@@ -105,7 +70,11 @@ public class history_pembeli extends AppCompatActivity {
             TextView tvPenjual = row.findViewById(R.id.tvPenjual);
             TextView tvLokasi = row.findViewById(R.id.tvLokasi);
             TextView tvTglBeli = row.findViewById(R.id.tvTglBeli);
+            TextView tvjumlah = row.findViewById(R.id.tvjumlahbarang_pembeli);
+            TextView tvvarian = row.findViewById(R.id.tvvarian_pembeli);
+            TextView tvharga = row.findViewById(R.id.tvharga_pembeli);
             ImageView img = row.findViewById(R.id.ivImageBarang);
+            Button sudahsampai=row.findViewById(R.id.buttonsudahsampai_pembeli);
 
             if(brg!=null){
                 if(brg.get(position).getStatus_trans().equals("pending")){
@@ -123,7 +92,36 @@ public class history_pembeli extends AppCompatActivity {
                     tvstatus.setTextColor(Color.BLACK);
                     tvstatus.setBackgroundColor(Color.GREEN);
                 }
-                tvTglBeli.setText(brg.get(position).getWaktu_trans()+"");
+                else if(brg.get(position).getStatus_trans().equals("dicancel")){
+                    tvstatus.setText("Dicancel");
+                    tvstatus.setTextColor(Color.BLACK);
+                    tvstatus.setBackgroundColor(Color.RED);
+                }
+                tvTglBeli.setText("Waktu : "+brg.get(position).getWaktu_trans()+"");
+                tvjumlah.setText("Jumlah Barang : "+brg.get(position).getJumlah_barang_trans()+"");
+                tvvarian.setText("Varian : "+brg.get(position).getVarian_pilihan()+"");
+                if(brg.get(position).getId_promo().equals("-")){
+                    tvharga.setText("Total : Rp"+brg.get(position).getTotal_trans()+"");
+                }
+                else {
+                    DatabaseReference databaseReference_voucher= FirebaseDatabase.getInstance().getReference().child("Voucher");
+                    databaseReference_voucher.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if (brg.get(position).getId_promo().equals(ds.child("nama_promo").getValue().toString())){
+                                    tvharga.setText("Total : Rp"+(Integer.parseInt(brg.get(position).getTotal_trans())-(Integer.parseInt(brg.get(position).getTotal_trans())*Integer.parseInt(ds.child("diskon_promo").getValue().toString())/100)));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
                 DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
                 databaseReference_barang.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -173,7 +171,52 @@ public class history_pembeli extends AppCompatActivity {
             tvPenjual.setTextColor(Color.BLACK);
             tvLokasi.setTextColor(Color.BLACK);
             tvTglBeli.setTextColor(Color.BLACK);
+            sudahsampai.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String id_transaksi= brg.get(position).getId_transaksi();
+                    DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+                    databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if (ds.child("id_transaksi").getValue().toString().equals(id_transaksi)){
+                                    transaksi_class update_trans=new transaksi_class();
+                                    update_trans.setAlamat_pengiriman_trans(ds.child("alamat_pengiriman_trans").getValue().toString());
+                                    update_trans.setId_barang_trans(ds.child("id_barang_trans").getValue().toString());
+                                    update_trans.setId_promo(ds.child("id_promo").getValue().toString());
+                                    update_trans.setId_seller_trans(ds.child("id_seller_trans").getValue().toString());
+                                    update_trans.setId_user_trans(ds.child("id_user_trans").getValue().toString());
+                                    update_trans.setJumlah_barang_trans(Integer.parseInt(ds.child("jumlah_barang_trans").getValue().toString()));
+                                    update_trans.setKeterangan_trans(ds.child("keterangan_trans").getValue().toString());
+                                    update_trans.setStatus_trans("selesai");
+                                    update_trans.setTotal_trans(ds.child("total_trans").getValue().toString());
+                                    update_trans.setVarian_pilihan(ds.child("varian_pilihan").getValue().toString());
+                                    update_trans.setWaktu_trans(ds.child("waktu_trans").getValue().toString());
+                                    update_trans.setId_transaksi(ds.child("id_transaksi").getValue().toString());
+                                    databaseReference_transaksi.child(ds.getKey()).setValue(update_trans).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(getContext(), "Anda Menyatakan Barang Telah sampai!", Toast.LENGTH_SHORT).show();
+                                            refresh();
+                                        }
+                                    });
+                                }
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            if(!brg.get(position).getStatus_trans().equals("dikonfirmasi")){
+                sudahsampai.setVisibility(View.GONE);
+            }
             return row;
 
         }
@@ -191,5 +234,44 @@ public class history_pembeli extends AppCompatActivity {
             finish();
         }
         return true;
+    }
+    public void refresh(){
+        DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+        databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                listtransaksi.clear();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("id_user_trans").getValue().toString())){
+                        transaksi_class trans=new transaksi_class();
+                        trans.setId_transaksi(ds.child("id_transaksi").getValue().toString());
+                        trans.setWaktu_trans(ds.child("waktu_trans").getValue().toString());
+                        trans.setVarian_pilihan(ds.child("varian_pilihan").getValue().toString());
+                        trans.setTotal_trans(ds.child("total_trans").getValue().toString());
+                        trans.setStatus_trans(ds.child("status_trans").getValue().toString());
+                        trans.setKeterangan_trans(ds.child("keterangan_trans").getValue().toString());
+                        trans.setJumlah_barang_trans(Integer.parseInt(ds.child("jumlah_barang_trans").getValue().toString()));
+                        trans.setId_user_trans(ds.child("id_user_trans").getValue().toString());
+                        trans.setId_seller_trans(ds.child("id_seller_trans").getValue().toString());
+                        trans.setId_promo(ds.child("id_promo").getValue().toString());
+                        trans.setId_barang_trans(ds.child("id_barang_trans").getValue().toString());
+                        trans.setAlamat_pengiriman_trans(ds.child("alamat_pengiriman_trans").getValue().toString());
+                        listtransaksi.add(trans);
+                    }
+                }
+                adapter adap = new adapter(getApplicationContext(),listtransaksi);
+                lvHistory.setAdapter(adap);
+                lvHistory.setDividerHeight(10);
+                if(listtransaksi.size()==0){
+                    Toast.makeText(history_pembeli.this, "Anda Tidak Memiliki History Pembelian!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

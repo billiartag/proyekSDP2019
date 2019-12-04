@@ -23,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,14 +45,214 @@ public class history_penjual extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_histoy_penjual_layout);
         lvHistory = findViewById(R.id.lvHistoryPenjualFront);
+        refresh();//untuk refresh data list viewnya
+        ActionBar ab=getSupportActionBar();
+        ab.setTitle("Dititipin");
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==R.id.close){
+            finish();
+        }
+        return true;
+    }
 
+    class adapter extends ArrayAdapter<transaksi_class> {
+        ArrayList<transaksi_class> brg = new ArrayList<transaksi_class>();
+        Context ctx;
+        public adapter(Context context, ArrayList<transaksi_class>a) {
+            super(context, R.layout.list_history_front_pembeli_layout,a);
+            this.brg = a;
+            ctx=context;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = layoutInflater.inflate(R.layout.list_history_penjual_layout,parent,false);
+            TextView tvNamaBarang = row.findViewById(R.id.tvNamaBarang);
+            TextView tvStatus = row.findViewById(R.id.tvStatus);
+            TextView tvId = row.findViewById(R.id.tvId);
+            ImageView img = row.findViewById(R.id.ivImageBarang);
+            TextView tv_pembeli = row.findViewById(R.id.textViewPembeli);
+            Button btnCancel = row.findViewById(R.id.buttonPenjualCancelOrder);
+            Button btnAccept = row.findViewById(R.id.buttonpenjualacceptorder);
+
+            if(brg.get(position).getStatus_trans().equals("pending")){
+                tvStatus.setText("Status : Pending");
+                tvStatus.setTextColor(Color.BLACK);
+                tvStatus.setBackgroundColor(Color.GRAY);
+            }
+            else if(brg.get(position).getStatus_trans().equals("dikonfirmasi")){
+                tvStatus.setText("Status : Dikirim");
+                tvStatus.setTextColor(Color.BLACK);
+                tvStatus.setBackgroundColor(Color.YELLOW);
+            }
+            else if(brg.get(position).getStatus_trans().equals("selesai")){
+                tvStatus.setText("Status : Sudah Selesai");
+                tvStatus.setTextColor(Color.BLACK);
+                tvStatus.setBackgroundColor(Color.GREEN);
+            }
+            else if(brg.get(position).getStatus_trans().equals("dicancel")){
+                tvStatus.setText("Status : Dicancel");
+                tvStatus.setTextColor(Color.BLACK);
+                tvStatus.setBackgroundColor(Color.RED);
+            }
+            DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
+            databaseReference_barang.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    long count=dataSnapshot.getChildrenCount();
+                    for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                        if (brg.get(position).getId_barang_trans().equals(ds.child("id").getValue().toString())){
+                            tvNamaBarang.setText("Nama Barang : "+ds.child("nama").getValue().toString());
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            FirebaseStorage.getInstance().getReference().child("img_barang").child(brg.get(position).getId_barang_trans()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    if (getApplicationContext()!=null){
+                        Glide.with(getApplicationContext()).load(uri).into(img);
+                    }
+                }
+            });
+            DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+            databaseReference_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    long count=dataSnapshot.getChildrenCount();
+                    for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                        if (brg.get(position).getId_seller_trans().equals(ds.child("email").getValue().toString())){
+                            tv_pembeli.setText("Pembeli : "+ds.child("nama").getValue().toString());
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            tvId.setText("ID Barang : "+brg.get(position).getId_barang_trans());
+            tvId.setTextColor(Color.GREEN);
+            tvId.setTypeface(null, Typeface.BOLD_ITALIC);
+            tvNamaBarang.setTextColor(Color.BLACK);
+            tvId.setTextColor(Color.BLACK);
+            tv_pembeli.setTextColor(Color.BLACK);
+            //kalau sudah selesai / sudah selesai dikirim
+            if(!brg.get(position).getStatus_trans().equals("pending")){
+                btnCancel.setVisibility(View.GONE);
+                btnAccept.setVisibility(View.GONE);
+            }
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String id_transaksi= brg.get(position).getId_transaksi();
+                    DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+                    databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if (ds.child("id_transaksi").getValue().toString().equals(id_transaksi)){
+                                    transaksi_class update_trans=new transaksi_class();
+                                    update_trans.setAlamat_pengiriman_trans(ds.child("alamat_pengiriman_trans").getValue().toString());
+                                    update_trans.setId_barang_trans(ds.child("id_barang_trans").getValue().toString());
+                                    update_trans.setId_promo(ds.child("id_promo").getValue().toString());
+                                    update_trans.setId_seller_trans(ds.child("id_seller_trans").getValue().toString());
+                                    update_trans.setId_user_trans(ds.child("id_user_trans").getValue().toString());
+                                    update_trans.setJumlah_barang_trans(Integer.parseInt(ds.child("jumlah_barang_trans").getValue().toString()));
+                                    update_trans.setKeterangan_trans(ds.child("keterangan_trans").getValue().toString());
+                                    update_trans.setStatus_trans("dicancel");
+                                    update_trans.setTotal_trans(ds.child("total_trans").getValue().toString());
+                                    update_trans.setVarian_pilihan(ds.child("varian_pilihan").getValue().toString());
+                                    update_trans.setWaktu_trans(ds.child("waktu_trans").getValue().toString());
+                                    update_trans.setId_transaksi(ds.child("id_transaksi").getValue().toString());
+                                    databaseReference_transaksi.child(ds.getKey()).setValue(update_trans).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(ctx, "Barang Berhasil Dicancel!", Toast.LENGTH_SHORT).show();
+                                            refresh();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+            btnAccept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String id_transaksi= brg.get(position).getId_transaksi();
+                    DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+                    databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count=dataSnapshot.getChildrenCount();
+                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                if (ds.child("id_transaksi").getValue().toString().equals(id_transaksi)){
+                                    transaksi_class update_trans=new transaksi_class();
+                                    update_trans.setAlamat_pengiriman_trans(ds.child("alamat_pengiriman_trans").getValue().toString());
+                                    update_trans.setId_barang_trans(ds.child("id_barang_trans").getValue().toString());
+                                    update_trans.setId_promo(ds.child("id_promo").getValue().toString());
+                                    update_trans.setId_seller_trans(ds.child("id_seller_trans").getValue().toString());
+                                    update_trans.setId_user_trans(ds.child("id_user_trans").getValue().toString());
+                                    update_trans.setJumlah_barang_trans(Integer.parseInt(ds.child("jumlah_barang_trans").getValue().toString()));
+                                    update_trans.setKeterangan_trans(ds.child("keterangan_trans").getValue().toString());
+                                    update_trans.setStatus_trans("dikonfirmasi");
+                                    update_trans.setTotal_trans(ds.child("total_trans").getValue().toString());
+                                    update_trans.setVarian_pilihan(ds.child("varian_pilihan").getValue().toString());
+                                    update_trans.setWaktu_trans(ds.child("waktu_trans").getValue().toString());
+                                    update_trans.setId_transaksi(ds.child("id_transaksi").getValue().toString());
+                                    databaseReference_transaksi.child(ds.getKey()).setValue(update_trans).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(ctx, "Barang Berhasil Dikonfirmasi!", Toast.LENGTH_SHORT).show();
+                                            refresh();
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+            return row;
+
+        }
+    }
+    public void refresh(){
         //add barang dari list firebase
         DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
         databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long count=dataSnapshot.getChildrenCount();
+                listtransaksi.clear();
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
                     if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("id_seller_trans").getValue().toString())){
                         transaksi_class trans=new transaksi_class();
@@ -88,126 +290,5 @@ public class history_penjual extends AppCompatActivity {
 
             }
         });
-
-        ActionBar ab=getSupportActionBar();
-        ab.setTitle("Dititipin");
     }
-    public void cancelOrder(String orderID){
-        Toast.makeText(this, orderID+"", Toast.LENGTH_SHORT).show();
-        //kasi kode cancel ke firebase disini
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.optionmenu_topup, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==R.id.close){
-            finish();
-        }
-        return true;
-    }
-
-    class adapter extends ArrayAdapter<transaksi_class> {
-        ArrayList<transaksi_class> brg = new ArrayList<transaksi_class>();
-        Context ctx;
-        public adapter(Context context, ArrayList<transaksi_class>a) {
-            super(context, R.layout.list_history_front_pembeli_layout,a);
-            this.brg = a;
-            ctx=context;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View row = layoutInflater.inflate(R.layout.list_history_penjual_layout,parent,false);
-            TextView tvNamaBarang = row.findViewById(R.id.tvNamaBarang);
-            TextView tvStatus = row.findViewById(R.id.tvStatus);
-            TextView tvId = row.findViewById(R.id.tvId);
-            ImageView img = row.findViewById(R.id.ivImageBarang);
-            TextView tv_pembeli = row.findViewById(R.id.textViewPembeli);
-            Button btnCancel = row.findViewById(R.id.buttonPenjualCancelOrder);
-
-            if(brg.get(position).getStatus_trans().equals("pending")){
-                tvStatus.setText("Pending");
-                tvStatus.setTextColor(Color.BLACK);
-                tvStatus.setBackgroundColor(Color.GRAY);
-            }
-            else if(brg.get(position).getStatus_trans().equals("dikonfirmasi")){
-                tvStatus.setText("Dikirim");
-                tvStatus.setTextColor(Color.BLACK);
-                tvStatus.setBackgroundColor(Color.YELLOW);
-            }
-            else if(brg.get(position).getStatus_trans().equals("selesai")){
-                tvStatus.setText("Sudah Selesai");
-                tvStatus.setTextColor(Color.BLACK);
-                tvStatus.setBackgroundColor(Color.GREEN);
-            }
-            DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
-            databaseReference_barang.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    long count=dataSnapshot.getChildrenCount();
-                    for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                        if (brg.get(position).getId_barang_trans().equals(ds.child("id").getValue().toString())){
-                            tvNamaBarang.setText(ds.child("nama").getValue().toString());
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            FirebaseStorage.getInstance().getReference().child("img_barang").child(brg.get(position).getId_barang_trans()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    if (getApplicationContext()!=null){
-                        Glide.with(getApplicationContext()).load(uri).into(img);
-                    }
-                }
-            });
-            DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
-            databaseReference_user.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    long count=dataSnapshot.getChildrenCount();
-                    for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                        if (brg.get(position).getId_seller_trans().equals(ds.child("email").getValue().toString())){
-                            tv_pembeli.setText(ds.child("nama").getValue().toString());
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            tvId.setText(brg.get(position).getId_barang_trans());
-            tvId.setTextColor(Color.GREEN);
-            tvId.setTypeface(null, Typeface.BOLD_ITALIC);
-            tvNamaBarang.setTextColor(Color.BLACK);
-            tvId.setTextColor(Color.BLACK);
-            tv_pembeli.setTextColor(Color.BLACK);
-            //kalau sudah selesai / sudah selesai dikirim
-            if(!brg.get(position).getStatus_trans().equals("pending")){
-                btnCancel.setVisibility(View.GONE);
-            }
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String id_transaksi= brg.get(position).getId_transaksi();
-//                    Toast.makeText(history_penjual.this, "ID barang yang diambil: "+id_barang, Toast.LENGTH_SHORT).show();
-                    cancelOrder(id_transaksi);
-                }
-            });
-            return row;
-
-        }
-    }
-
 }

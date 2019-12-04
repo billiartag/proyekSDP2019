@@ -52,21 +52,56 @@
                     android:id="@+id/tvPenjual"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorLink="#00000000" />
+                    android:textColorLink="#00000000"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvTglBeli"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorLink="#00000000" />
+                    android:textColorLink="#00000000"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/tvjumlahbarang_pembeli"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/tvvarian_pembeli"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/tvharga_pembeli"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
 
                 <TextView
                     android:id="@+id/tvLokasi"
                     android:layout_width="match_parent"
                     android:layout_height="73dp"
-                    android:textColorLink="#00000000" />
+                    android:layout_marginBottom="10dp"
+                    android:textColorLink="#00000000"
+                    android:textStyle="italic" />
+
+                <Button
+                    android:id="@+id/buttonsudahsampai_pembeli"
+                    android:layout_width="148dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:background="#43A047"
+                    android:text="Sudah Sampai"
+                    android:textColor="#FFFFFF" />
 
             </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
