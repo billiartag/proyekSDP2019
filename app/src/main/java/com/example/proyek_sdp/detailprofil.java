@@ -3,6 +3,8 @@ package com.example.proyek_sdp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,14 +32,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
+
 public class detailprofil extends AppCompatActivity {
     ImageView profil_pict;
     TextView nama;
-    TextView rating,follow_detail_profil;
+    TextView rating,follow_detail_profil,tv_text_reviewdaripembeli;
     Button chat;
     ImageButton report;
     boolean difollow=false;
+    RecyclerView rv_ratingdanreview;
     DatabaseReference databaseReference_follow;
+    DatabaseReference databaseReference_review;
+    ArrayList<RatingReviewClass>list_review=new ArrayList<RatingReviewClass>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +56,43 @@ public class detailprofil extends AppCompatActivity {
         profil_pict=findViewById(R.id.profil_pict);
         rating=findViewById(R.id.rating);
         follow_detail_profil=findViewById(R.id.follow_detail_profil);
+        rv_ratingdanreview=findViewById(R.id.rv_ratingdanreview);
+        tv_text_reviewdaripembeli=findViewById(R.id.tv_text_reviewdaripembeli);
         //start program
         user x= (user) getIntent().getExtras().getSerializable("user");
+        //pengisian recycler view rating dan review
+        databaseReference_review= FirebaseDatabase.getInstance().getReference().child("RatingAndReviewDatabase");
+        databaseReference_review.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id_user").getValue().toString().equals(x.getEmail())){
+                        RatingReviewClass review_user=new RatingReviewClass();
+                        review_user.setWaktu(ds.child("waktu").getValue().toString());
+                        review_user.setReview(ds.child("review").getValue().toString());
+                        review_user.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                        review_user.setId_user(ds.child("id_user").getValue().toString());
+                        review_user.setId(ds.child("id").getValue().toString());
+                        review_user.setId_pemberi_review(ds.child("id_pemberi_review").getValue().toString());
+                        list_review.add(review_user);
+                    }
+                }
+                rv_ratingdanreview.setHasFixedSize(true);
+                rv_ratingdanreview.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+                ReviewAdapter adapter = new ReviewAdapter(getApplicationContext(), list_review);
+                rv_ratingdanreview.setAdapter(adapter);
+                if(list_review.size()==0){
+                    tv_text_reviewdaripembeli.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        //isi data data didalam layout
         nama.setText("Nama : "+x.getNama());
         if(x.getRating()+"".length()>2){
             rating.setText("Rating : "+String.valueOf(x.getRating()).substring(0,3));
@@ -58,6 +100,7 @@ public class detailprofil extends AppCompatActivity {
         else {
             rating.setText("Rating : "+x.getRating());
         }
+        //ambil foto profil user
         FirebaseStorage.getInstance().getReference().child("profil_picture").child(x.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -69,6 +112,7 @@ public class detailprofil extends AppCompatActivity {
                 profil_pict.setBackgroundResource(R.drawable.default_profil);
             }
         });
+        //tekan tombol send message
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

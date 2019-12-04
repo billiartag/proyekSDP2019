@@ -199,7 +199,7 @@ public class payment_nego extends AppCompatActivity {
                 String Key = databaseReferenceTopup.push().getKey();
                 historyWallet.setId_hist_wallet(Key);
                 historyWallet.setId_user_wallet(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                historyWallet.setNominal_berubah("- Rp. "+total_harga);
+                historyWallet.setNominal_berubah("-Rp"+total_harga);
                 historyWallet.setStatus_history("Transaksi keluar");
                 Calendar waktu_sekarang  = new GregorianCalendar();
                 String waktu  = waktu_sekarang.get(Calendar.DATE)+"/"+waktu_sekarang.get(Calendar.MONTH)+"/"+waktu_sekarang.get(Calendar.YEAR)+" - "+waktu_sekarang.get(Calendar.HOUR)+":"+waktu_sekarang.get(Calendar.MINUTE)+" "+(waktu_sekarang.get((Calendar.AM_PM))==1?"PM":"AM");

@@ -124,10 +124,10 @@ public class cart extends AppCompatActivity {
                         Date dt = new Date();
                         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
                         String time1 = sdf.format(dt);
+                        DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
                         DatabaseReference databaseReference_topup= FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase");
                         DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
                         DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
-                        DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
                         for(int i=0;i<kumpulanbarang.size();i++){
                             final int index=i;
                             CartClass x=kumpulanbarang.get(index);

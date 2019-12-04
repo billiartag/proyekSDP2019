@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class history_pembeli extends AppCompatActivity {
@@ -74,6 +76,7 @@ public class history_pembeli extends AppCompatActivity {
             TextView tvvarian = row.findViewById(R.id.tvvarian_pembeli);
             TextView tvharga = row.findViewById(R.id.tvharga_pembeli);
             ImageView img = row.findViewById(R.id.ivImageBarang);
+            TextView temp=new TextView(getApplicationContext());
             Button sudahsampai=row.findViewById(R.id.buttonsudahsampai_pembeli);
 
             if(brg!=null){
@@ -174,8 +177,12 @@ public class history_pembeli extends AppCompatActivity {
             sudahsampai.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //update transaksi
                     String id_transaksi= brg.get(position).getId_transaksi();
                     DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+                    DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+                    DatabaseReference databaseReference_topup= FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase");
+                    DatabaseReference databaseReference_voucher= FirebaseDatabase.getInstance().getReference().child("Voucher");
                     databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -211,6 +218,57 @@ public class history_pembeli extends AppCompatActivity {
 
                         }
                     });
+                    //update saldo
+                    databaseReference_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                            for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
+                                if(ds2.child("email").getValue().toString().equals(brg.get(position).getId_seller_trans())){
+                                    //update saldo
+                                    user baru=new user();
+                                    baru.setNama(ds2.child("nama").getValue().toString());
+                                    baru.setProfil_picture(Integer.parseInt(ds2.child("profil_picture").getValue().toString()));
+                                    baru.setSaldo(Integer.parseInt(ds2.child("saldo").getValue().toString())+Integer.parseInt(brg.get(position).getTotal_trans()));
+                                    baru.setRating(Float.parseFloat(ds2.child("rating").getValue().toString()));
+                                    baru.setPhone(ds2.child("phone").getValue().toString());
+                                    baru.setEmail(ds2.child("email").getValue().toString());
+                                    baru.setId(ds2.child("id").getValue().toString());
+                                    baru.setBirthdate(ds2.child("birthdate").getValue().toString());
+                                    baru.setStatus(Integer.parseInt(ds2.child("status").getValue().toString()));
+                                    baru.setPassword(ds2.child("password").getValue().toString());
+                                    baru.setVerifikasi_ktp(Integer.parseInt(ds2.child("verifikasi_ktp").getValue().toString()));
+                                    databaseReference_user.child(ds2.getKey()).setValue(baru);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    //tambah di top up history
+                    String Key2 = databaseReference_topup.push().getKey();
+                    history_wallet hist_baru=new history_wallet();
+                    hist_baru.setNominal_berubah("+Rp"+brg.get(position).getTotal_trans());
+                    hist_baru.setId_hist_wallet(Key2);
+                    hist_baru.setId_user_wallet(brg.get(position).getId_seller_trans());
+                    hist_baru.setStatus_history("Transaksi Masuk Dari Jual Barang");
+                    Date dt = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+                    String time2 = sdf.format(dt);
+                    Calendar now2 = Calendar.getInstance();
+                    hist_baru.setWaktu_history(now2.get(Calendar.DAY_OF_MONTH)+"/"+now2.get(Calendar.MONTH)+"/"+now2.get(Calendar.YEAR)+"-"+time2);
+                    databaseReference_topup.child(Key2).setValue(hist_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+
+                        }
+                    });
+                    Intent move=new Intent(getApplicationContext(),reviewdanratingActivity.class);
+                    move.putExtra("iduser",brg.get(position).getId_seller_trans());
+                    startActivity(move);
                 }
             });
 
