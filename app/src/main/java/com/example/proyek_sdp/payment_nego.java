@@ -157,6 +157,8 @@ public class payment_nego extends AppCompatActivity {
                                                             ubahSaldoUser(saldo_user[0],total_harga);
                                                             //ubah status nego
                                                             ubahStatusNego();
+                                                            //buat transaksi baru
+                                                            buatTransaksi(total_harga);
                                                         }
                                                     });
                                                 }
@@ -187,6 +189,31 @@ public class payment_nego extends AppCompatActivity {
             }
         });
     }
+
+    public void buatTransaksi(int total_harga) {
+        DatabaseReference databaseReferenceTopup = FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase");
+        databaseReferenceTopup.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                history_wallet historyWallet = new history_wallet();
+                String Key = databaseReferenceTopup.push().getKey();
+                historyWallet.setId_hist_wallet(Key);
+                historyWallet.setId_user_wallet(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                historyWallet.setNominal_berubah("- Rp. "+total_harga);
+                historyWallet.setStatus_history("Transaksi keluar");
+                Calendar waktu_sekarang  = new GregorianCalendar();
+                String waktu  = waktu_sekarang.get(Calendar.DATE)+"/"+waktu_sekarang.get(Calendar.MONTH)+"/"+waktu_sekarang.get(Calendar.YEAR)+" - "+waktu_sekarang.get(Calendar.HOUR)+":"+waktu_sekarang.get(Calendar.MINUTE)+" "+(waktu_sekarang.get((Calendar.AM_PM))==1?"PM":"AM");
+                historyWallet.setWaktu_history(waktu);
+                databaseReferenceTopup.child(Key).setValue(historyWallet);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void ubahStatusNego(){
         DatabaseReference databaseReference_nego =FirebaseDatabase.getInstance().getReference().child("NegoDatabase");
         databaseReference_nego.addListenerForSingleValueEvent(new ValueEventListener() {
