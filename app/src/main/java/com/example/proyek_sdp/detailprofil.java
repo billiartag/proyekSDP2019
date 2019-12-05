@@ -151,6 +151,39 @@ public class detailprofil extends AppCompatActivity {
                 }
             }
         });
+        //masukkan isi review
+
+        databaseReference_review= FirebaseDatabase.getInstance().getReference().child("RatingAndReviewDatabase");
+        databaseReference_review.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id_user").getValue().toString().equals(x.getEmail())){
+                        RatingReviewClass review_user=new RatingReviewClass();
+                        review_user.setId_pemberi_review(ds.child("id_pemberi_review").getValue().toString());
+                        review_user.setId(ds.child("id").getValue().toString());
+                        review_user.setId_user(ds.child("id_user").getValue().toString());
+                        review_user.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                        review_user.setReview(ds.child("review").getValue().toString());
+                        review_user.setWaktu(ds.child("waktu").getValue().toString());
+                        list_review.add(review_user);
+                    }
+                }
+                rv_ratingdanreview.setHasFixedSize(true);
+                rv_ratingdanreview.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+                ReviewAdapter adapter = new ReviewAdapter(getApplicationContext(), list_review);
+                rv_ratingdanreview.setAdapter(adapter);
+                if(list_review.size()==0){
+                    tv_text_reviewdaripembeli.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
