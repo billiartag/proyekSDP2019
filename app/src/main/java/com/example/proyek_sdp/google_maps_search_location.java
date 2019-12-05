@@ -64,6 +64,7 @@ public class google_maps_search_location extends FragmentActivity implements OnM
                 move.putExtra("harga",getIntent().getExtras().getString("harga"));
                 move.putExtra("berat",getIntent().getExtras().getString("berat"));
                 startActivity(move);
+                finish();
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

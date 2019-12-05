@@ -53,7 +53,9 @@ public class google_maps_current_location extends FragmentActivity implements On
                 if(getIntent().hasExtra("cart")){
                     Intent move=new Intent(getApplicationContext(), cart.class);
                     move.putExtra("lokasi_cart",edalamat_google_map.getText().toString());
+                    move.putExtra("tekanpromo",getIntent().getExtras().getInt("tekanpromo"));
                     startActivity(move);
+                    finish();
                 }
                 else {
                     Intent move=new Intent(getApplicationContext(), home.class);
@@ -69,6 +71,7 @@ public class google_maps_current_location extends FragmentActivity implements On
                     move.putExtra("harga",getIntent().getExtras().getString("harga"));
                     move.putExtra("berat",getIntent().getExtras().getString("berat"));
                     startActivity(move);
+                    finish();
                 }
             }
         });

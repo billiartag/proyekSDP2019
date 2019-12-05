@@ -61,45 +61,9 @@ public class detailprofil extends AppCompatActivity {
         //start program
         user x= (user) getIntent().getExtras().getSerializable("user");
         //pengisian recycler view rating dan review
-        databaseReference_review= FirebaseDatabase.getInstance().getReference().child("RatingAndReviewDatabase");
-        databaseReference_review.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long count=dataSnapshot.getChildrenCount();
-                for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if(ds.child("id_user").getValue().toString().equals(x.getEmail())){
-                        RatingReviewClass review_user=new RatingReviewClass();
-                        review_user.setWaktu(ds.child("waktu").getValue().toString());
-                        review_user.setReview(ds.child("review").getValue().toString());
-                        review_user.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
-                        review_user.setId_user(ds.child("id_user").getValue().toString());
-                        review_user.setId(ds.child("id").getValue().toString());
-                        review_user.setId_pemberi_review(ds.child("id_pemberi_review").getValue().toString());
-                        list_review.add(review_user);
-                    }
-                }
-                rv_ratingdanreview.setHasFixedSize(true);
-                rv_ratingdanreview.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
-                ReviewAdapter adapter = new ReviewAdapter(getApplicationContext(), list_review);
-                rv_ratingdanreview.setAdapter(adapter);
-                if(list_review.size()==0){
-                    tv_text_reviewdaripembeli.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        rating.setText("Rating : "+x.getRating());
         //isi data data didalam layout
         nama.setText("Nama : "+x.getNama());
-        if(x.getRating()+"".length()>2){
-            rating.setText("Rating : "+String.valueOf(x.getRating()).substring(0,3));
-        }
-        else {
-            rating.setText("Rating : "+x.getRating());
-        }
         //ambil foto profil user
         FirebaseStorage.getInstance().getReference().child("profil_picture").child(x.getEmail()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

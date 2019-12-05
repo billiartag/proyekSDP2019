@@ -136,7 +136,6 @@ public class detail_feed extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     hasil_radio_varian=varian_baru.getText().toString();
-                    Toast.makeText(detail_feed.this, hasil_radio_varian, Toast.LENGTH_SHORT).show();
                 }
             });
             radioGroup_varian_feed.addView(varian_baru);

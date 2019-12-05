@@ -1,6 +1,7 @@
 package com.example.proyek_sdp;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 public class user implements Serializable{
     private String id,nama,password,email,birthdate,phone;
@@ -21,7 +22,14 @@ public class user implements Serializable{
         this.verifikasi_ktp = verifikasi_ktp;
         this.rating = rating;
     }
-
+    public static Comparator<user>sortdescrating=new Comparator<user>() {
+        @Override
+        public int compare(user user, user t1) {
+            double rating1=user.getRating();
+            double rating2=t1.getRating();
+            return (int) (rating2-rating1);
+        }
+    };
     public String getId() {
         return id;
     }
