@@ -51,8 +51,8 @@ import java.util.UUID;
 public class personal_fragment extends Fragment {
     ImageView profil_picture_user;
     ImageView gambar_ktp_profil;
-    EditText edname_profil,edemail_profil,edtanggal_lahir_profil,ednotelp_profil;
-    Button btn_edit_profil,btn_verifikasi_ktp;
+    EditText edname_profil,edemail_profil,edtanggal_lahir_profil,ednotelp_profil,edlokasi_edit_profil;
+    Button btn_edit_profil,btn_verifikasi_ktp,btn_lokasi_edit_profil;
     Bitmap passing_gambar;
     DatabaseReference databaseReference;
     TextView status_verifikasi_ktp,followers_profil,following_profil;
@@ -74,17 +74,31 @@ public class personal_fragment extends Fragment {
         status_verifikasi_ktp=myview.findViewById(R.id.status_verifikasi_ktp);
         followers_profil=myview.findViewById(R.id.followers_profil);
         following_profil=myview.findViewById(R.id.following_profil);
+        edlokasi_edit_profil=myview.findViewById(R.id.edlokasi_edit_profil);
+        btn_lokasi_edit_profil=myview.findViewById(R.id.btn_lokasi_edit_profil);
         //start program
         edemail_profil.setEnabled(false);
         edname_profil.setEnabled(false);
         ednotelp_profil.setEnabled(false);
         edtanggal_lahir_profil.setEnabled(false);
+        edlokasi_edit_profil.setFocusable(false);
+        edlokasi_edit_profil.setEnabled(false);
+        btn_lokasi_edit_profil.setEnabled(false);
         //tekan followers
         followers_profil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent move=new Intent(getActivity(),list_all_follow.class);
                 move.putExtra("tipe_follow","0");
+                startActivity(move);
+            }
+        });
+        //tekan pilih
+        btn_lokasi_edit_profil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent move=new Intent(getActivity(),google_maps_current_location.class);
+                move.putExtra("lokasi_kirim","0");
                 startActivity(move);
             }
         });
@@ -156,6 +170,12 @@ public class personal_fragment extends Fragment {
                         ednotelp_profil.setText(ds.child("phone").getValue().toString());
                         saldo=Integer.parseInt(ds.child("saldo").getValue().toString());
                         edtanggal_lahir_profil.setText(ds.child("birthdate").getValue().toString());
+                        if(((home)getActivity()).pilih_lokasi!=""){
+                            edlokasi_edit_profil.setText(((home)getActivity()).pilih_lokasi);
+                        }
+                        else {
+                            edlokasi_edit_profil.setText(ds.child("alamat").getValue().toString());
+                        }
                         if (ds.child("verifikasi_ktp").getValue().toString().equals("0")){
                             status_verifikasi_ktp.setText("Belum Diverifikasi");
                         }
@@ -182,6 +202,8 @@ public class personal_fragment extends Fragment {
                 if(btn_edit_profil.getText().toString().toUpperCase().equals("EDIT")){
                     edname_profil.setEnabled(true);
                     ednotelp_profil.setEnabled(true);
+                    edlokasi_edit_profil.setEnabled(true);
+                    btn_lokasi_edit_profil.setEnabled(true);
                     btn_edit_profil.setText("SAVE");
                 }
                 else if(btn_edit_profil.getText().toString().toUpperCase().equals("SAVE")){
@@ -207,6 +229,8 @@ public class personal_fragment extends Fragment {
                                     baru.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
                                     baru.setPassword(ds.child("password").getValue().toString());
                                     baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                                    baru.setAlamat(edlokasi_edit_profil.getText().toString());
+                                    baru.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
                                     databaseReference.child(ds.getKey()).setValue(baru);
                                 }
                             }

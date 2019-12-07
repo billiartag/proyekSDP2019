@@ -50,6 +50,7 @@ public class cart extends AppCompatActivity {
     int totalinsert=-1;
     int tekanpromo=-1;
     int saldo=0;
+    int verifikasi_check=-1;
     ArrayList<voucher>list_voucher=new ArrayList<voucher>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +116,22 @@ public class cart extends AppCompatActivity {
 
             }
         });
+        //ambil verifikasi ktp
+        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser())){
+                        verifikasi_check=Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString());
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         //buat rv untuk cart
         rv_cart.setHasFixedSize(true);
         rv_cart.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false));
@@ -132,107 +148,116 @@ public class cart extends AppCompatActivity {
                 if(kumpulanbarang.size()>0){
                     if(!edlokasi_cart.getText().toString().trim().equals("")){
                         if(saldo>=totalinsert){
-                            Date dt = new Date();
-                            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-                            String time1 = sdf.format(dt);
-                            DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
-                            DatabaseReference databaseReference_topup= FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase");
-                            DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
-                            DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
-                            for(int i=0;i<kumpulanbarang.size();i++){
-                                final int index=i;
-                                CartClass x=kumpulanbarang.get(index);
-                                databaseReference_barang.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                                            if(ds.child("id").getValue().toString().equals(x.getId_barang_cart())){
-                                                //tambah di transaksi
-                                                String Key = databaseReference_transaksi.push().getKey();
-                                                transaksi_class trans_baru=new transaksi_class();
-                                                trans_baru.setId_barang_trans(x.getId_barang_cart());
-                                                trans_baru.setAlamat_pengiriman_trans(edlokasi_cart.getText().toString());
-                                                if(tekanpromo!=-1){
-                                                    trans_baru.setId_promo(list_voucher.get(tekanpromo).getNama_promo());
-                                                }
-                                                else {
-                                                    trans_baru.setId_promo("-");
-                                                }
-                                                trans_baru.setId_seller_trans(ds.child("idpenjual").getValue().toString());
-                                                trans_baru.setId_user_trans(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                                                trans_baru.setJumlah_barang_trans(x.getJumlah_barang());
-                                                trans_baru.setKeterangan_trans("Cart");
-                                                trans_baru.setStatus_trans("pending");
-                                                trans_baru.setTotal_trans((x.getHarga_barang()*x.getJumlah_barang())+"");
-                                                trans_baru.setVarian_pilihan(x.getVarian_barang());
-                                                trans_baru.setId_transaksi(Key);
-                                                Calendar now = Calendar.getInstance();
-                                                trans_baru.setWaktu_trans(now.get(Calendar.DAY_OF_MONTH)+"/"+now.get(Calendar.MONTH)+"/"+now.get(Calendar.YEAR)+"-"+time1);
-                                                databaseReference_transaksi.child(Key).setValue(trans_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-
+                            if(verifikasi_check==1){
+                                Date dt = new Date();
+                                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+                                String time1 = sdf.format(dt);
+                                DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
+                                DatabaseReference databaseReference_topup= FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase");
+                                DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
+                                DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
+                                for(int i=0;i<kumpulanbarang.size();i++){
+                                    final int index=i;
+                                    CartClass x=kumpulanbarang.get(index);
+                                    databaseReference_barang.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                                if(ds.child("id").getValue().toString().equals(x.getId_barang_cart())){
+                                                    //tambah di transaksi
+                                                    String Key = databaseReference_transaksi.push().getKey();
+                                                    transaksi_class trans_baru=new transaksi_class();
+                                                    trans_baru.setId_barang_trans(x.getId_barang_cart());
+                                                    trans_baru.setAlamat_pengiriman_trans(edlokasi_cart.getText().toString());
+                                                    if(tekanpromo!=-1){
+                                                        trans_baru.setId_promo(list_voucher.get(tekanpromo).getNama_promo());
                                                     }
-                                                });
+                                                    else {
+                                                        trans_baru.setId_promo("-");
+                                                    }
+                                                    trans_baru.setId_seller_trans(ds.child("idpenjual").getValue().toString());
+                                                    trans_baru.setId_user_trans(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                                    trans_baru.setJumlah_barang_trans(x.getJumlah_barang());
+                                                    trans_baru.setKeterangan_trans("Cart");
+                                                    trans_baru.setStatus_trans("pending");
+                                                    trans_baru.setTotal_trans((x.getHarga_barang()*x.getJumlah_barang())+"");
+                                                    trans_baru.setVarian_pilihan(x.getVarian_barang());
+                                                    trans_baru.setId_transaksi(Key);
+                                                    Calendar now = Calendar.getInstance();
+                                                    trans_baru.setWaktu_trans(now.get(Calendar.DAY_OF_MONTH)+"/"+now.get(Calendar.MONTH)+"/"+now.get(Calendar.YEAR)+"-"+time1);
+                                                    databaseReference_transaksi.child(Key).setValue(trans_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                        }
+                                                    });
+                                                }
                                             }
                                         }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                    }
-                                });
-                                //update saldo user
-                                databaseReference_user.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                                            if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
-                                                //update saldo
-                                                user baru=new user();
-                                                baru.setNama(ds.child("nama").getValue().toString());
-                                                baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
-                                                baru.setSaldo(Integer.parseInt(ds.child("saldo").getValue().toString())-totalinsert);
-                                                baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
-                                                baru.setPhone(ds.child("phone").getValue().toString());
-                                                baru.setEmail(ds.child("email").getValue().toString());
-                                                baru.setId(ds.child("id").getValue().toString());
-                                                baru.setBirthdate(ds.child("birthdate").getValue().toString());
-                                                baru.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
-                                                baru.setPassword(ds.child("password").getValue().toString());
-                                                baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
-                                                databaseReference_user.child(ds.getKey()).setValue(baru);
-                                                //tambah di top up history
-                                                String Key2 = databaseReference_topup.push().getKey();
-                                                history_wallet hist_baru=new history_wallet();
-                                                hist_baru.setNominal_berubah("-Rp"+((x.getHarga_barang()*x.getJumlah_barang())-((x.getHarga_barang()*x.getJumlah_barang())*(Integer.parseInt(list_voucher.get(tekanpromo).getDiskon_promo()))/100)));
-                                                hist_baru.setId_hist_wallet(Key2);
-                                                hist_baru.setId_user_wallet(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                                                hist_baru.setStatus_history("Transaksi Keluar");
-                                                Date dt = new Date();
-                                                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
-                                                String time2 = sdf.format(dt);
-                                                Calendar now2 = Calendar.getInstance();
-                                                hist_baru.setWaktu_history(now2.get(Calendar.DAY_OF_MONTH)+"/"+now2.get(Calendar.MONTH)+"/"+now2.get(Calendar.YEAR)+"-"+time2);
-                                                databaseReference_topup.child(Key2).setValue(hist_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-
-                                                    }
-                                                });
-                                            }
                                         }
-                                        deleteEntryCart(x);
-                                    }
+                                    });
+                                    //update saldo user
+                                    databaseReference_user.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                                if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                                    if(tekanpromo!=-1){
+                                                        //update saldo
+                                                        user baru=new user();
+                                                        baru.setNama(ds.child("nama").getValue().toString());
+                                                        baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                                                        baru.setSaldo(Integer.parseInt(ds.child("saldo").getValue().toString())-totalinsert);
+                                                        baru.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                                                        baru.setPhone(ds.child("phone").getValue().toString());
+                                                        baru.setEmail(ds.child("email").getValue().toString());
+                                                        baru.setId(ds.child("id").getValue().toString());
+                                                        baru.setBirthdate(ds.child("birthdate").getValue().toString());
+                                                        baru.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
+                                                        baru.setPassword(ds.child("password").getValue().toString());
+                                                        baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                                                        baru.setAlamat(ds.child("alamat").getValue().toString());
+                                                        baru.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
+                                                        databaseReference_user.child(ds.getKey()).setValue(baru);
+                                                        //tambah di top up history
+                                                        String Key2 = databaseReference_topup.push().getKey();
+                                                        history_wallet hist_baru=new history_wallet();
+                                                        hist_baru.setNominal_berubah("-Rp"+((x.getHarga_barang()*x.getJumlah_barang())-((x.getHarga_barang()*x.getJumlah_barang())*(Integer.parseInt(list_voucher.get(tekanpromo).getDiskon_promo()))/100)));
+                                                        hist_baru.setId_hist_wallet(Key2);
+                                                        hist_baru.setId_user_wallet(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                                        hist_baru.setStatus_history("Transaksi Keluar");
+                                                        Date dt = new Date();
+                                                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+                                                        String time2 = sdf.format(dt);
+                                                        Calendar now2 = Calendar.getInstance();
+                                                        hist_baru.setWaktu_history(now2.get(Calendar.DAY_OF_MONTH)+"/"+now2.get(Calendar.MONTH)+"/"+now2.get(Calendar.YEAR)+"-"+time2);
+                                                        databaseReference_topup.child(Key2).setValue(hist_baru).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                            deleteEntryCart(x);
+                                        }
 
-                                    }
-                                });
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                                Toast.makeText(cart.this, "Berhasil Melakukan Pembayaran!", Toast.LENGTH_SHORT).show();
                             }
-                            Toast.makeText(cart.this, "Berhasil Melakukan Pembayaran!", Toast.LENGTH_SHORT).show();
+                            else {
+                                Toast.makeText(cart.this, "untuk melakukan pembayaran anda harus melakukan verifikasi ktp terlebih dahulu", Toast.LENGTH_SHORT).show();
+                            }
                         }
                         else {
                             Toast.makeText(cart.this, "Uang Tidak Cukup Segera Lakukan Top Up!", Toast.LENGTH_SHORT).show();

@@ -225,6 +225,8 @@ public class history_penjual extends AppCompatActivity {
                                         baru.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
                                         baru.setPassword(ds.child("password").getValue().toString());
                                         baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                                        baru.setAlamat(ds.child("alamat").getValue().toString());
+                                        baru.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
                                         databaseReference_user.child(ds.getKey()).setValue(baru);
                                     }
                                     else {

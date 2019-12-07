@@ -57,6 +57,12 @@ public class google_maps_current_location extends FragmentActivity implements On
                     startActivity(move);
                     finish();
                 }
+                else if(getIntent().hasExtra("lokasi_kirim")){
+                    Intent move=new Intent(getApplicationContext(), home.class);
+                    move.putExtra("pilih_lokasi",edalamat_google_map.getText().toString());
+                    startActivity(move);
+                    finish();
+                }
                 else {
                     Intent move=new Intent(getApplicationContext(), home.class);
                     move.putExtra("judul",getIntent().getExtras().getString("judul"));

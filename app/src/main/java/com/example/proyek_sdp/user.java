@@ -4,18 +4,20 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 public class user implements Serializable{
-    private String id,nama,password,email,birthdate,phone;
+    private String id,nama,password,email,birthdate,phone,alamat,firebase_user_id;
     private int saldo,profil_picture,status,verifikasi_ktp;
     private double rating;
     public user(){ }
 
-    public user(String id, String nama, String password, String email, String birthdate, String phone, int saldo, int profil_picture, int status, int verifikasi_ktp, double rating) {
+    public user(String id, String nama, String password, String email, String birthdate, String phone, String alamat, String firebase_user_id, int saldo, int profil_picture, int status, int verifikasi_ktp, double rating) {
         this.id = id;
         this.nama = nama;
         this.password = password;
         this.email = email;
         this.birthdate = birthdate;
         this.phone = phone;
+        this.alamat = alamat;
+        this.firebase_user_id = firebase_user_id;
         this.saldo = saldo;
         this.profil_picture = profil_picture;
         this.status = status;
@@ -78,6 +80,22 @@ public class user implements Serializable{
         this.phone = phone;
     }
 
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
+    }
+
+    public String getFirebase_user_id() {
+        return firebase_user_id;
+    }
+
+    public void setFirebase_user_id(String firebase_user_id) {
+        this.firebase_user_id = firebase_user_id;
+    }
+
     public int getSaldo() {
         return saldo;
     }
@@ -114,7 +132,7 @@ public class user implements Serializable{
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 }

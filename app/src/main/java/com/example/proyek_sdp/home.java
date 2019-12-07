@@ -25,12 +25,16 @@ public class home extends AppCompatActivity {
     String harga="";
     String kategori="";
     String berat="";
+    String pilih_lokasi="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(navlistener);
+        if(getIntent().hasExtra("pilih_lokasi")){
+            pilih_lokasi=getIntent().getExtras().getString("pilih_lokasi");
+        }
         if(getIntent().hasExtra("lokasi")){
             judul=getIntent().getExtras().getString("judul");
             jenis=getIntent().getExtras().getString("jenis");
@@ -50,6 +54,9 @@ public class home extends AppCompatActivity {
         }
         else if(getIntent().hasExtra("profil")){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();
+        }
+        else if(getIntent().hasExtra("pilih_lokasi")){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new personal_fragment()).commit();
         }
         else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new home_fragment()).commit();

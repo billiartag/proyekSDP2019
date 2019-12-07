@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="135dp"
     android:layout_margin="5dp"
-    android:background="@android:drawable/picture_frame"
     android:orientation="horizontal"
     android:padding="5dp">
 
     <ImageView
         android:id="@+id/img_barang_cart"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="105dp"
+        android:layout_height="125dp"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/bike" />
 
     <LinearLayout
@@ -26,16 +26,21 @@
             android:id="@+id/judul_barang_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:text="TextView"
             android:textColor="#000000"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tv_penjual_barang_cart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:textColor="#000000" />
+
+        <TextView
             android:id="@+id/harga_barang_cart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:text="TextView"
             android:textColor="#F4511E"
             android:textColorLink="#00000000" />

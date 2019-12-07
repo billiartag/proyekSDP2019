@@ -71,7 +71,9 @@
                     android:layout_width="469dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Nama : " />
+                    android:text="Nama : "
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
 
                 <EditText
                     android:id="@+id/edname_profil"
@@ -94,7 +96,9 @@
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Email : " />
+                    android:text="Email : "
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
 
                 <EditText
                     android:id="@+id/edemail_profil"
@@ -118,7 +122,9 @@
                     android:layout_width="109dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="No Telp" />
+                    android:text="No Telp"
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
 
                 <EditText
                     android:id="@+id/edphone_profil"
@@ -142,7 +148,9 @@
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Tanggal Lahir : " />
+                    android:text="Tanggal Lahir : "
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
 
                 <EditText
                     android:id="@+id/ed_tanggal_lahir_profil"
@@ -153,12 +161,47 @@
                     android:inputType="textPersonName" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/textView49"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Lokasi Pengiriman : "
+                android:textColor="#000000"
+                android:textStyle="italic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edlokasi_edit_profil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:textStyle="italic" />
+
+                <Button
+                    android:id="@+id/btn_lokasi_edit_profil"
+                    android:layout_width="76dp"
+                    android:layout_height="28dp"
+                    android:background="#039BE5"
+                    android:text="Pilih" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btn_edit_profil"
                 android:layout_width="114dp"
                 android:layout_height="wrap_content"
                 android:background="#039BE5"
                 android:text="Edit" />
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -172,7 +215,9 @@
                     android:layout_width="31dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Verifikasi KTP :" />
+                    android:text="Verifikasi KTP :"
+                    android:textColor="#000000"
+                    android:textStyle="italic" />
 
                 <TextView
                     android:id="@+id/status_verifikasi_ktp"

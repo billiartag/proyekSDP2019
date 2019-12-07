@@ -114,6 +114,8 @@ public class home_fragment extends Fragment {
                                     }
                                     baru.setNama(ds.child("nama").getValue().toString());
                                     baru.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                                    baru.setAlamat(ds.child("alamat").getValue().toString());
+                                    baru.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
                                     databaseReference.child(ds.getKey()).setValue(baru);
                                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -132,6 +134,8 @@ public class home_fragment extends Fragment {
                                                         baru.setRating(Float.parseFloat(ds3.child("rating").getValue().toString()));
                                                         baru.setNama(ds3.child("nama").getValue().toString());
                                                         baru.setProfil_picture(Integer.parseInt(ds3.child("profil_picture").getValue().toString()));
+                                                        baru.setAlamat(ds.child("alamat").getValue().toString());
+                                                        baru.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
                                                         kumpulanuser.add(baru);
                                                     }
                                                 }

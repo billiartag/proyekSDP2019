@@ -118,36 +118,39 @@ public class register extends AppCompatActivity {
                     baru.setSaldo(0);
                     baru.setVerifikasi_ktp(0);
                     baru.setProfil_picture(R.drawable.default_profil);
+                    baru.setAlamat(" ");
 
                     firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(register.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (!task.isSuccessful()){
-                                Toast.makeText(register.this, "register gagal, coba ulang", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(register.this, "Email sudah pernah terdaftar", Toast.LENGTH_SHORT).show();
                             }
-                        }
-                    });
-
-                    ValueEventListener valueEventListener=new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            long count=dataSnapshot.getChildrenCount();
-                            boolean berhasil_register=true;
-                            for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                                if (email.getText().toString().equals(ds.child("email").getValue().toString())){
-                                    berhasil_register=false;
-                                }
-                            }
-                            if(berhasil_register){
-                                String key=databaseReference.push().getKey();
-                                baru.setId(key);
-                                databaseReference.child(key).setValue(baru).addOnCompleteListener(register.this, new OnCompleteListener<Void>() {
+                            else {
+                                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()){
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        long count=dataSnapshot.getChildrenCount();
+                                        boolean berhasil_register=true;
+                                        for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                            if (email.getText().toString().equals(ds.child("email").getValue().toString())){
+                                                berhasil_register=false;
+                                            }
+                                        }
+                                        if(berhasil_register){
+                                            String key=databaseReference.push().getKey();
+                                            baru.setId(key);
                                             firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString()).addOnCompleteListener(register.this, new OnCompleteListener<AuthResult>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if (task.isSuccessful()){
+                                                    }
+                                                }
+                                            });
+                                            baru.setFirebase_user_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            databaseReference.child(key).setValue(baru).addOnCompleteListener(register.this, new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()){
                                                         Toast.makeText(register.this, "Register berhasil", Toast.LENGTH_SHORT).show();
                                                         startActivity(new Intent(getApplicationContext(),home.class));
@@ -157,19 +160,17 @@ public class register extends AppCompatActivity {
                                             });
                                         }
                                     }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
                                 });
                             }
-                            else {
-                                Toast.makeText(register.this, "Email sudah pernah terdaftar", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(),Login.class));
-                                finish();
-                            }
                         }
+                    });
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) { }
-                    };
-                    databaseReference.addListenerForSingleValueEvent(valueEventListener);
+
                 }
                 else {
                     Toast.makeText(register.this, "Register Gagal!", Toast.LENGTH_SHORT).show();
