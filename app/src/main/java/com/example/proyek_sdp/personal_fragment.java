@@ -84,6 +84,14 @@ public class personal_fragment extends Fragment {
         edlokasi_edit_profil.setFocusable(false);
         edlokasi_edit_profil.setEnabled(false);
         btn_lokasi_edit_profil.setEnabled(false);
+        //intent dari google map
+        if((!((home) getActivity()).pilih_lokasi.equals(""))){
+            edname_profil.setEnabled(true);
+            ednotelp_profil.setEnabled(true);
+            edlokasi_edit_profil.setEnabled(true);
+            btn_lokasi_edit_profil.setEnabled(true);
+            btn_edit_profil.setText("SAVE");
+        }
         //tekan followers
         followers_profil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,6 +180,7 @@ public class personal_fragment extends Fragment {
                         edtanggal_lahir_profil.setText(ds.child("birthdate").getValue().toString());
                         if(((home)getActivity()).pilih_lokasi!=""){
                             edlokasi_edit_profil.setText(((home)getActivity()).pilih_lokasi);
+                            ((home)getActivity()).pilih_lokasi="";
                         }
                         else {
                             edlokasi_edit_profil.setText(ds.child("alamat").getValue().toString());
@@ -209,6 +218,8 @@ public class personal_fragment extends Fragment {
                 else if(btn_edit_profil.getText().toString().toUpperCase().equals("SAVE")){
                     edname_profil.setEnabled(false);
                     ednotelp_profil.setEnabled(false);
+                    edlokasi_edit_profil.setEnabled(false);
+                    btn_lokasi_edit_profil.setEnabled(false);
                     btn_edit_profil.setText("EDIT");
                     databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

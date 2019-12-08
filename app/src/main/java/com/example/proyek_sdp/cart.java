@@ -121,7 +121,10 @@ public class cart extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser())){
+                    if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        if(!getIntent().hasExtra("lokasi_cart")){
+                            edlokasi_cart.setText(ds.child("alamat").getValue().toString());
+                        }
                         verifikasi_check=Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString());
                     }
                 }

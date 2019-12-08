@@ -35,6 +35,9 @@ public class home extends AppCompatActivity {
         if(getIntent().hasExtra("pilih_lokasi")){
             pilih_lokasi=getIntent().getExtras().getString("pilih_lokasi");
         }
+        else {
+            pilih_lokasi="";
+        }
         if(getIntent().hasExtra("lokasi")){
             judul=getIntent().getExtras().getString("judul");
             jenis=getIntent().getExtras().getString("jenis");

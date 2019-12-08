@@ -46,7 +46,7 @@
                     android:layout_margin="5dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginBottom="20dp"
-                    android:scaleType="fitXY"
+                    android:scaleType="fitCenter"
                     app:layout_constraintBottom_toTopOf="@+id/username"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -56,24 +56,26 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="264dp"
+                    android:layout_marginTop="25dp"
                     android:fontFamily="Times New Roman"
                     android:textColor="#000000"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/img" />
 
                 <TextView
                     android:id="@+id/pemilik"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="300dp"
+                    android:layout_marginTop="8dp"
                     android:textColor="#000000"
                     android:textSize="18sp"
                     android:textStyle="italic"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/username" />
 
                 <TextView
                     android:id="@+id/deskripsi"

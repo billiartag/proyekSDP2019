@@ -150,6 +150,11 @@ public class barang implements Serializable {
 
     @Override
     public String toString() {
-        return nama+"\n"+"Deskripsi : "+deskripsi.substring(0,deskripsi.length()/2)+"..."+"\n";
+        if(nama.length()>11){
+            return nama.substring(0,11)+"...";
+        }
+        else {
+            return nama;
+        }
     }
 }

@@ -68,6 +68,38 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.harga_barang.setText("Rp "+cartSekarang.getHarga_barang());
     //varian barang
         holder.varian_barang.setText("Varian: "+cartSekarang.getVarian_barang());
+        //penjual barang
+        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                long count=dataSnapshot.getChildrenCount();
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("id").getValue().toString().equals(cartSekarang.getId_barang_cart())){
+                        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                                long count=dataSnapshot2.getChildrenCount();
+                                for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
+                                    if(ds2.child("email").getValue().toString().equals(ds.child("idpenjual").getValue().toString())){
+                                        holder.tv_penjual_barang_cart.setText("Penjual: "+ds2.child("nama").getValue().toString());
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         //wishlist
         holder.sudahdifavorite = false;
         DatabaseReference databaseReference_wishlist= FirebaseDatabase.getInstance().getReference().child("WishListDatabase");
@@ -187,7 +219,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public class CartViewHolder extends RecyclerView.ViewHolder {
         LinearLayout container_barang_cart;
         ImageView img_barang_cart;
-        TextView nama_barang,harga_barang,varian_barang;
+        TextView nama_barang,harga_barang,varian_barang,tv_penjual_barang_cart;
         ImageButton wishlist,delete,min,plus;
         EditText total_barang;
         boolean sudahdifavorite;
@@ -203,6 +235,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             total_barang=itemView.findViewById(R.id.jumlah_barang_cart);
             container_barang_cart=itemView.findViewById(R.id.container_barang_cart);
             varian_barang = itemView.findViewById(R.id.varian_barang_cart);
+            tv_penjual_barang_cart = itemView.findViewById(R.id.tv_penjual_barang_cart);
         }
     }
 }

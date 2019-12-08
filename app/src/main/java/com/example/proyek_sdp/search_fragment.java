@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +36,6 @@ import java.util.Locale;
 
 public class search_fragment extends Fragment {
     ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
-    RecyclerView rv_search_feed;
     CheckBox checkBox_negara_search;
     CheckBox checkBox_kategori_search;
     Spinner spinner_negara_search;
@@ -43,18 +43,22 @@ public class search_fragment extends Fragment {
     SearchFeedAdapter adapter;
     String[]list_all_country;
     SearchView searchView;
+    Fragment fragment;
+    int menu_sekarang=-1;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         ((home) getActivity()).setActionBarTitle("Search");
         View myview=inflater.inflate(R.layout.fragment_search,container,false);
-        rv_search_feed = myview.findViewById(R.id.rv_search_feed);
         checkBox_negara_search = myview.findViewById(R.id.checkBox_negara_search);
         checkBox_kategori_search = myview.findViewById(R.id.checkBox_kategori_search);
         spinner_negara_search = myview.findViewById(R.id.spinner_negara_search);
         edekategori_search = myview.findViewById(R.id.kategori_search_isi);
-
+        BottomNavigationView tabbar = myview.findViewById(R.id.tabbar_search);
+        menu_sekarang=R.id.tab_flashsale_search;
+        //start program
+        //dapatkan data semua negara
         String[] locales = Locale.getISOCountries();
         list_all_country=new String[locales.length];
         int ctr=0;
@@ -68,23 +72,55 @@ public class search_fragment extends Fragment {
         spinner_negara_search.setAdapter(NegaraAdapter);
         spinner_negara_search.setEnabled(false);
         edekategori_search.setEnabled(false);
+        //tab search
+        tabbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId()==R.id.tab_flashsale_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                    menu_sekarang=R.id.tab_flashsale_search;
+                }
+                else if(menuItem.getItemId()==R.id.tab_preorder_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+                    menu_sekarang=R.id.tab_preorder_search;
+                }
+                return true;
+            }
+        });
+        //tekan checkbox negara
         checkBox_negara_search.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(checkBox_negara_search.isChecked()){
                     spinner_negara_search.setEnabled(true);
-                    load_data_barang();
+                    if(menu_sekarang==R.id.tab_flashsale_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                    }
+                    else if(menu_sekarang==R.id.tab_preorder_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+                    }
                 }
                 else {
                     spinner_negara_search.setEnabled(false);
-                    load_data_barang();
+                    if(menu_sekarang==R.id.tab_flashsale_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                    }
+                    else if(menu_sekarang==R.id.tab_preorder_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+                    }
                 }
             }
         });
+        //spinner negara
         spinner_negara_search.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                load_data_barang();
+                if(menu_sekarang==R.id.tab_flashsale_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                }
+                else if(menu_sekarang==R.id.tab_preorder_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+                }
             }
 
             @Override
@@ -92,19 +128,31 @@ public class search_fragment extends Fragment {
 
             }
         });
+        //checkbox kategori
         checkBox_kategori_search.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(checkBox_kategori_search.isChecked()){
                     edekategori_search.setEnabled(true);
-                    load_data_barang();
+                    if(menu_sekarang==R.id.tab_flashsale_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                    }
+                    else if(menu_sekarang==R.id.tab_preorder_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+                    }
                 }
                 else {
                     edekategori_search.setEnabled(false);
-                    load_data_barang();
+                    if(menu_sekarang==R.id.tab_flashsale_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                    }
+                    else if(menu_sekarang==R.id.tab_preorder_search){
+                        getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+                    }
                 }
             }
         });
+        //edit text kategori
         edekategori_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -113,7 +161,12 @@ public class search_fragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                load_data_barang();
+                if(menu_sekarang==R.id.tab_flashsale_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                }
+                else if(menu_sekarang==R.id.tab_preorder_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+                }
             }
 
             @Override
@@ -121,7 +174,12 @@ public class search_fragment extends Fragment {
 
             }
         });
-        load_data_barang();
+        if(menu_sekarang==R.id.tab_flashsale_search){
+            getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+        }
+        else if(menu_sekarang==R.id.tab_preorder_search){
+            getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
+        }
 
         return myview;
     }
@@ -140,8 +198,11 @@ public class search_fragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if (adapter!=null){
-                    adapter.getFilter().filter(s);
+                if(menu_sekarang==R.id.tab_flashsale_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_flashsale_search()).commit();
+                }
+                else if(menu_sekarang==R.id.tab_preorder_search){
+                    getChildFragmentManager().beginTransaction().replace(R.id.frame_layout_container_search,new fragment_preorder_search()).commit();
                 }
                 return false;
             }
@@ -152,42 +213,5 @@ public class search_fragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
-    public void load_data_barang(){
-        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                kumpulanbarang.clear();
-                for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString()) && ds.child("status").getValue().toString().equals("1")){
-                        barang data=new barang();
-                        data.setId(ds.child("id").getValue().toString());
-                        data.setDeskripsi(ds.child("deskripsi").getValue().toString());
-                        data.setIdpenjual(ds.child("idpenjual").getValue().toString());
-                        data.setJenis(ds.child("jenis").getValue().toString());
-                        data.setNama(ds.child("nama").getValue().toString());
-                        data.setLokasi(ds.child("lokasi").getValue().toString());
-                        data.setVarian(ds.child("varian").getValue().toString());
-                        data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
-                        data.setWaktu_mulai(ds.child("waktu_mulai").getValue().toString());
-                        data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
-                        data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
-                        data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
-                        data.setKategori(ds.child("kategori").getValue().toString());
-                        data.setBerat(Integer.parseInt(ds.child("berat").getValue().toString()));
-                        data.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
-                        kumpulanbarang.add(data);
-                    }
-                }
-                rv_search_feed.setHasFixedSize(true);
-                rv_search_feed.setLayoutManager(new GridLayoutManager(getContext(),2));
-                adapter = new SearchFeedAdapter(getActivity(), kumpulanbarang,spinner_negara_search,checkBox_negara_search,edekategori_search,checkBox_kategori_search,searchView);
-                rv_search_feed.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
-    }
 }

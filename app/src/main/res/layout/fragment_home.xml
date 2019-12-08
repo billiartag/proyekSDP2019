@@ -34,7 +34,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_list_promo"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:drawable/dialog_holo_light_frame" />
 
@@ -56,7 +56,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_topuser"
                 android:layout_width="match_parent"
-                android:layout_height="90dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:drawable/dialog_holo_light_frame"
                 android:foregroundGravity="center" />
@@ -97,7 +97,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_preorder_follow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:drawable/dialog_holo_light_frame" />
         </LinearLayout>

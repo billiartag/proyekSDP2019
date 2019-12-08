@@ -105,7 +105,6 @@ public class register extends AppCompatActivity {
                     confirmpassword.setError("password Tidak Boleh Kosong atau kurang dari 8 huruf atau Password tidak sama dengan confirm password");
                     berhasil=false;
                 }
-
                 if (berhasil){
                     baru=new user();
                     baru.setNama(name.getText().toString());

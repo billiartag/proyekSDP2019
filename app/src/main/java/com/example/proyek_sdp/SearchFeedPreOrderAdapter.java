@@ -2,43 +2,31 @@ package com.example.proyek_sdp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.SearchFeedViewHolder> {
+public class SearchFeedPreOrderAdapter extends RecyclerView.Adapter<SearchFeedPreOrderAdapter.SearchFeedPreOrderViewHolder> {
     private Context context;
-    private ArrayList<barang>list_barang;
+    private ArrayList<barang> list_barang;
     private ArrayList<barang>list_barang_example=new ArrayList<barang>();
     private Spinner spinner_negara;
     private CheckBox checkBox_negara;
@@ -46,14 +34,14 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
     private CheckBox checkBox_kategori;
     private SearchView searchView;
 
-    public SearchFeedAdapter(Context context, ArrayList<barang> list_barang, Spinner spinner_negara, CheckBox checkBox_negara, EditText edkategori_search, CheckBox checkBox_kategori, SearchView searchView) {
+    public SearchFeedPreOrderAdapter(Context context, ArrayList<barang> list_barang, Spinner spinner_negara, CheckBox checkBox_negara, EditText edkategori_search, CheckBox checkBox_kategori, SearchView searchView) {
         this.context = context;
         this.list_barang = list_barang;
-        this.spinner_negara=spinner_negara;
-        this.checkBox_negara=checkBox_negara;
-        this.edkategori_search=edkategori_search;
-        this.checkBox_kategori=checkBox_kategori;
-        this.searchView=searchView;
+        this.spinner_negara = spinner_negara;
+        this.checkBox_negara = checkBox_negara;
+        this.edkategori_search = edkategori_search;
+        this.checkBox_kategori = checkBox_kategori;
+        this.searchView = searchView;
         if(checkBox_negara.isChecked() && checkBox_kategori.isChecked() && !searchView.getQuery().equals("")){
             for (barang x:list_barang) {
                 if(x.getKategori().toLowerCase().contains(edkategori_search.getText().toString().toLowerCase()) && x.getLokasi().toLowerCase().contains(spinner_negara.getSelectedItem().toString().toLowerCase()) && x.getNama().toLowerCase().contains(searchView.getQuery().toString().toLowerCase()) ){
@@ -113,37 +101,25 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
 
     @NonNull
     @Override
-    public SearchFeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_search_layout,parent,false);
-        SearchFeedViewHolder holder=new SearchFeedViewHolder(view);
+    public SearchFeedPreOrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_search_preorder_layout,parent,false);
+        SearchFeedPreOrderViewHolder holder=new SearchFeedPreOrderViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchFeedViewHolder holder, int position) {
-        holder.detailbarang.setTextColor(Color.BLACK);
-        holder.detailbarang.setText(list_barang_example.get(position).toString());
-        if (list_barang_example.get(position).getJenis().equals("Flash Sale")){
-            holder.tipe.setBackgroundColor(Color.parseColor("#FB8C00"));
-            holder.tipe.setTextColor(Color.BLACK);
-            holder.tipe.setText(list_barang_example.get(position).getJenis());
-        }
-        else if (list_barang_example.get(position).getJenis().equals("Pre Order")){
-            holder.tipe.setBackgroundColor(Color.BLACK);
-            holder.tipe.setTextColor(Color.WHITE);
-            holder.tipe.setText(list_barang_example.get(position).getJenis());
-        }
-        holder.harga.setText("Rp. "+list_barang_example.get(position).getHarga());
-        holder.harga.setTextColor(Color.parseColor("#F4511E"));
-
+    public void onBindViewHolder(@NonNull SearchFeedPreOrderViewHolder holder, int position) {
+        holder.tv_tipe_preorder_search.setText(list_barang_example.get(position).getJenis());
+        holder.tv_waktu_preorder_search.setText("Dari : "+list_barang_example.get(position).getWaktu_mulai()+" Sampai : "+list_barang_example.get(position).getWaktu_selesai());
+        holder.tv_nama_preorder_search.setText(list_barang_example.get(position).getNama());
+        holder.tv_deskripsi_preorder_search.setText(list_barang_example.get(position).getDeskripsi());
         FirebaseStorage.getInstance().getReference().child("img_barang").child(list_barang_example.get(position).getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(context).load(uri).into(holder.img);
+                Glide.with(context).load(uri).into(holder.img_preorder_search);
             }
         });
-
-        holder.container_search_feed.setOnClickListener(new View.OnClickListener() {
+        holder.container_barang_preorder_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 barang x=list_barang_example.get(position);
@@ -154,42 +130,6 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
                 context.startActivity(intent);
             }
         });
-        if (holder.timer != null) {
-            holder.timer.cancel();
-        }
-        holder.timer = new CountDownTimer(999999999, 1000) {
-
-            @Override
-            public void onTick(long l) {
-                String waktu=list_barang_example.get(position).getWaktu_selesai();
-                String[] waktu_split=waktu.split(":");
-                if(waktu_split.length>1){
-                    int jam_selesai=Integer.parseInt(waktu_split[0]);
-                    int menit_selesai=Integer.parseInt(waktu_split[1]);
-                    int detik_selesai=Integer.parseInt(waktu_split[2]);
-                    int total_waktu_selesai=(jam_selesai*3600) + (menit_selesai*60) + detik_selesai;
-                    Calendar now = Calendar.getInstance();
-                    int jam_mulai=now.get(Calendar.HOUR_OF_DAY);
-                    int menit_mulai=now.get(Calendar.MINUTE);
-                    int detik_mulai=now.get(Calendar.SECOND);
-                    int total_waktu_mulai=(jam_mulai*3600) + (menit_mulai*60) + detik_mulai;
-                    if(total_waktu_selesai-total_waktu_mulai>0){
-                        holder.tvtimer_search.setText("Sisa Waktu : \n"+formatSeconds(total_waktu_selesai-total_waktu_mulai));
-                    }
-                    else {
-                        holder.tvtimer_search.setText("expired");
-                    }
-                }
-                else {
-                    holder.tvtimer_search.setText("Mulai : \n"+list_barang.get(position).getWaktu_mulai()+"\n Sampai \n"+list_barang.get(position).getWaktu_selesai());
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
-            }
-        }.start();
     }
 
     @Override
@@ -197,20 +137,18 @@ public class SearchFeedAdapter extends RecyclerView.Adapter<SearchFeedAdapter.Se
         return list_barang_example.size();
     }
 
-
-    public class SearchFeedViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout container_search_feed;
-        TextView detailbarang,tipe,harga,tvtimer_search;
-        CountDownTimer timer;
-        ImageView img;
-        public SearchFeedViewHolder(@NonNull View itemView) {
+    public class SearchFeedPreOrderViewHolder extends RecyclerView.ViewHolder {
+        TextView tv_tipe_preorder_search,tv_waktu_preorder_search,tv_nama_preorder_search,tv_deskripsi_preorder_search;
+        ImageView img_preorder_search;
+        LinearLayout container_barang_preorder_search;
+        public SearchFeedPreOrderViewHolder(@NonNull View itemView) {
             super(itemView);
-            detailbarang = itemView.findViewById(R.id.username);
-            tipe = itemView.findViewById(R.id.tipe);
-            img = itemView.findViewById(R.id.gambar_barang);
-            harga = itemView.findViewById(R.id.harga);
-            tvtimer_search = itemView.findViewById(R.id.tvtimer_search);
-            container_search_feed=itemView.findViewById(R.id.container_search_feed);
+            tv_tipe_preorder_search=itemView.findViewById(R.id.tv_tipe_preorder_search);
+            tv_waktu_preorder_search=itemView.findViewById(R.id.tv_waktu_preorder_search);
+            tv_nama_preorder_search=itemView.findViewById(R.id.tv_nama_preorder_search);
+            tv_deskripsi_preorder_search=itemView.findViewById(R.id.tv_deskripsi_preorder_search);
+            img_preorder_search=itemView.findViewById(R.id.img_preorder_search);
+            container_barang_preorder_search=itemView.findViewById(R.id.container_barang_preorder_search);
         }
     }
     public static String formatSeconds(int timeInSeconds)
