@@ -237,6 +237,8 @@ public class history_pembeli extends AppCompatActivity {
                                     baru.setStatus(Integer.parseInt(ds2.child("status").getValue().toString()));
                                     baru.setPassword(ds2.child("password").getValue().toString());
                                     baru.setVerifikasi_ktp(Integer.parseInt(ds2.child("verifikasi_ktp").getValue().toString()));
+                                    baru.setAlamat(ds2.child("alamat").getValue().toString());
+                                    baru.setFirebase_user_id(ds2.child("firebase_user_id").getValue().toString());
                                     databaseReference_user.child(ds2.getKey()).setValue(baru);
                                 }
                             }

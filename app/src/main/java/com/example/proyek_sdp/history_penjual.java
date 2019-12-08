@@ -161,6 +161,7 @@ public class history_penjual extends AppCompatActivity {
                 btnCancel.setVisibility(View.GONE);
                 btnAccept.setVisibility(View.GONE);
             }
+            //cancel pesanan
             btnCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -244,6 +245,8 @@ public class history_penjual extends AppCompatActivity {
                                                         baru.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
                                                         baru.setPassword(ds.child("password").getValue().toString());
                                                         baru.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                                                        baru.setAlamat(ds.child("alamat").getValue().toString());
+                                                        baru.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
                                                         databaseReference_user.child(ds.getKey()).setValue(baru);
                                                     }
                                                 }

@@ -1,6 +1,7 @@
 package com.example.proyek_sdp;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,9 @@ public class HistoryWalletAdapter extends RecyclerView.Adapter<HistoryWalletAdap
     public void onBindViewHolder(@NonNull HistoryWalletViewHolder holder, int position) {
         holder.tanggal_history_wallet.setText(list_hist_wallet.get(position).getWaktu_history());
         holder.detail_transfer_history_wallet.setText(list_hist_wallet.get(position).getStatus_history());
+        if(list_hist_wallet.get(position).getStatus_history().equals("Transaksi Keluar")){
+            holder.jumlah_transfer_history_wallet.setTextColor(Color.RED);
+        }
         holder.jumlah_transfer_history_wallet.setText(list_hist_wallet.get(position).getNominal_berubah());
     }
 

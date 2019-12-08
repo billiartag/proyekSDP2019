@@ -134,19 +134,6 @@ public class chat_detail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                notify=true;
-                final String msg=edisichat.getText().toString();
-                if(x!=null){
-                    Toast.makeText(chat_detail.this, x.getId(), Toast.LENGTH_SHORT).show();
-                    if(notify){
-                        sendNotification(x.getFirebase_user_id(),usersekarang.getNama(),msg);
-                        Toast.makeText(chat_detail.this, "berhasil", Toast.LENGTH_SHORT).show();
-                    }
-                    notify=false;
-                }
-                else {
-                    Toast.makeText(chat_detail.this, "gagal", Toast.LENGTH_SHORT).show();
-                }
                 if(id_penerima!=null && !edisichat.getText().toString().trim().equals("")){
                     chat chat_baru=new chat();
                     chat_baru.setIsi_chat(edisichat.getText().toString());
@@ -156,6 +143,20 @@ public class chat_detail extends AppCompatActivity {
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
                     String time1 = sdf.format(dt);
                     chat_baru.setWaktu_kirim_chat(time1);
+                    //beri notifikasi
+                    notify=true;
+                    final String msg=edisichat.getText().toString();
+                    if(x!=null){
+                        Toast.makeText(chat_detail.this, x.getId(), Toast.LENGTH_SHORT).show();
+                        if(notify){
+                            sendNotification(x.getFirebase_user_id(),usersekarang.getNama(),msg);
+                            Toast.makeText(chat_detail.this, "berhasil", Toast.LENGTH_SHORT).show();
+                        }
+                        notify=false;
+                    }
+                    else {
+                        Toast.makeText(chat_detail.this, "gagal", Toast.LENGTH_SHORT).show();
+                    }
                     //insert ke database
                     databaseReference_chat= FirebaseDatabase.getInstance().getReference().child("ChatDatabase");
                     String Key = databaseReference_chat.push().getKey();

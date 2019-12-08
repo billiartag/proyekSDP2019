@@ -10,20 +10,19 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_detail_chat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="122dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/edisichat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
             android:hint="Enter Isi Chat"
@@ -31,9 +30,8 @@
 
         <ImageButton
             android:id="@+id/imgbtn_send_chat"
-            android:layout_width="79dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:background="#00FFFFFF"
             app:srcCompat="@drawable/ic_send_chat_24dp" />
 

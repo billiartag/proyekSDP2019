@@ -39,7 +39,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:18.0.0'
     implementation 'com.google.firebase:firebase-database:18.0.0'
     implementation 'com.google.firebase:firebase-storage:18.0.0';
-    implementation 'com.google.firebase:firebase-messaging:19.0.0';
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
 
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
