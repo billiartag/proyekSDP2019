@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/logo_icon_app_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".reviewdanratingActivity"></activity>
+        <activity android:name=".DetailPembayaran_PayPal"></activity>
+        <activity android:name=".reviewdanratingActivity" />
         <activity android:name=".payment_nego" />
         <activity android:name=".list_all_follow" />
         <activity android:name=".DiNego" />
@@ -57,11 +58,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".Notifications.MyFirebaseIdService"
+
+        <service
+            android:name=".Notifications.MyFirebaseIdService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"></action>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
@@ -71,6 +74,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="firebase_messaging_auto_init_enabled"
             android:value="false" />
