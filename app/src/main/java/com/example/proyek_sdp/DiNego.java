@@ -29,7 +29,7 @@ public class DiNego extends AppCompatActivity {
     ArrayList<Nego> list_nego;
     ArrayList<barang_nego> list_join_nego;
     DiNego ctx;
-
+    DiNegoAdapter adapter;
     DatabaseReference databaseReference_dinego;
     DatabaseReference databaseReference_barangnego;
     @Override
@@ -93,8 +93,9 @@ public class DiNego extends AppCompatActivity {
 
                                         rv_dinego.setHasFixedSize(true);
                                         rv_dinego.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
-                                        DiNegoAdapter adapter = new DiNegoAdapter(ctx,list_join_nego);
+                                        adapter = new DiNegoAdapter(ctx,list_join_nego);
                                         rv_dinego.setAdapter(adapter);
+                                        adapter.notifyDataSetChanged();
                                     }
                                 }
                             }
@@ -115,16 +116,13 @@ public class DiNego extends AppCompatActivity {
         });
     }
     public void dinego(String id_nego, String kondisi_nego){
-        Toast.makeText(ctx, id_nego+" id", Toast.LENGTH_SHORT).show();
-
         databaseReference_dinego.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot row:dataSnapshot.getChildren()) {
                     if(row.child("id_nego").getValue().toString().equalsIgnoreCase(id_nego)){
-                        Toast.makeText(ctx, row.child("id_nego").getValue().toString()+"", Toast.LENGTH_SHORT).show();
                         databaseReference_dinego.child(row.child("id_nego").getValue().toString()).child("status_nego").setValue(kondisi_nego);
-
+                        refreshData();
                         break;
                     }
                 }
@@ -135,7 +133,6 @@ public class DiNego extends AppCompatActivity {
 
             }
         });
-        refreshData();
 /*
         if(kondisi_nego.equalsIgnoreCase("terima")){
 
@@ -169,6 +166,7 @@ public class DiNego extends AppCompatActivity {
         list_join_nego.clear();
         list_barang.clear();
         list_nego.clear();
+        adapter.notifyDataSetChanged();
         getDataNego();
     }
     @Override

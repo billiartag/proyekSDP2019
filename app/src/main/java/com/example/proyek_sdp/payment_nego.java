@@ -188,6 +188,25 @@ public class payment_nego extends AppCompatActivity {
                 }
             }
         });
+
+        //get alamat , masukkin di edit text
+        databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                for (DataSnapshot row:dataSnapshot.getChildren()) {
+                    if(row.child("email").getValue().toString().equalsIgnoreCase(email)){
+                        //masukin
+                        String alamat = row.child("alamat").getValue().toString();
+                        edAlamat.setText(alamat);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     public void buatTransaksi(int total_harga) {
@@ -244,6 +263,9 @@ public class payment_nego extends AppCompatActivity {
 
             }
         });
+    }
+    public void ubahMaksBarang(String id_barang, int jumlah_terjual){
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
