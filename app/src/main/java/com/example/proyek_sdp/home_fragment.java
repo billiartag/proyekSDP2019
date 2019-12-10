@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +36,7 @@ public class home_fragment extends Fragment {
     RecyclerView rv_list_promo;
     RecyclerView rv_pre_order;
     DatabaseReference databaseReference;
+    TextView seeLatestFS, seeLatestPO, seeFollowFS, seeFollowPO, seeSeller;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,6 +46,11 @@ public class home_fragment extends Fragment {
         rv_flashsale=myview.findViewById(R.id.rv_flashsale);
         rv_list_promo=myview.findViewById(R.id.rv_list_promo);
         rv_pre_order=myview.findViewById(R.id.rv_preorder_follow);
+        seeLatestFS=myview.findViewById(R.id.textViewLatestFlashsale);
+        seeLatestPO=myview.findViewById(R.id.textViewLatestPreorder);
+        seeFollowFS=myview.findViewById(R.id.textViewFlashsaleFollow);
+        seeFollowPO=myview.findViewById(R.id.textViewAllPreorderFollow);
+        seeSeller=myview.findViewById(R.id.textViewAllSeller);
 
         //cetak promo
         FirebaseDatabase.getInstance().getReference().child("Voucher").addListenerForSingleValueEvent(new ValueEventListener() {

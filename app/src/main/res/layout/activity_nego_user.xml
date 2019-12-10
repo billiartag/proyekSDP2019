@@ -17,13 +17,15 @@
 
     <TextView
         android:id="@+id/textViewNegoNamaBarang"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
         android:text="Sepeda workout"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageViewBarangNego"
         app:layout_constraintTop_toTopOf="parent" />
 

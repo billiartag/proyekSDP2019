@@ -19,7 +19,9 @@
         android:theme="@style/AppTheme">
         <activity android:name=".DetailPembayaran_PayPal"></activity>
         <activity android:name=".reviewdanratingActivity" />
-        <activity android:name=".payment_nego" />
+        <activity android:name=".payment_nego"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".list_all_follow" />
         <activity android:name=".DiNego" />
         <activity android:name=".AkuNego" />
@@ -46,7 +48,8 @@
 
         <activity
             android:name=".home"
-            android:label="@string/title_activity_home" />
+            android:label="@string/title_activity_home"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".register" />
         <activity android:name=".report" />
         <activity android:name=".Login" />
