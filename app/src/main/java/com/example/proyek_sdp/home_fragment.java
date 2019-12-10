@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -317,6 +318,43 @@ public class home_fragment extends Fragment {
 
             }
         });
+        //link see all
+        seeFollowFS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(),SeeFollowFS.class);
+                startActivity(i);
+            }
+        });
+        seeFollowPO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(),SeeFollowPO.class);
+                startActivity(i);
+            }
+        });
+        seeLatestFS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(),SeeLatestFS.class);
+                startActivity(i);
+            }
+        });
+        seeLatestPO.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(),SeeLatestPO.class);
+                startActivity(i);
+            }
+        });
+        seeSeller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(),SeeSeller.class);
+                startActivity(i);
+            }
+        });
+
         // Set title bar
         ((home) getActivity()).setActionBarTitle("TitipAku");
         return myview;
