@@ -17,6 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.proyek_sdp.Notifications.Client;
+import com.example.proyek_sdp.Notifications.Data;
+import com.example.proyek_sdp.Notifications.MyResponse;
+import com.example.proyek_sdp.Notifications.Sender;
+import com.example.proyek_sdp.Notifications.Token;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -25,12 +30,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class nego_user extends AppCompatActivity {
 
@@ -52,6 +63,10 @@ public class nego_user extends AppCompatActivity {
     String varian_nego;
 
     DatabaseReference databaseReference_nego;
+    //untuk notif
+    APIService apiService;
+    boolean notify=false;
+    user x,usersekarang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +79,19 @@ public class nego_user extends AppCompatActivity {
         hargaBaru=findViewById(R.id.editTextNegoHarga);
         gambarBarang=findViewById(R.id.imageViewBarangNego);
         btnNego=findViewById(R.id.buttonNegoSubmit);
-
+        apiService= Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
         nego_baru=true;
         sisa_nego=-1;
         id_nego="";
         status_nego_db="-";
 
         databaseReference_nego= FirebaseDatabase.getInstance().getReference().child("NegoDatabase");
-
+        x=new user();
+        usersekarang=new user();
+        //dapatkan data user sekarang
+        getusernow();
+        //dapatkan data user penjual
+        getusertujuan();
         Intent i = getIntent();
         if(i.getExtras()!=null){
             jenis_nego = i.getStringExtra("jenis_nego");
@@ -179,6 +199,16 @@ public class nego_user extends AppCompatActivity {
                         temp_nego.setSisa_nego(sisa_nego-1);
                         temp_nego.setId_seller(barang_nego_sek.getIdpenjual());
                         temp_nego.setId_user_nego(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                        //send notifikasi pertama kali mulai nego
+                        //beri notifikasi
+                        notify=true;
+                        final String msg="Melakukan Nego Dengan Anda!";
+                        if(x!=null){
+                            if(notify){
+                                sendNotification(x.getFirebase_user_id(),usersekarang.getNama(),msg);
+                            }
+                            notify=false;
+                        }
                         //masukin ke db
                         databaseReference_nego.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -204,6 +234,15 @@ public class nego_user extends AppCompatActivity {
                     else{//nego yang lama
                         //init db nego
                         //check harga memenuhi syarat nego:
+                        //beri notifikasi
+                        notify=true;
+                        final String msg="Melakukan Nego Dengan Anda!";
+                        if(x!=null){
+                            if(notify){
+                                sendNotification(x.getFirebase_user_id(),usersekarang.getNama(),msg);
+                            }
+                            notify=false;
+                        }
                         double fraksi_harga = barang_nego_sek.getHarga()*0.2;
                         //cek harga negonya lebih kecil dari batasnya (20%==0.2)
                         if(Integer.parseInt(nilai_nego)<(barang_nego_sek.getHarga()-fraksi_harga)){
@@ -236,5 +275,107 @@ public class nego_user extends AppCompatActivity {
             finish();
         }
         return true;
+    }
+    //send notifikasi
+    public void sendNotification(String receiver,final String username,final String message){
+        DatabaseReference tokens=FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = tokens.orderByKey().equalTo(receiver);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Token token=snapshot.getValue(Token.class);
+                    Data data=new Data(usersekarang.getFirebase_user_id(), R.mipmap.logo_icon_app_round,username+"- "+message,"New message",x.getFirebase_user_id());
+
+                    Sender sender=new Sender(data,token.getToken());
+
+                    apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
+                        @Override
+                        public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
+                            if(response.code()==200){
+                                if(response.body().success!=1){
+                                    Toast.makeText(nego_user.this, "Failed Send Notification!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<MyResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //update token
+    private void updateToken(String token){
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1=new Token(token);
+        reference.child(usersekarang.getFirebase_user_id()).setValue(token1);
+    }
+    public void getusertujuan(){
+        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("email").getValue().toString().equals(barang_nego_sek.getIdpenjual())){
+                        x.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
+                        x.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                        x.setAlamat(ds.child("alamat").getValue().toString());
+                        x.setSaldo(Integer.parseInt(ds.child("saldo").getValue().toString()));
+                        x.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
+                        x.setPassword(ds.child("password").getValue().toString());
+                        x.setId(ds.child("id").getValue().toString());
+                        x.setBirthdate(ds.child("birthdate").getValue().toString());
+                        x.setEmail(ds.child("email").getValue().toString());
+                        x.setPhone(ds.child("phone").getValue().toString());
+                        x.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                        x.setNama(ds.child("nama").getValue().toString());
+                        x.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void getusernow(){
+        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if (ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                        if(ds!=null){
+                            usersekarang.setFirebase_user_id(ds.child("firebase_user_id").getValue().toString());
+                            usersekarang.setVerifikasi_ktp(Integer.parseInt(ds.child("verifikasi_ktp").getValue().toString()));
+                            usersekarang.setAlamat(ds.child("alamat").getValue().toString());
+                            usersekarang.setSaldo(Integer.parseInt(ds.child("saldo").getValue().toString()));
+                            usersekarang.setStatus(Integer.parseInt(ds.child("status").getValue().toString()));
+                            usersekarang.setPassword(ds.child("password").getValue().toString());
+                            usersekarang.setId(ds.child("id").getValue().toString());
+                            usersekarang.setBirthdate(ds.child("birthdate").getValue().toString());
+                            usersekarang.setEmail(ds.child("email").getValue().toString());
+                            usersekarang.setPhone(ds.child("phone").getValue().toString());
+                            usersekarang.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
+                            usersekarang.setNama(ds.child("nama").getValue().toString());
+                            usersekarang.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
+                            updateToken(FirebaseInstanceId.getInstance().getToken());
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

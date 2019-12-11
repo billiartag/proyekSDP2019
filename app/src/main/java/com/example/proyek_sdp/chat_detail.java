@@ -72,10 +72,10 @@ public class chat_detail extends AppCompatActivity {
     String id_penerima;
     ArrayList<chat>list_chat=new ArrayList<chat>();
     DatabaseReference databaseReference_chat;
-    user x,usersekarang;
     //untuk notif
     APIService apiService;
     boolean notify=false;
+    user x,usersekarang;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

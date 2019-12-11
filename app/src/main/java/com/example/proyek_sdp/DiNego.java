@@ -13,12 +13,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.proyek_sdp.Notifications.Client;
+import com.example.proyek_sdp.Notifications.Token;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 
@@ -40,11 +43,9 @@ public class DiNego extends AppCompatActivity {
         ab.setTitle("DiNego");
         ctx = this;
         rv_dinego = findViewById(R.id.rv_dinego);
-
         list_nego = new ArrayList<>();
         list_barang= new ArrayList<>();
         list_join_nego = new ArrayList<>();
-
         databaseReference_dinego= FirebaseDatabase.getInstance().getReference().child("NegoDatabase");
         databaseReference_barangnego= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
         getDataNego();
@@ -83,21 +84,20 @@ public class DiNego extends AppCompatActivity {
                                         temp_barang.setId(ds.child("id").getValue().toString());
                                         temp_barang.setNama(ds.child("nama").getValue().toString());
                                         temp_barang.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
+                                        temp_barang.setIdpenjual(ds.child("idpenjual").getValue().toString());
                                         list_barang.add(temp_barang);
 //                                        Log.d("yang sama", temp_nego.getId_barang_nego()+"&&"+temp_barang.getNama());
                                         barang_nego join_nego = new barang_nego(temp_barang,temp_nego);
                                         //masukkin ke list
                                         list_join_nego.add(join_nego);
-
-                                        //masukin di rv
-
-                                        rv_dinego.setHasFixedSize(true);
-                                        rv_dinego.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
-                                        adapter = new DiNegoAdapter(ctx,list_join_nego);
-                                        rv_dinego.setAdapter(adapter);
-                                        adapter.notifyDataSetChanged();
                                     }
                                 }
+                                //masukin di rv
+                                rv_dinego.setHasFixedSize(true);
+                                rv_dinego.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
+                                adapter = new DiNegoAdapter(ctx,list_join_nego);
+                                rv_dinego.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
                             }
 
                             @Override
