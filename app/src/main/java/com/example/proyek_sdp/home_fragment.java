@@ -2,6 +2,7 @@ package com.example.proyek_sdp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,8 +25,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 public class home_fragment extends Fragment {
     ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
@@ -60,7 +64,7 @@ public class home_fragment extends Fragment {
         seeSeller=myview.findViewById(R.id.textViewAllSeller);
         seePromo=myview.findViewById(R.id.textViewAllPromo);
 
-        int item_depan = 6;
+        int item_depan = 5;
 
         //cetak promo
         FirebaseDatabase.getInstance().getReference().child("Voucher").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -69,16 +73,33 @@ public class home_fragment extends Fragment {
                 int ctr = 0;
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
                     if(ds.child("status_promo").getValue().toString().equals("1")){
-                        voucher x=new voucher();
-                        x.setNama_promo(ds.child("nama_promo").getValue().toString());
-                        x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
-                        x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
-                        x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
-                        x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
-                        x.setStatus_promo(ds.child("status_promo").getValue().toString());
-                        kumpulanpromo.add(x);
-                        ctr++;
-                        if(ctr>item_depan){break;}
+                        //check yang belum kedaluawarsa
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("y-M-d");
+                        Boolean terlambat = true;
+                        try {
+                            Date tanggal_mulai = simpleDateFormat.parse(ds.child("mulai_promo").getValue().toString());
+                            Date tanggal_selesai= simpleDateFormat.parse(ds.child("selesai_promo").getValue().toString());
+                            Date dateSek= new Date();
+                            Log.d("tanggal", simpleDateFormat.format(tanggal_selesai)+"---"+simpleDateFormat.format(dateSek));
+                            if(tanggal_selesai.after(new Date())){
+                                Log.d("tanggal bisa", simpleDateFormat.format(tanggal_selesai));
+                                terlambat= false;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if(!terlambat){
+                            voucher x=new voucher();
+                            x.setNama_promo(ds.child("nama_promo").getValue().toString());
+                            x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
+                            x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
+                            x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
+                            x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
+                            x.setStatus_promo(ds.child("status_promo").getValue().toString());
+                            kumpulanpromo.add(x);
+                            ctr++;
+                            if(ctr>item_depan){break;}
+                        }
                     }
 
                 }
@@ -376,6 +397,7 @@ public class home_fragment extends Fragment {
                         if(ctr>item_depan){
                             break;
                         }
+                        Log.d("ctr",ctr+"");
                     }
                 }
 
@@ -433,7 +455,8 @@ public class home_fragment extends Fragment {
                     }
                 }
 
-                //cetak barang flashsale
+                Collections.sort(kumpulanlatestflashsale,barang.sortdesctanggal);
+                //cetak barang preorder
                 rv_latest_pre_order.setHasFixedSize(true);
                 rv_latest_pre_order.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
                 TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanlatestpreorder);

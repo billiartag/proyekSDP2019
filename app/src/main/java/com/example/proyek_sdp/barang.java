@@ -37,6 +37,22 @@ public class barang implements Serializable {
     public static Comparator<barang> sortdescwaktu=new Comparator<barang>() {
         @Override
         public int compare(barang b1, barang b2) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:MM:SS");
+            try {
+                Date dateb1 = simpleDateFormat.parse(b1.getWaktu_selesai());
+                Date dateb2 = simpleDateFormat.parse(b2.getWaktu_selesai());
+                long temp1 = dateb1.getTime();
+                long temp2 = dateb2.getTime();
+                return (int) (temp2-temp1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+    };
+    public static Comparator<barang> sortdesctanggal=new Comparator<barang>() {
+        @Override
+        public int compare(barang b1, barang b2) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("d/m/y");
             try {
                 Date dateb1 = simpleDateFormat.parse(b1.getWaktu_upload());
