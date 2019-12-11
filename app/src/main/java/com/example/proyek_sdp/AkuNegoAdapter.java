@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -52,7 +56,20 @@ try {
         holder.namaBarang.setText("Nama: "+barang_temp.getNama()+"");
         holder.hargaAwal.setText("Harga awal: "+barang_temp.getHarga()+"");
         holder.varianNego.setText("Varian: "+nego_temp.getVarian()+"");
+        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("email").getValue().toString().equals(list_nego.get(position).getNego().id_seller)){
+                        holder.textViewsiapayangmelakukan_nego_layout.setText("Penjual : "+ds.child("nama").getValue().toString());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
         holder.hargaNego.setText("Aku nego: "+nego_temp.getNominal_nego()+"");
         holder.sisNego.setText("Sisa nego: "+nego_temp.getSisa_nego()+"");
         String status_nego = nego_temp.getStatus_nego();
@@ -99,6 +116,7 @@ try {
         TextView statusNego;
         TextView varianNego;
         ImageView gambarNego;
+        TextView textViewsiapayangmelakukan_nego_layout;
         Button btnTolak, btnTerima,btnNegoUlang;
         public AkuNegoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -112,6 +130,7 @@ try {
             btnTerima= itemView.findViewById(R.id.buttonLayoutNegoTerima);
             btnNegoUlang= itemView.findViewById(R.id.buttonLayoutNegoUlang);
             gambarNego = itemView.findViewById(R.id.imageViewLayoutNego);
+            textViewsiapayangmelakukan_nego_layout=itemView.findViewById(R.id.textViewsiapayangmelakukan_nego_layout);
             btnTerima.setVisibility(View.GONE);
             btnTolak.setVisibility(View.GONE);
         }

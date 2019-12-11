@@ -74,7 +74,20 @@ public class DiNegoAdapter extends RecyclerView.Adapter<DiNegoAdapter.DiNegoView
 
         holder.namaBarang.setText("Nama: "+barang_temp.getNama()+"");
         holder.hargaAwal.setText("Harga awal: "+barang_temp.getHarga()+"");
+        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                    if(ds.child("email").getValue().toString().equals(list_nego.get(position).getNego().id_user_nego)){
+                        holder.textViewsiapayangmelakukan_nego_layout.setText("Penego : "+ds.child("nama").getValue().toString());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
         holder.hargaNego.setText("Aku nego: "+nego_temp.getNominal_nego()+"");
         holder.sisNego.setText("Sisa nego: "+nego_temp.getSisa_nego()+"");
         String status_nego = nego_temp.getStatus_nego();
@@ -126,6 +139,7 @@ public class DiNegoAdapter extends RecyclerView.Adapter<DiNegoAdapter.DiNegoView
         TextView statusNego;
         TextView varianNego;
         ImageView gambarNego;
+        TextView textViewsiapayangmelakukan_nego_layout;
         user x=new user();
         Button btnTolak, btnTerima,btnNegoUlang;
         public DiNegoViewHolder(@NonNull View itemView) {
@@ -140,6 +154,7 @@ public class DiNegoAdapter extends RecyclerView.Adapter<DiNegoAdapter.DiNegoView
             btnTerima= itemView.findViewById(R.id.buttonLayoutNegoTerima);
             btnNegoUlang= itemView.findViewById(R.id.buttonLayoutNegoUlang);
             gambarNego = itemView.findViewById(R.id.imageViewLayoutNego);
+            textViewsiapayangmelakukan_nego_layout=itemView.findViewById(R.id.textViewsiapayangmelakukan_nego_layout);
             btnTerima.setVisibility(View.VISIBLE);
             btnTolak.setVisibility(View.VISIBLE);
             btnNegoUlang.setVisibility(View.GONE);
