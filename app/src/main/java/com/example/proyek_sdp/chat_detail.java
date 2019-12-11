@@ -60,6 +60,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -95,6 +96,10 @@ public class chat_detail extends AppCompatActivity {
             ab.setTitle(x.getNama());
             id_penerima=x.getEmail();
         }
+        //dapetin chat barang
+        if (getIntent().hasExtra("chat_barang")){
+            edisichat.setText(getIntent().getExtras().getString("chat_barang"));
+        }
         if (getIntent().hasExtra("iduser")){
             //dapetin user di db
             FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -114,7 +119,7 @@ public class chat_detail extends AppCompatActivity {
                             x.setPhone(ds.child("phone").getValue().toString());
                             x.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
                             x.setNama(ds.child("nama").getValue().toString());
-                            x.setRating(Integer.parseInt(ds.child("rating").getValue().toString()));
+                            x.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
                             ab.setTitle(x.getNama());
                             id_penerima=x.getEmail();
                         }
@@ -142,7 +147,9 @@ public class chat_detail extends AppCompatActivity {
                     Date dt = new Date();
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
                     String time1 = sdf.format(dt);
-                    chat_baru.setWaktu_kirim_chat(time1);
+                    SimpleDateFormat sdf2 = new SimpleDateFormat("d/MM/yyyy");
+                    String time2 = sdf2.format(dt);
+                    chat_baru.setWaktu_kirim_chat(time2+" - "+time1);
                     //beri notifikasi
                     notify=true;
                     final String msg=edisichat.getText().toString();
@@ -204,10 +211,10 @@ public class chat_detail extends AppCompatActivity {
         });
     }
     public void load_chat(){
-        list_chat.clear();
         FirebaseDatabase.getInstance().getReference().child("ChatDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                list_chat.clear();
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
                     if((ds.child("pengirim_chat").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail()) && ds.child("penerima_chat").getValue().toString().equals(id_penerima)) || ds.child("pengirim_chat").getValue().toString().equals(id_penerima) && ds.child("penerima_chat").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
                         chat x=new chat();
@@ -223,6 +230,9 @@ public class chat_detail extends AppCompatActivity {
                 rv_chat_detail.setHasFixedSize(true);
                 rv_chat_detail.setLayoutManager(new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false));
                 rv_chat_detail.setAdapter(adapter);
+                if(rv_chat_detail.getAdapter().getItemCount()>0){
+                    rv_chat_detail.smoothScrollToPosition(rv_chat_detail.getAdapter().getItemCount()-1);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -267,7 +277,7 @@ public class chat_detail extends AppCompatActivity {
                         usersekarang.setPhone(ds.child("phone").getValue().toString());
                         usersekarang.setProfil_picture(Integer.parseInt(ds.child("profil_picture").getValue().toString()));
                         usersekarang.setNama(ds.child("nama").getValue().toString());
-                        usersekarang.setRating(Integer.parseInt(ds.child("rating").getValue().toString()));
+                        usersekarang.setRating(Float.parseFloat(ds.child("rating").getValue().toString()));
                         updateToken(FirebaseInstanceId.getInstance().getToken());
                     }
                 }

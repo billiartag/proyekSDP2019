@@ -58,6 +58,7 @@ public class detail_feed extends AppCompatActivity {
     TextView tvberatbarang_detailfeed;
     Button beli;
     Button nego;
+    Button chat_jasa_titip;
     RadioGroup radioGroup_varian_feed;
     String hasil_radio_varian="";
     boolean sudahdifavorite=false;
@@ -82,7 +83,7 @@ public class detail_feed extends AppCompatActivity {
         max=findViewById(R.id.max);
         radioGroup_varian_feed=findViewById(R.id.radioGroup_varian_feed);
         tvberatbarang_detailfeed=findViewById(R.id.tvberatbarang_detailfeed);
-
+        chat_jasa_titip=findViewById(R.id.button_chat_jasa_titip_detail_feed);
 
         //start program
         //isi data
@@ -176,6 +177,7 @@ public class detail_feed extends AppCompatActivity {
 
             }
         });
+        //masukkan ke wishlist
         imghati.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,7 +224,7 @@ public class detail_feed extends AppCompatActivity {
                 }
             }
         });
-
+        //tekan button beli
         beli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -241,6 +243,24 @@ public class detail_feed extends AppCompatActivity {
                 }
             }
         });
+        //tekan tombol chat ke pembeli
+        chat_jasa_titip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!hasil_radio_varian.trim().equals("")){
+                    Intent move=new Intent(getApplicationContext(),chat_detail.class);
+                    move.putExtra("iduser",x.getIdpenjual());
+                    String content="Nama Barang : "+x.getNama()+"\nHarga Barang : "+x.getHarga()+"\nVarian : "+hasil_radio_varian+"\n\n"+"Pertanyaan : "+"\n";
+                    move.putExtra("chat_barang",content);
+                    startActivity(move);
+                    finish();
+                }
+                else {
+                    Toast.makeText(detail_feed.this, "Anda Belum Memilih Varian", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        //tekan button nego
         nego.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -253,8 +273,12 @@ public class detail_feed extends AppCompatActivity {
                     i.putExtra("varian_nego", rb.getText().toString());//masukkin pilihan varian disini
                     startActivity(i);
                 }
+                else {
+                    Toast.makeText(detail_feed.this, "Anda Belum Memilih Varian!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+        //count down timer untuk expired barang
         CountDownTimer timer=new CountDownTimer(999999999, 1000) {
             @Override
             public void onTick(long l) {
