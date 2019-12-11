@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +30,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.ChoiceFormat;
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class payment_nego extends AppCompatActivity {
 
@@ -38,7 +43,7 @@ public class payment_nego extends AppCompatActivity {
     TextView tvNama, tvHarga;
     EditText edJumlah, edKeterangan, edAlamat;
     ImageView gambarBarang;
-
+    NumberFormat format;
     DatabaseReference databaseReferenceTrx;
     DatabaseReference databaseReferenceUser;
     barang brg_hasil;
@@ -66,7 +71,10 @@ public class payment_nego extends AppCompatActivity {
         brg_hasil = (barang) i.getSerializableExtra("brg");
         nego_hasil = i.getParcelableExtra("nego");
         tvNama.setText(brg_hasil.getNama());
-        tvHarga.setText("Harga: "+nego_hasil.getNominal_nego()+"");
+
+        Locale locale = new Locale("in","ID");
+        format = NumberFormat.getCurrencyInstance(locale);
+        tvHarga.setText("Harga: "+format.format(nego_hasil.getNominal_nego())+"");
         edJumlah.setText(1+"");
         try {
             FirebaseStorage.getInstance().getReference().child("img_barang").child(brg_hasil.getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -102,7 +110,26 @@ public class payment_nego extends AppCompatActivity {
                 }
             }
         });
-
+        TextView tvTotal = findViewById(R.id.textViewPaymentNegoTotal);
+        //update total
+        edJumlah.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!edJumlah.getText().toString().equalsIgnoreCase("")){
+                    //kalau isi tidack kosonk
+                    int total = nego_hasil.getNominal_nego()*(Integer.parseInt(edJumlah.getText().toString()));
+                    String tulis_total = format.format(total);
+                    tvTotal.setText("Total: "+tulis_total);
+                }
+            }
+        });
+        tvTotal.setText("Total: "+format.format(nego_hasil.getNominal_nego())+"");
         //buat transaksi disini
         btnTransaksi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,6 +215,25 @@ public class payment_nego extends AppCompatActivity {
                 }
             }
         });
+
+        //get alamat , masukkin di edit text
+        databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                for (DataSnapshot row:dataSnapshot.getChildren()) {
+                    if(row.child("email").getValue().toString().equalsIgnoreCase(email)){
+                        //masukin
+                        String alamat = row.child("alamat").getValue().toString();
+                        edAlamat.setText(alamat);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     public void buatTransaksi(int total_harga) {
@@ -244,6 +290,9 @@ public class payment_nego extends AppCompatActivity {
 
             }
         });
+    }
+    public void ubahMaksBarang(String id_barang, int jumlah_terjual){
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

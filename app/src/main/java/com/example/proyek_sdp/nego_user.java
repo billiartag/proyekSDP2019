@@ -157,7 +157,18 @@ public class nego_user extends AppCompatActivity {
                     if(nego_baru){
                         //masukin nego baru
                         Nego temp_nego = new Nego();
-                        temp_nego.setStatus_nego("pending");
+
+                        //check harga memenuhi syarat nego:
+                        double fraksi_harga = barang_nego_sek.getHarga()*0.2;
+                        //cek harga negonya lebih kecil dari batasnya (20%==0.2)
+                        if(Integer.parseInt(nilai_nego)<barang_nego_sek.getHarga()-fraksi_harga){
+                            //kakean negooo
+                            temp_nego.setStatus_nego("tolak");
+                        }
+                        else{
+                            //ok boz
+                            temp_nego.setStatus_nego("pending");
+                        }
                         temp_nego.setNominal_nego(Integer.parseInt(nilai_nego));
                         temp_nego.setId_trans_nego("-");
                         temp_nego.setVarian(varian_nego);
@@ -192,8 +203,17 @@ public class nego_user extends AppCompatActivity {
                     }
                     else{//nego yang lama
                         //init db nego
-                        Toast.makeText(nego_user.this, "masuk", Toast.LENGTH_SHORT).show();
-                        databaseReference_nego.child(id_nego).child("status_nego").setValue("pending");
+                        //check harga memenuhi syarat nego:
+                        double fraksi_harga = barang_nego_sek.getHarga()*0.2;
+                        //cek harga negonya lebih kecil dari batasnya (20%==0.2)
+                        if(Integer.parseInt(nilai_nego)<(barang_nego_sek.getHarga()-fraksi_harga)){
+                            //kakean negooo
+                            databaseReference_nego.child(id_nego).child("status_nego").setValue("tolak");
+                        }
+                        else{
+                            //ok boz
+                            databaseReference_nego.child(id_nego).child("status_nego").setValue("pending");
+                        }
                         databaseReference_nego.child(id_nego).child("sisa_nego").setValue(sisa_nego-1);
                         databaseReference_nego.child(id_nego).child("nominal_nego").setValue(Integer.parseInt(nilai_nego));
                     }
