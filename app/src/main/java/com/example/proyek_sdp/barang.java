@@ -1,7 +1,13 @@
 package com.example.proyek_sdp;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 
 public class barang implements Serializable {
     private String id,nama,jenis,deskripsi,idpenjual,waktu_upload,waktu_selesai,waktu_mulai,lokasi,varian,kategori;
@@ -28,6 +34,22 @@ public class barang implements Serializable {
         this.status = status;
     }
 
+    public static Comparator<barang> sortdescwaktu=new Comparator<barang>() {
+        @Override
+        public int compare(barang b1, barang b2) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("d/m/y");
+            try {
+                Date dateb1 = simpleDateFormat.parse(b1.getWaktu_upload());
+                Date dateb2 = simpleDateFormat.parse(b2.getWaktu_upload());
+                long temp1 = dateb1.getTime();
+                long temp2 = dateb2.getTime();
+                return (int) (temp2-temp1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return 0;
+            }
+        }
+    };
     public String getId() {
         return id;
     }

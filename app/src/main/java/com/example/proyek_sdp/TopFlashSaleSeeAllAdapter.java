@@ -15,11 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.NumberFormat;
@@ -27,13 +22,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHomeAdapter.TopFlashSaleHomeViewHolder> {
+public class TopFlashSaleSeeAllAdapter extends RecyclerView.Adapter<TopFlashSaleSeeAllAdapter.TopFlashSaleHomeViewHolder> {
     private Context context;
     private ArrayList<barang> list_barang;
     private OnItemClickListener onItemClickListener;
     private int total_waktu;
 
-    public TopFlashSaleHomeAdapter(Context context, ArrayList<barang> list_barang) {
+    public TopFlashSaleSeeAllAdapter(Context context, ArrayList<barang> list_barang) {
         this.context = context;
         this.list_barang = list_barang;
     }
@@ -45,7 +40,7 @@ public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHo
     @NonNull
     @Override
     public TopFlashSaleHomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_flashsale_home,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_flashsale_seeall,parent,false);
         TopFlashSaleHomeViewHolder holder=new TopFlashSaleHomeViewHolder(view);
         return holder;
     }
@@ -60,16 +55,12 @@ public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHo
                 }
             }
         });
+
         Locale locale = new Locale("in","ID");
         NumberFormat format = NumberFormat.getCurrencyInstance(locale);
         String harga  = format.format(list_barang.get(position).getHarga());
         holder.harga.setText(harga);
-        if (list_barang.get(position).getNama().length()>10){
-            holder.nama.setText(list_barang.get(position).getNama().substring(0,10)+"...");
-        }
-        else {
             holder.nama.setText(list_barang.get(position).getNama());
-        }
         //agar timernya ga jalan bareng2, supaya ga nge flick, jadi pakai sistem, jalan trus stop, begitu seterusnya
         if (holder.timer != null) {
             holder.timer.cancel();
