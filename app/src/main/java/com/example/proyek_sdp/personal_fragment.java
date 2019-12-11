@@ -178,12 +178,14 @@ public class personal_fragment extends Fragment {
                         ednotelp_profil.setText(ds.child("phone").getValue().toString());
                         saldo=Integer.parseInt(ds.child("saldo").getValue().toString());
                         edtanggal_lahir_profil.setText(ds.child("birthdate").getValue().toString());
-                        if(((home)getActivity()).pilih_lokasi!=""){
-                            edlokasi_edit_profil.setText(((home)getActivity()).pilih_lokasi);
-                            ((home)getActivity()).pilih_lokasi="";
-                        }
-                        else {
-                            edlokasi_edit_profil.setText(ds.child("alamat").getValue().toString());
+                        if(((home)getActivity())!=null){
+                            if(((home)getActivity()).pilih_lokasi!=""){
+                                edlokasi_edit_profil.setText(((home)getActivity()).pilih_lokasi);
+                                ((home)getActivity()).pilih_lokasi="";
+                            }
+                            else {
+                                edlokasi_edit_profil.setText(ds.child("alamat").getValue().toString());
+                            }
                         }
                         if (ds.child("verifikasi_ktp").getValue().toString().equals("0")){
                             status_verifikasi_ktp.setText("Belum Diverifikasi");

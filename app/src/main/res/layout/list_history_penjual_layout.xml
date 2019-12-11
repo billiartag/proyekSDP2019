@@ -70,7 +70,7 @@
             android:layout_marginStart="13dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="28dp"
-            android:text="Cancel Order"
+            android:text="Batalkan Pesanan"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/buttonpenjualacceptorder"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout7" />
@@ -83,7 +83,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="13dp"
             android:background="#43A047"
-            android:text="Accept Order"
+            android:text="Terima Pesanan"
             android:textColor="#FFFFFF"
             app:layout_constraintEnd_toStartOf="@+id/buttonPenjualCancelOrder"
             app:layout_constraintStart_toStartOf="parent"

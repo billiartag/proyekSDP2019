@@ -108,6 +108,11 @@ public class history_penjual extends AppCompatActivity {
                 tvStatus.setTextColor(Color.BLACK);
                 tvStatus.setBackgroundColor(Color.RED);
             }
+            else if(brg.get(position).getStatus_trans().equals("perubahan")){
+                tvStatus.setText("Status : Menunggu Jawaban Customer");
+                tvStatus.setTextColor(Color.BLACK);
+                tvStatus.setBackgroundColor(Color.CYAN);
+            }
             DatabaseReference databaseReference_barang= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
             databaseReference_barang.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -394,13 +399,6 @@ public class history_penjual extends AppCompatActivity {
                 }
                 adapter adap = new adapter(getApplicationContext(),listtransaksi);
                 lvHistory.setAdapter(adap);
-                lvHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Intent intent = new Intent(view.getContext(),detail_history_penjual.class);
-                        startActivity(intent);
-                    }
-                });
                 if(listtransaksi.size()==0){
                     Toast.makeText(history_penjual.this, "Anda Tidak Memiliki History Penjualan!", Toast.LENGTH_SHORT).show();
                 }

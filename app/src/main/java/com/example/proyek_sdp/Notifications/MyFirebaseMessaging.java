@@ -36,7 +36,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j=Integer.parseInt(user.replaceAll("[\\D]",""));
-        Intent move =new Intent(this,com.example.proyek_sdp.chat.class);
+        Intent move =new Intent(this,com.example.proyek_sdp.home.class);
         Bundle bundle=new Bundle();
         bundle.putString("userid",user);
         move.putExtras(bundle);

@@ -44,49 +44,52 @@ public class myfeed_fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View myview=inflater.inflate(R.layout.fragment_myfeed,container,false);;
         setHasOptionsMenu(true);
-        ((home) getActivity()).setActionBarTitle("Feed");
         rv_myfeed=myview.findViewById(R.id.rv_myfeed);
-        databaseReference= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                long count=dataSnapshot.getChildrenCount();
-                boolean berhasil_register=true;
-                for (DataSnapshot ds :dataSnapshot.getChildren()) {
-                    if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString()) && ds.child("status").getValue().toString().equals("1")){
-                        barang data=new barang();
-                        data.setId(ds.child("id").getValue().toString());
-                        data.setDeskripsi(ds.child("deskripsi").getValue().toString());
-                        data.setIdpenjual(ds.child("idpenjual").getValue().toString());
-                        data.setJenis(ds.child("jenis").getValue().toString());
-                        data.setNama(ds.child("nama").getValue().toString());
-                        data.setLokasi(ds.child("lokasi").getValue().toString());
-                        data.setVarian(ds.child("varian").getValue().toString());
-                        data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
-                        data.setWaktu_mulai(ds.child("waktu_mulai").getValue().toString());
-                        data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
-                        data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
-                        data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
-                        data.setKategori(ds.child("kategori").getValue().toString());
-                        data.setBerat(Integer.parseInt(ds.child("berat").getValue().toString()));
-                        data.setStatus(Integer.parseInt(ds.child("berat").getValue().toString()));
-                        kumpulanbarang.add(data);
+        if(((home) getActivity())!=null && getActivity()!=null){
+            ((home) getActivity()).setActionBarTitle("Feed");
+            databaseReference= FirebaseDatabase.getInstance().getReference().child("BarangDatabase");
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    long count=dataSnapshot.getChildrenCount();
+                    boolean berhasil_register=true;
+                    for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                        if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(ds.child("idpenjual").getValue().toString()) && ds.child("status").getValue().toString().equals("1")){
+                            barang data=new barang();
+                            data.setId(ds.child("id").getValue().toString());
+                            data.setDeskripsi(ds.child("deskripsi").getValue().toString());
+                            data.setIdpenjual(ds.child("idpenjual").getValue().toString());
+                            data.setJenis(ds.child("jenis").getValue().toString());
+                            data.setNama(ds.child("nama").getValue().toString());
+                            data.setLokasi(ds.child("lokasi").getValue().toString());
+                            data.setVarian(ds.child("varian").getValue().toString());
+                            data.setMaksimal(Integer.parseInt(ds.child("maksimal").getValue().toString()));
+                            data.setWaktu_mulai(ds.child("waktu_mulai").getValue().toString());
+                            data.setWaktu_selesai(ds.child("waktu_selesai").getValue().toString());
+                            data.setWaktu_upload(ds.child("waktu_upload").getValue().toString());
+                            data.setHarga(Integer.parseInt(ds.child("harga").getValue().toString()));
+                            data.setKategori(ds.child("kategori").getValue().toString());
+                            data.setBerat(Integer.parseInt(ds.child("berat").getValue().toString()));
+                            data.setStatus(Integer.parseInt(ds.child("berat").getValue().toString()));
+                            kumpulanbarang.add(data);
+                        }
+                    }
+                    MyFeedAdapter adapter=new MyFeedAdapter(getContext(),kumpulanbarang);
+                    rv_myfeed.setHasFixedSize(true);
+                    rv_myfeed.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
+                    rv_myfeed.setAdapter(adapter);
+                    if(kumpulanbarang.size()==0){
+                        if(getActivity()!=null){
+                            Toast.makeText(getActivity(), "Anda Tidak Memiliki Post!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-                MyFeedAdapter adapter=new MyFeedAdapter(getContext(),kumpulanbarang);
-                rv_myfeed.setHasFixedSize(true);
-                rv_myfeed.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
-                rv_myfeed.setAdapter(adapter);
-                if(kumpulanbarang.size()==0){
-                    Toast.makeText(getActivity(), "Anda Tidak Memiliki Post!", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+            });
+        }
         return myview;
     }
     @Override

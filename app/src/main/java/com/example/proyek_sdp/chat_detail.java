@@ -147,15 +147,10 @@ public class chat_detail extends AppCompatActivity {
                     notify=true;
                     final String msg=edisichat.getText().toString();
                     if(x!=null){
-                        Toast.makeText(chat_detail.this, x.getId(), Toast.LENGTH_SHORT).show();
                         if(notify){
                             sendNotification(x.getFirebase_user_id(),usersekarang.getNama(),msg);
-                            Toast.makeText(chat_detail.this, "berhasil", Toast.LENGTH_SHORT).show();
                         }
                         notify=false;
-                    }
-                    else {
-                        Toast.makeText(chat_detail.this, "gagal", Toast.LENGTH_SHORT).show();
                     }
                     //insert ke database
                     databaseReference_chat= FirebaseDatabase.getInstance().getReference().child("ChatDatabase");
@@ -189,7 +184,7 @@ public class chat_detail extends AppCompatActivity {
                         public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
                             if(response.code()==200){
                                 if(response.body().success!=1){
-                                    Toast.makeText(chat_detail.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(chat_detail.this, "Failed Send Notification!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

@@ -25,18 +25,16 @@ public class home extends AppCompatActivity {
     String harga="";
     String kategori="";
     String berat="";
-    String pilih_lokasi="";
+    String pilih_lokasi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(navlistener);
+        pilih_lokasi="";
         if(getIntent().hasExtra("pilih_lokasi")){
             pilih_lokasi=getIntent().getExtras().getString("pilih_lokasi");
-        }
-        else {
-            pilih_lokasi="";
         }
         if(getIntent().hasExtra("lokasi")){
             judul=getIntent().getExtras().getString("judul");

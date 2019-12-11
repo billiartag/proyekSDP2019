@@ -43,12 +43,29 @@ import java.util.Date;
 public class history_pembeli extends AppCompatActivity {
     ArrayList<transaksi_class> listtransaksi = new ArrayList<transaksi_class>();
     ListView lvHistory;
+    int saldo=0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_pembeli_layout);
         lvHistory = findViewById(R.id.listHistoryPembeliFront);
+        //ambil saldo
+        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
+                    if(ds2.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        saldo=Integer.parseInt(ds2.child("saldo").getValue().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         refresh();
         ActionBar ab=getSupportActionBar();
         ab.setTitle("Aku titip");
@@ -76,8 +93,13 @@ public class history_pembeli extends AppCompatActivity {
             TextView tvvarian = row.findViewById(R.id.tvvarian_pembeli);
             TextView tvharga = row.findViewById(R.id.tvharga_pembeli);
             ImageView img = row.findViewById(R.id.ivImageBarang);
-            TextView temp=new TextView(getApplicationContext());
             Button sudahsampai=row.findViewById(R.id.buttonsudahsampai_pembeli);
+            Button terima_perubahan=row.findViewById(R.id.btn_terima_perubahan_history_pembeli);
+            Button batalkan_pesanan=row.findViewById(R.id.btn_batalkan_pesanan_history_pembeli);
+            TextView totalsebelumperubahan = new TextView(getApplicationContext());
+            TextView totalsesudahperubahan = new TextView(getApplicationContext());
+            TextView totalsebelumperubahantanpapromo = new TextView(getApplicationContext());
+            TextView totalsesudahperubahantanpapromo = new TextView(getApplicationContext());
 
             if(brg!=null){
                 if(brg.get(position).getStatus_trans().equals("pending")){
@@ -99,6 +121,77 @@ public class history_pembeli extends AppCompatActivity {
                     tvstatus.setText("Dicancel");
                     tvstatus.setTextColor(Color.BLACK);
                     tvstatus.setBackgroundColor(Color.RED);
+                }
+                else if(brg.get(position).getStatus_trans().equals("perubahan")){
+                    tvstatus.setTextColor(Color.BLACK);
+                    tvstatus.setBackgroundColor(Color.CYAN);
+                    //isi total sebelum tanpa promo
+                    totalsebelumperubahantanpapromo.setText(brg.get(position).getTotal_trans());
+                    //tidak pakai promo
+                    if(brg.get(position).getId_promo().equals("-")){
+                        //cari total sebelum perubahan
+                        totalsebelumperubahan.setText(brg.get(position).getTotal_trans());
+                        //cari total setelah perubahan
+                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                long count=dataSnapshot.getChildrenCount();
+                                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                    if (brg.get(position).getId_barang_trans().equals(ds.child("id").getValue().toString())){
+                                        totalsesudahperubahan.setText((Integer.parseInt(ds.child("harga").getValue().toString())*brg.get(position).getJumlah_barang_trans())+"");
+                                        totalsesudahperubahantanpapromo.setText((Integer.parseInt(ds.child("harga").getValue().toString())*brg.get(position).getJumlah_barang_trans())+"");
+                                    }
+                                }
+                                tvstatus.setText("Perubahan Total Harga Dari : "+totalsebelumperubahan.getText().toString()+" Menjadi : "+totalsesudahperubahan.getText().toString());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    //pakai promo
+                    else {
+                        //cari total sebelum perubahan
+                        FirebaseDatabase.getInstance().getReference().child("Voucher").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                long count=dataSnapshot.getChildrenCount();
+                                for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                                    if (brg.get(position).getId_promo().equals(ds.child("nama_promo").getValue().toString())){
+                                        totalsebelumperubahantanpapromo.setText(brg.get(position).getTotal_trans());
+                                        totalsebelumperubahan.setText((Integer.parseInt(brg.get(position).getTotal_trans())-(Integer.parseInt(brg.get(position).getTotal_trans())*Integer.parseInt(ds.child("diskon_promo").getValue().toString())/100))+"");
+                                        //cari total setelah perubahan
+                                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                                                long count=dataSnapshot2.getChildrenCount();
+                                                for (DataSnapshot ds2 :dataSnapshot2.getChildren()) {
+                                                    if (brg.get(position).getId_barang_trans().equals(ds2.child("id").getValue().toString())){
+                                                        totalsesudahperubahantanpapromo.setText((Integer.parseInt(ds2.child("harga").getValue().toString())*brg.get(position).getJumlah_barang_trans())+"");
+                                                        totalsesudahperubahan.setText(((Integer.parseInt(ds2.child("harga").getValue().toString())*brg.get(position).getJumlah_barang_trans()))-((Integer.parseInt(ds2.child("harga").getValue().toString())*brg.get(position).getJumlah_barang_trans())*Integer.parseInt(ds.child("diskon_promo").getValue().toString())/100)+"");
+                                                    }
+                                                }
+                                                tvstatus.setText("Perubahan Total Harga Dari : "+totalsebelumperubahan.getText().toString()+" Menjadi : "+totalsesudahperubahan.getText().toString());
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+
                 }
                 tvTglBeli.setText("Waktu : "+brg.get(position).getWaktu_trans()+"");
                 tvjumlah.setText("Jumlah Barang : "+brg.get(position).getJumlah_barang_trans()+"");
@@ -174,15 +267,16 @@ public class history_pembeli extends AppCompatActivity {
             tvPenjual.setTextColor(Color.BLACK);
             tvLokasi.setTextColor(Color.BLACK);
             tvTglBeli.setTextColor(Color.BLACK);
+            //click button sudah sampai
             sudahsampai.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //update transaksi
                     String id_transaksi= brg.get(position).getId_transaksi();
-                    DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
                     DatabaseReference databaseReference_user= FirebaseDatabase.getInstance().getReference().child("UserDatabase");
                     DatabaseReference databaseReference_topup= FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase");
                     DatabaseReference databaseReference_voucher= FirebaseDatabase.getInstance().getReference().child("Voucher");
+                    DatabaseReference databaseReference_transaksi= FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase");
                     databaseReference_transaksi.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -273,12 +367,142 @@ public class history_pembeli extends AppCompatActivity {
                     startActivity(move);
                 }
             });
+            //click button terima perubahan
+            terima_perubahan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(Integer.parseInt(totalsebelumperubahan.getText().toString())<Integer.parseInt(totalsesudahperubahan.getText().toString())){
+                        if(saldo>=Integer.parseInt(totalsesudahperubahan.getText().toString())-Integer.parseInt(totalsebelumperubahan.getText().toString())){
+                            //ganti status 
+                            Toast.makeText(history_pembeli.this, "", Toast.LENGTH_SHORT).show();
+                            FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase").child(brg.get(position).getId_transaksi()).child("status_trans").setValue("pending");
+                            //ganti total transaksi
+                            FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase").child(brg.get(position).getId_transaksi()).child("total_trans").setValue(totalsesudahperubahantanpapromo.getText().toString());
+                            //isi history wallet
+                            String key=FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase").push().getKey();
+                            history_wallet hist_baru=new history_wallet();
+                            Date dt = new Date();
+                            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+                            String time1 = sdf.format(dt);
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("d/MM/yyyy");
+                            String time2 = sdf2.format(dt);
+                            hist_baru.setWaktu_history(time2+" - "+time1);
+                            hist_baru.setStatus_history("Transaksi Keluar");
+                            hist_baru.setId_user_wallet(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                            hist_baru.setId_hist_wallet(key);
+                            hist_baru.setNominal_berubah("-Rp"+(Integer.parseInt(totalsesudahperubahan.getText().toString())-Integer.parseInt(totalsebelumperubahan.getText().toString())));
+                            FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase").child(key).setValue(hist_baru);
+                            //untuk update saldo
+                            FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot ds:dataSnapshot.getChildren()) {
+                                        if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                            FirebaseDatabase.getInstance().getReference().child("UserDatabase").child(ds.child("id").getValue().toString()).child("saldo").setValue(saldo-(Integer.parseInt(totalsesudahperubahan.getText().toString())-Integer.parseInt(totalsebelumperubahan.getText().toString())));
+                                            saldo=saldo-(Integer.parseInt(totalsesudahperubahan.getText().toString())-Integer.parseInt(totalsebelumperubahan.getText().toString()));
+                                            refresh();
+                                        }
+                                    }
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                        else {
+                            Toast.makeText(history_pembeli.this, "Saldo Anda Tidak Mencukupi Silahkan TopUp!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else if(Integer.parseInt(totalsebelumperubahan.getText().toString())>Integer.parseInt(totalsesudahperubahan.getText().toString())){
+                        //ganti status transaksi
+                        FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase").child(brg.get(position).getId_transaksi()).child("status_trans").setValue("pending");
+                        //ganti total transaksi
+                        FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase").child(brg.get(position).getId_transaksi()).child("total_trans").setValue(totalsesudahperubahantanpapromo.getText().toString());
+                        //isi history wallet
+                        String key=FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase").push().getKey();
+                        history_wallet hist_baru=new history_wallet();
+                        Date dt = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+                        String time1 = sdf.format(dt);
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("d/MM/yyyy");
+                        String time2 = sdf2.format(dt);
+                        hist_baru.setWaktu_history(time2+" - "+time1);
+                        hist_baru.setStatus_history("Transaksi Masuk");
+                        hist_baru.setId_user_wallet(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                        hist_baru.setId_hist_wallet(key);
+                        hist_baru.setNominal_berubah("+Rp"+(Integer.parseInt(totalsebelumperubahan.getText().toString())-Integer.parseInt(totalsesudahperubahan.getText().toString())));
+                        FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase").child(key).setValue(hist_baru);
+                        //untuk update saldo
+                        FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot ds:dataSnapshot.getChildren()) {
+                                    if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                        FirebaseDatabase.getInstance().getReference().child("UserDatabase").child(ds.child("id").getValue().toString()).child("saldo").setValue(saldo+(Integer.parseInt(totalsebelumperubahan.getText().toString())-Integer.parseInt(totalsesudahperubahan.getText().toString())));
+                                        saldo=saldo+(Integer.parseInt(totalsebelumperubahan.getText().toString())-Integer.parseInt(totalsesudahperubahan.getText().toString()));
+                                        refresh();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            });
+            //click button batalkan pesanan
+            batalkan_pesanan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //ganti status transaksi
+                    FirebaseDatabase.getInstance().getReference().child("TransaksiDatabase").child(brg.get(position).getId_transaksi()).child("status_trans").setValue("dicancel");
+                    //isi history wallet
+                    String key=FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase").push().getKey();
+                    history_wallet hist_baru=new history_wallet();
+                    Date dt = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+                    String time1 = sdf.format(dt);
+                    SimpleDateFormat sdf2 = new SimpleDateFormat("d/MM/yyyy");
+                    String time2 = sdf2.format(dt);
+                    hist_baru.setWaktu_history(time2+" - "+time1);
+                    hist_baru.setStatus_history("Refund Dari Barang Yang Di Cancel");
+                    hist_baru.setId_user_wallet(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    hist_baru.setId_hist_wallet(key);
+                    hist_baru.setNominal_berubah("+Rp"+(Integer.parseInt(totalsebelumperubahan.getText().toString())));
+                    FirebaseDatabase.getInstance().getReference().child("HistoryTopUpDatabase").child(key).setValue(hist_baru);
+                    //untuk update saldo
+                    FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot ds:dataSnapshot.getChildren()) {
+                                if(ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                                    FirebaseDatabase.getInstance().getReference().child("UserDatabase").child(ds.child("id").getValue().toString()).child("saldo").setValue(saldo+(Integer.parseInt(totalsebelumperubahan.getText().toString())));
+                                    saldo=saldo+(Integer.parseInt(totalsebelumperubahan.getText().toString()));
+                                    refresh();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
             if(!brg.get(position).getStatus_trans().equals("dikonfirmasi")){
                 sudahsampai.setVisibility(View.GONE);
             }
+            if(!brg.get(position).getStatus_trans().equals("perubahan")){
+                terima_perubahan.setVisibility(View.GONE);
+                batalkan_pesanan.setVisibility(View.GONE);
+            }
             return row;
-
         }
 
     }
@@ -326,6 +550,7 @@ public class history_pembeli extends AppCompatActivity {
                 if(listtransaksi.size()==0){
                     Toast.makeText(history_pembeli.this, "Anda Tidak Memiliki History Pembelian!", Toast.LENGTH_SHORT).show();
                 }
+                adap.notifyDataSetChanged();
             }
 
             @Override
