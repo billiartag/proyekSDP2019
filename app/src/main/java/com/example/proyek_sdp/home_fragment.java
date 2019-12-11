@@ -2,6 +2,7 @@ package com.example.proyek_sdp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,20 +25,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 public class home_fragment extends Fragment {
     ArrayList<barang> kumpulanbarang = new ArrayList<barang>();
     ArrayList<barang> kumpulanpreorder = new ArrayList<barang>();
+    ArrayList<barang> kumpulanlatestpreorder = new ArrayList<barang>();
+    ArrayList<barang> kumpulanlatestflashsale= new ArrayList<barang>();
     ArrayList<user> kumpulanuser = new ArrayList<user>();
     ArrayList<voucher> kumpulanpromo = new ArrayList<voucher>();
     RecyclerView rv_topuser;
     RecyclerView rv_flashsale;
     RecyclerView rv_list_promo;
     RecyclerView rv_pre_order;
+    RecyclerView rv_latest_pre_order;
+    RecyclerView rv_latest_flashsale;
     DatabaseReference databaseReference;
-    TextView seeLatestFS, seeLatestPO, seeFollowFS, seeFollowPO, seeSeller;
+    TextView seeLatestFS, seeLatestPO, seeFollowFS, seeFollowPO, seeSeller,seePromo;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,27 +55,53 @@ public class home_fragment extends Fragment {
         rv_flashsale=myview.findViewById(R.id.rv_flashsale);
         rv_list_promo=myview.findViewById(R.id.rv_list_promo);
         rv_pre_order=myview.findViewById(R.id.rv_preorder_follow);
+        rv_latest_flashsale=myview.findViewById(R.id.rv_latest_flashsale);
+        rv_latest_pre_order=myview.findViewById(R.id.rv_latest_preorder);
         seeLatestFS=myview.findViewById(R.id.textViewLatestFlashsale);
         seeLatestPO=myview.findViewById(R.id.textViewLatestPreorder);
         seeFollowFS=myview.findViewById(R.id.textViewFlashsaleFollow);
         seeFollowPO=myview.findViewById(R.id.textViewAllPreorderFollow);
         seeSeller=myview.findViewById(R.id.textViewAllSeller);
+        seePromo=myview.findViewById(R.id.textViewAllPromo);
+
+        int item_depan = 5;
 
         //cetak promo
         FirebaseDatabase.getInstance().getReference().child("Voucher").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int ctr = 0;
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
                     if(ds.child("status_promo").getValue().toString().equals("1")){
-                        voucher x=new voucher();
-                        x.setNama_promo(ds.child("nama_promo").getValue().toString());
-                        x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
-                        x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
-                        x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
-                        x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
-                        x.setStatus_promo(ds.child("status_promo").getValue().toString());
-                        kumpulanpromo.add(x);
+                        //check yang belum kedaluawarsa
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("y-M-d");
+                        Boolean terlambat = true;
+                        try {
+                            Date tanggal_mulai = simpleDateFormat.parse(ds.child("mulai_promo").getValue().toString());
+                            Date tanggal_selesai= simpleDateFormat.parse(ds.child("selesai_promo").getValue().toString());
+                            Date dateSek= new Date();
+                            Log.d("tanggal", simpleDateFormat.format(tanggal_selesai)+"---"+simpleDateFormat.format(dateSek));
+                            if(tanggal_selesai.after(new Date())){
+                                Log.d("tanggal bisa", simpleDateFormat.format(tanggal_selesai));
+                                terlambat= false;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if(!terlambat){
+                            voucher x=new voucher();
+                            x.setNama_promo(ds.child("nama_promo").getValue().toString());
+                            x.setDeskripsi_promo(ds.child("deskripsi_promo").getValue().toString());
+                            x.setDiskon_promo(ds.child("diskon_promo").getValue().toString());
+                            x.setMulai_promo(ds.child("mulai_promo").getValue().toString());
+                            x.setSelesai_promo(ds.child("selesai_promo").getValue().toString());
+                            x.setStatus_promo(ds.child("status_promo").getValue().toString());
+                            kumpulanpromo.add(x);
+                            ctr++;
+                            if(ctr>item_depan){break;}
+                        }
                     }
+
                 }
                 rv_list_promo.setHasFixedSize(true);
                 rv_list_promo.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
@@ -87,6 +121,7 @@ public class home_fragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 long count=dataSnapshot.getChildrenCount();
+                final int[] ctr = {0};
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
                     if(ds!=null){
                         if(!ds.child("email").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
@@ -178,6 +213,10 @@ public class home_fragment extends Fragment {
 
                                 }
                             });
+                            ctr[0]++;
+                            if(ctr[0] >item_depan){
+                                break;
+                            }
                         }
                     }
                 }
@@ -193,6 +232,7 @@ public class home_fragment extends Fragment {
         FirebaseDatabase.getInstance().getReference().child("FollowDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final int[] ctr = {0};
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
                     if(ds.child("id_user").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
                         FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -218,6 +258,10 @@ public class home_fragment extends Fragment {
                                             data.setBerat(Integer.parseInt(ds2.child("berat").getValue().toString()));
                                             data.setStatus(Integer.parseInt(ds2.child("status").getValue().toString()));
                                             kumpulanbarang.add(data);
+                                            ctr[0]++;
+                                            if(ctr[0] >item_depan){
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -256,6 +300,7 @@ public class home_fragment extends Fragment {
 
         //cetak pre order
         FirebaseDatabase.getInstance().getReference().child("FollowDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            int ctr=0;
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds :dataSnapshot.getChildren()) {
@@ -283,6 +328,10 @@ public class home_fragment extends Fragment {
                                             data.setBerat(Integer.parseInt(ds2.child("berat").getValue().toString()));
                                             data.setStatus(Integer.parseInt(ds2.child("status").getValue().toString()));
                                             kumpulanpreorder.add(data);
+                                            ctr++;
+                                            if(ctr>item_depan){
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -318,6 +367,119 @@ public class home_fragment extends Fragment {
 
             }
         });
+
+
+        //flashsale latest
+        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int ctr=0;
+                for (DataSnapshot row:dataSnapshot.getChildren()) {
+                    if(row.child("jenis").getValue().toString().equalsIgnoreCase("Flash Sale")&&row.child("status").getValue().toString().equals("1")&&!row.child("idpenjual").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        barang data=new barang();
+                        data.setId(row.child("id").getValue().toString());
+                        data.setDeskripsi(row.child("deskripsi").getValue().toString());
+                        data.setIdpenjual(row.child("idpenjual").getValue().toString());
+                        data.setJenis(row.child("jenis").getValue().toString());
+                        data.setNama(row.child("nama").getValue().toString());
+                        data.setLokasi(row.child("lokasi").getValue().toString());
+                        data.setVarian(row.child("varian").getValue().toString());
+                        data.setMaksimal(Integer.parseInt(row.child("maksimal").getValue().toString()));
+                        data.setWaktu_selesai(row.child("waktu_selesai").getValue().toString());
+                        data.setWaktu_mulai(row.child("waktu_mulai").getValue().toString());
+                        data.setWaktu_upload(row.child("waktu_upload").getValue().toString());
+                        data.setHarga(Integer.parseInt(row.child("harga").getValue().toString()));
+                        data.setKategori(row.child("kategori").getValue().toString());
+                        data.setBerat(Integer.parseInt(row.child("berat").getValue().toString()));
+                        data.setStatus(Integer.parseInt(row.child("status").getValue().toString()));
+                        kumpulanlatestflashsale.add(data);
+                        ctr++;
+                        if(ctr>item_depan){
+                            break;
+                        }
+                        Log.d("ctr",ctr+"");
+                    }
+                }
+
+                Collections.sort(kumpulanlatestflashsale,barang.sortdescwaktu);
+                //cetak barang flashsale
+                rv_latest_flashsale.setHasFixedSize(true);
+                rv_latest_flashsale.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanlatestflashsale);
+                adapterflashsale.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        barang x = kumpulanlatestflashsale.get(position);
+                        Bundle b = new Bundle();
+                        b.putSerializable("barang", x);
+                        Intent intent = new Intent(getActivity(), detail_feed.class);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                    }
+                });
+                rv_latest_flashsale.setAdapter(adapterflashsale);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //preorder latest
+        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int ctr=0;
+                for (DataSnapshot row:dataSnapshot.getChildren()) {
+                    if(row.child("jenis").getValue().toString().equalsIgnoreCase("Pre Order")&&row.child("status").getValue().toString().equals("1")&&!row.child("idpenjual").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+                        barang data=new barang();
+                        data.setId(row.child("id").getValue().toString());
+                        data.setDeskripsi(row.child("deskripsi").getValue().toString());
+                        data.setIdpenjual(row.child("idpenjual").getValue().toString());
+                        data.setJenis(row.child("jenis").getValue().toString());
+                        data.setNama(row.child("nama").getValue().toString());
+                        data.setLokasi(row.child("lokasi").getValue().toString());
+                        data.setVarian(row.child("varian").getValue().toString());
+                        data.setMaksimal(Integer.parseInt(row.child("maksimal").getValue().toString()));
+                        data.setWaktu_selesai(row.child("waktu_selesai").getValue().toString());
+                        data.setWaktu_mulai(row.child("waktu_mulai").getValue().toString());
+                        data.setWaktu_upload(row.child("waktu_upload").getValue().toString());
+                        data.setHarga(Integer.parseInt(row.child("harga").getValue().toString()));
+                        data.setKategori(row.child("kategori").getValue().toString());
+                        data.setBerat(Integer.parseInt(row.child("berat").getValue().toString()));
+                        data.setStatus(Integer.parseInt(row.child("status").getValue().toString()));
+                        kumpulanlatestpreorder.add(data);
+                        ctr++;
+                        if(ctr>item_depan){break;}
+                    }
+                }
+
+                Collections.sort(kumpulanlatestflashsale,barang.sortdesctanggal);
+                //cetak barang preorder
+                rv_latest_pre_order.setHasFixedSize(true);
+                rv_latest_pre_order.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                TopFlashSaleHomeAdapter adapterflashsale = new TopFlashSaleHomeAdapter(getActivity(), kumpulanlatestpreorder);
+                adapterflashsale.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position) {
+                        barang x = kumpulanlatestpreorder.get(position);
+                        Bundle b = new Bundle();
+                        b.putSerializable("barang", x);
+                        Intent intent = new Intent(getActivity(), detail_feed.class);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                    }
+                });
+                rv_latest_pre_order.setAdapter(adapterflashsale);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         //link see all
         seeFollowFS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -354,7 +516,13 @@ public class home_fragment extends Fragment {
                 startActivity(i);
             }
         });
-
+        seePromo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(),SeePromo.class);
+                startActivity(i);
+            }
+        });
         // Set title bar
         ((home) getActivity()).setActionBarTitle("TitipAku");
         return myview;

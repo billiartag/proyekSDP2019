@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/logo_icon_app_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SeeSeller"></activity>
+        <activity android:name=".SeePromo"></activity>
+        <activity android:name=".SeeSeller" />
         <activity android:name=".SeeFollowPO" />
         <activity android:name=".SeeFollowFS" />
         <activity android:name=".SeeLatestPO" />

@@ -41,8 +41,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class detail_feed extends AppCompatActivity {
     ImageView img,imghati;
@@ -93,7 +95,10 @@ public class detail_feed extends AppCompatActivity {
         });
         tipe.setText(x.getJenis().toString());
         nama.setText(x.getNama());
-        harga.setText("Harga Barang : Rp. "+x.getHarga());
+        Locale locale = new Locale("in","ID");
+        NumberFormat format = NumberFormat.getCurrencyInstance(locale);
+        String hg  = format.format(x.getHarga());
+        harga.setText("Harga Barang : "+hg);
         deskripsi.setText("Deskripsi : \n"+x.getDeskripsi());
         tvberatbarang_detailfeed.setText("Berat Barang : "+x.getBerat()+" Gram");
         FirebaseDatabase.getInstance().getReference().child("UserDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
