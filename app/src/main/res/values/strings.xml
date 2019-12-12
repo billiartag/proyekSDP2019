@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">TitipAku</string>
-    <string name="title_activity_home">home</string>
+    <string name="title_activity_home" translatable="false">home</string>
     <string name="map_key" translatable="false">AIzaSyC4l7apK2oaj0gJBsGBSDqzyw11ZokPYqI</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_post">Post</string>
-    <string name="coba">Coba test</string>
-    <string name="nego_pemberitahuan">Transaksi yang menggunakan nego tidak dapat menggunakan promo.</string>
+    <string name="title_home" translatable="false">Home</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
+    <string name="title_post" translatable="false">Post</string>
+    <string name="coba" translatable="false">Coba test</string>
+    <string name="nego_pemberitahuan" translatable="false">Transaksi yang menggunakan nego tidak dapat menggunakan promo.</string>
+
+    <string name="beli">buy</string>
 </resources>

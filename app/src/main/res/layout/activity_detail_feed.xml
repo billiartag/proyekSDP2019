@@ -210,6 +210,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="20dp">
+
                 <Button
                     android:id="@+id/beli"
                     android:layout_width="196dp"
@@ -217,12 +218,11 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/custom_button"
-                    android:text="Beli"
-                    android:textColor="#FFFFFF"
                     android:layout_weight="0.8"
+                    android:background="@drawable/custom_button"
+                    android:text="@string/beli"
                     android:textAllCaps="false"
-                    />
+                    android:textColor="#FFFFFF" />
                 <Button
                     android:id="@+id/button_nego"
                     android:layout_width="196dp"
