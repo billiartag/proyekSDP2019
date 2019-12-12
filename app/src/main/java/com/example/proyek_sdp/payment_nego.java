@@ -163,7 +163,7 @@ public class payment_nego extends AppCompatActivity {
                                             trx.setId_seller_trans(brg_hasil.getIdpenjual());
                                             trx.setWaktu_trans(waktu);
                                             trx.setKeterangan_trans((edKeterangan.getText().toString().equalsIgnoreCase(""))?"-":edKeterangan.getText().toString());
-                                            trx.setStatus_trans("pending");
+                                            trx.setStatus_trans("dikonfirmasi");
                                             trx.setId_barang_trans(brg_hasil.getId());
                                             trx.setVarian_pilihan(nego_hasil.getVarian());
                                             trx.setTotal_trans(total_harga+"");

@@ -116,6 +116,7 @@ public class nego_user extends AppCompatActivity {
                             //kalau ada..
                             status_nego_db = row.child("status_nego").getValue().toString();
                             sisa_nego = Integer.parseInt(row.child("sisa_nego").getValue().toString());
+                            id_nego = row.child("id_nego").getValue().toString();
                             jenis_nego="lama";
                         }
                     }
