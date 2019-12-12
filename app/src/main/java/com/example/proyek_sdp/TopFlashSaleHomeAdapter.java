@@ -23,8 +23,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHomeAdapter.TopFlashSaleHomeViewHolder> {
@@ -91,20 +94,61 @@ public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHo
                     int detik_mulai=now.get(Calendar.SECOND);
                     int total_waktu_mulai=(jam_mulai*3600) + (menit_mulai*60) + detik_mulai;
                     if(total_waktu_selesai-total_waktu_mulai>0){
-                        holder.tvtimer_barang.setText("Sisa Waktu : \n"+formatSeconds(total_waktu_selesai-total_waktu_mulai));
+                        //tanggal sekarang
+                        Date dt = new Date();
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("d/MM/yyyy");
+                        String time2 = sdf2.format(dt);
+                        String[] temptgl=time2.split("/");
+                        long hari_sekarang=Long.parseLong(temptgl[0]);
+                        long bulan_sekarang=Long.parseLong(temptgl[1]);
+                        long tahun_sekarang=Long.parseLong(temptgl[2]);
+                        long totalhari_sekarang=hari_sekarang+(bulan_sekarang*30)+(tahun_sekarang*365);
+                        //tanggal upload
+                        String[] temptgl_upload=list_barang.get(position).getWaktu_upload().split("/");
+                        long hari_sekarang_upload=Long.parseLong(temptgl_upload[0]);
+                        long bulan_sekarang_upload=Long.parseLong(temptgl_upload[1]);
+                        long tahun_sekarang_upload=Long.parseLong(temptgl_upload[2]);
+                        long totalhari_sekarang_upload=hari_sekarang_upload+(bulan_sekarang_upload*30)+(tahun_sekarang_upload*365);
+                        if(totalhari_sekarang_upload<totalhari_sekarang){
+                            holder.tvtimer_barang.setText("expired");
+                            FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(list_barang.get(position).getId()).child("status").setValue("0");
+                        }else {
+                            holder.tvtimer_barang.setText("Sisa Waktu : \n"+formatSeconds(total_waktu_selesai-total_waktu_mulai));
+                        }
                     }
                     else {
                         holder.tvtimer_barang.setText("expired");
+                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(list_barang.get(position).getId()).child("status").setValue("0");
                     }
                 }
                 else {
-                    holder.tvtimer_barang.setText("Mulai : \n"+list_barang.get(position).getWaktu_mulai()+"\n Sampai \n"+list_barang.get(position).getWaktu_selesai());
+                    //tanggal sekarang
+                    Date dt = new Date();
+                    SimpleDateFormat sdf2 = new SimpleDateFormat("d/MM/yyyy");
+                    String time2 = sdf2.format(dt);
+                    String[] temptgl=time2.split("/");
+                    long hari_sekarang=Long.parseLong(temptgl[0]);
+                    long bulan_sekarang=Long.parseLong(temptgl[1]);
+                    long tahun_sekarang=Long.parseLong(temptgl[2]);
+                    long totalhari_sekarang=hari_sekarang+(bulan_sekarang*30)+(tahun_sekarang*365);
+                    //tanggal upload
+                    String[] temptgl_selesai=list_barang.get(position).getWaktu_selesai().split("/");
+                    long hari_sekarang_selesai=Long.parseLong(temptgl_selesai[0]);
+                    long bulan_sekarang_selesai=Long.parseLong(temptgl_selesai[1]);
+                    long tahun_sekarang_selesai=Long.parseLong(temptgl_selesai[2]);
+                    long totalhari_sekarang_selesai=hari_sekarang_selesai+(bulan_sekarang_selesai*30)+(tahun_sekarang_selesai*365);
+                    if(totalhari_sekarang_selesai<totalhari_sekarang){
+                        holder.tvtimer_barang.setText("expired");
+                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(list_barang.get(position).getId()).child("status").setValue("0");
+                    }else {
+                        holder.tvtimer_barang.setText("Mulai : \n"+list_barang.get(position).getWaktu_mulai()+"\n Sampai \n"+list_barang.get(position).getWaktu_selesai());
+                    }
                 }
             }
 
             @Override
             public void onFinish() {
-                Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+
             }
         }.start();
 

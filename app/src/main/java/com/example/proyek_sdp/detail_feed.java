@@ -228,54 +228,114 @@ public class detail_feed extends AppCompatActivity {
         beli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RadioButton rb =(RadioButton)findViewById(radioGroup_varian_feed.getCheckedRadioButtonId());
-                if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1){
-                    Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
-                    //intent ke cart
-                    finish();
-                    Intent i = new Intent(detail_feed.this, cart.class);
-                    CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal(),rb.getText().toString());
-                    i.putExtra("barang", temp);
-                    startActivity(i);
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Anda Harus Memilih Varian Terlebih Dahulu!", Toast.LENGTH_SHORT).show();
-                }
+                FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        long count=dataSnapshot.getChildrenCount();
+                        for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                            if(ds.child("id").getValue().toString().equals(x.getId())){
+                                if(ds.child("status").getValue().toString().equals("1")){
+                                    RadioButton rb =(RadioButton)findViewById(radioGroup_varian_feed.getCheckedRadioButtonId());
+                                    if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1){
+                                        Toast.makeText(getApplicationContext(), "Tambah ke Keranjang Berhasil!", Toast.LENGTH_SHORT).show();
+                                        //intent ke cart
+                                        finish();
+                                        Intent i = new Intent(detail_feed.this, cart.class);
+                                        CartClass temp = new CartClass(x.getId(),x.getNama(),x.getWaktu_selesai(),x.getHarga(), 1 ,x.getMaksimal(),rb.getText().toString());
+                                        i.putExtra("barang", temp);
+                                        startActivity(i);
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(), "Anda Harus Memilih Varian Terlebih Dahulu!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(detail_feed.this, "barang sudah expired", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         //tekan tombol chat ke pembeli
         chat_jasa_titip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!hasil_radio_varian.trim().equals("")){
-                    Intent move=new Intent(getApplicationContext(),chat_detail.class);
-                    move.putExtra("iduser",x.getIdpenjual());
-                    String content="Nama Barang : "+x.getNama()+"\nHarga Barang : "+x.getHarga()+"\nVarian : "+hasil_radio_varian+"\n\n"+"Pertanyaan : "+"\n";
-                    move.putExtra("chat_barang",content);
-                    startActivity(move);
-                    finish();
-                }
-                else {
-                    Toast.makeText(detail_feed.this, "Anda Belum Memilih Varian", Toast.LENGTH_SHORT).show();
-                }
+                FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        long count=dataSnapshot.getChildrenCount();
+                        for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                            if(ds.child("id").getValue().toString().equals(x.getId())){
+                                if(ds.child("status").getValue().toString().equals("1")){
+                                    if(!hasil_radio_varian.trim().equals("")){
+                                        Intent move=new Intent(getApplicationContext(),chat_detail.class);
+                                        move.putExtra("iduser",x.getIdpenjual());
+                                        String content="Nama Barang : "+x.getNama()+"\nHarga Barang : "+x.getHarga()+"\nVarian : "+hasil_radio_varian+"\n\n"+"Pertanyaan : "+"\n";
+                                        move.putExtra("chat_barang",content);
+                                        startActivity(move);
+                                        finish();
+                                    }
+                                    else {
+                                        Toast.makeText(detail_feed.this, "Anda Belum Memilih Varian", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(detail_feed.this, "barang sudah expired", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         //tekan button nego
         nego.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RadioButton rb =(RadioButton)findViewById(radioGroup_varian_feed.getCheckedRadioButtonId());
-                if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1) {
-                    Intent i = new Intent(detail_feed.this, nego_user.class);
-                    //isi param lempar disini
-                    i.putExtra("jenis_nego", "baru");
-                    i.putExtra("barang", x);
-                    i.putExtra("varian_nego", rb.getText().toString());//masukkin pilihan varian disini
-                    startActivity(i);
-                }
-                else {
-                    Toast.makeText(detail_feed.this, "Anda Belum Memilih Varian!", Toast.LENGTH_SHORT).show();
-                }
+                FirebaseDatabase.getInstance().getReference().child("BarangDatabase").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        long count=dataSnapshot.getChildrenCount();
+                        for (DataSnapshot ds :dataSnapshot.getChildren()) {
+                            if(ds.child("id").getValue().toString().equals(x.getId())){
+                                if(ds.child("status").getValue().toString().equals("1")){
+                                    RadioButton rb =(RadioButton)findViewById(radioGroup_varian_feed.getCheckedRadioButtonId());
+                                    if(radioGroup_varian_feed.getCheckedRadioButtonId()!=-1) {
+                                        Intent i = new Intent(detail_feed.this, nego_user.class);
+                                        //isi param lempar disini
+                                        i.putExtra("jenis_nego", "baru");
+                                        i.putExtra("barang", x);
+                                        i.putExtra("varian_nego", rb.getText().toString());//masukkin pilihan varian disini
+                                        startActivity(i);
+                                    }
+                                    else {
+                                        Toast.makeText(detail_feed.this, "Anda Belum Memilih Varian!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(detail_feed.this, "Nego gagal, karena barang sudah expired", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
         //count down timer untuk expired barang
@@ -299,6 +359,7 @@ public class detail_feed extends AppCompatActivity {
                     }
                     else {
                         durasi.setText("expired");
+                        FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(x.getId()).child("status").setValue("0");
                     }
                 }
                 else {
