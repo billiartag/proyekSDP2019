@@ -182,7 +182,7 @@ public class chat_detail extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Token token=snapshot.getValue(Token.class);
-                    Data data=new Data(usersekarang.getFirebase_user_id(), R.mipmap.logo_icon_app_round,username+": "+message,"New message",x.getFirebase_user_id());
+                    Data data=new Data(usersekarang.getFirebase_user_id(), R.mipmap.logo_icon_app_round,username+": "+message,"TitipAku",x.getFirebase_user_id());
 
                     Sender sender=new Sender(data,token.getToken());
 

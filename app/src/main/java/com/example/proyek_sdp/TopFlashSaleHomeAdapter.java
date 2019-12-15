@@ -78,7 +78,6 @@ public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHo
             holder.timer.cancel();
         }
         holder.timer = new CountDownTimer(999999999, 1000) {
-
             @Override
             public void onTick(long l) {
                 String waktu=list_barang.get(position).getWaktu_selesai();
@@ -112,7 +111,8 @@ public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHo
                         if(totalhari_sekarang_upload<totalhari_sekarang){
                             holder.tvtimer_barang.setText("expired");
                             FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(list_barang.get(position).getId()).child("status").setValue("0");
-                        }else {
+                        }
+                        else {
                             holder.tvtimer_barang.setText("Sisa Waktu : \n"+formatSeconds(total_waktu_selesai-total_waktu_mulai));
                         }
                     }
@@ -140,7 +140,8 @@ public class TopFlashSaleHomeAdapter extends RecyclerView.Adapter<TopFlashSaleHo
                     if(totalhari_sekarang_selesai<totalhari_sekarang){
                         holder.tvtimer_barang.setText("expired");
                         FirebaseDatabase.getInstance().getReference().child("BarangDatabase").child(list_barang.get(position).getId()).child("status").setValue("0");
-                    }else {
+                    }
+                    else {
                         holder.tvtimer_barang.setText("Mulai : \n"+list_barang.get(position).getWaktu_mulai()+"\n Sampai \n"+list_barang.get(position).getWaktu_selesai());
                     }
                 }
